@@ -869,7 +869,7 @@
             <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">attempt_write_message</span>(<span class="ident">msg</span>)<span class="question-mark">?</span> {
                 <span class="comment">// If this fails again, this means the message is too big</span>
                 <span class="comment">// to be transmitted at all</span>
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::Sys</span>(<span class="ident">::nix::errno::Errno::E2BIG</span>));
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::E2BIG</span>);
             }
         }
         <span class="prelude-val">Ok</span>(())
@@ -896,7 +896,7 @@
         };
         <span class="kw">if</span> <span class="ident">in_bytes</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
             <span class="comment">// the other end of the socket was closed</span>
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::Sys</span>(<span class="ident">::nix::errno::Errno::EPIPE</span>));
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">::nix::Error::EPIPE</span>);
         }
         <span class="comment">// advance the storage</span>
         <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">advance</span>(<span class="ident">in_bytes</span> <span class="op">/</span> <span class="number">4</span> <span class="op">+</span> <span class="kw">if</span> <span class="ident">in_bytes</span> <span class="op">%</span> <span class="number">4</span> <span class="op">&gt;</span> <span class="number">0</span> { <span class="number">1</span> } <span class="kw">else</span> { <span class="number">0</span> });
@@ -1025,7 +1025,7 @@
             <span class="comment">// now, try to get more data</span>
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">fill_incoming_buffers</span>() {
                 <span class="prelude-val">Ok</span>(()) <span class="op">=</span><span class="op">&gt;</span> (),
-                <span class="prelude-val">Err</span>(<span class="ident">e</span> @ <span class="ident">::nix::Error::Sys</span>(<span class="ident">::nix::errno::Errno::EAGAIN</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="prelude-val">Err</span>(<span class="ident">e</span> @ <span class="ident">::nix::Error::EAGAIN</span>) <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="comment">// stop looping, returning Ok() or EAGAIN depending on whether messages</span>
                     <span class="comment">// were dispatched</span>
                     <span class="kw">if</span> <span class="ident">dispatched</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
