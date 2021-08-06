@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["wayland_commons"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.54.0/std/os/imp/unix/io/trait.AsRawFd.html\" title=\"trait std::os::imp::unix::io::AsRawFd\">AsRawFd</a> for <a class=\"struct\" href=\"wayland_commons/socket/struct.Socket.html\" title=\"struct wayland_commons::socket::Socket\">Socket</a>","synthetic":false,"types":["wayland_commons::socket::Socket"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
