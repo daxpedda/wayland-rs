@@ -96,7 +96,12 @@
 <span id="94">94</span>
 <span id="95">95</span>
 <span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
 </pre><pre class="rust">
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
+
 <span class="doccomment">//! EGL utilities</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module contains bindings to the `libwayland-egl.so` library.</span>
@@ -129,6 +134,7 @@
 <span class="doccomment">/// to get the window pointer your OpenGL library is needing to initialize the</span>
 <span class="doccomment">/// EGL context (you&#39;ll most likely need the display ptr as well, that you can</span>
 <span class="doccomment">/// get via the `ptr` method of the `Proxy` trait on the `WlDisplay` object).</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WlEglSurface</span> {
     <span class="ident">ptr</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_egl_window</span>,
 }
