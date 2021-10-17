@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["gtk_primary_selection","Gtk primary selection protocol"]]});
+initSidebarItems({"mod":[["gtk_primary_selection","Gtk primary selection protocol"],["server_decoration","KDE server decoration protocol"]]});
