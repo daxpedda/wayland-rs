@@ -62,10 +62,7 @@
 <span id="62">62</span>
 <span id="63">63</span>
 <span id="64">64</span>
-<span id="65">65</span>
-<span id="66">66</span>
 </pre><pre class="rust">
-<span class="attribute">#[<span class="ident">macro_escape</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">wayland_protocol</span>(
     (
         <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">expr</span>,
@@ -120,7 +117,6 @@
 );
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;staging_protocols&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unstable_protocols&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">macro_escape</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">wayland_protocol_versioned</span>(
     (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">expr</span>, [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span>: <span class="ident">ident</span>),<span class="kw-2">*</span>], <span class="macro-nonterminal">$</span><span class="macro-nonterminal">std_imports</span>:<span class="ident">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_imports</span>:<span class="ident">tt</span>) <span class="op">=</span><span class="op">&gt;</span> {
         $(

@@ -598,7 +598,7 @@
 
         <span class="kw">let</span> <span class="ident">object_methods</span> <span class="op">=</span> <span class="ident">gen_object_methods</span>(<span class="kw-2">&amp;</span><span class="ident">iface_name</span>, <span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">requests</span>, <span class="ident">Side::Client</span>);
         <span class="kw">let</span> <span class="ident">sinces</span> <span class="op">=</span> <span class="ident">gen_since_constants</span>(<span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">requests</span>, <span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">events</span>);
-        <span class="kw">let</span> <span class="ident">c_interface</span> <span class="op">=</span> <span class="kw">super</span><span class="ident">::c_interface_gen::generate_interface</span>(<span class="kw-2">&amp;</span><span class="ident">iface</span>);
+        <span class="kw">let</span> <span class="ident">c_interface</span> <span class="op">=</span> <span class="kw">super</span><span class="ident">::c_interface_gen::generate_interface</span>(<span class="ident">iface</span>);
 
         <span class="macro">quote!</span> {
             #<span class="ident">doc_attr</span>
@@ -686,7 +686,7 @@
             );
             <span class="kw">let</span> <span class="ident">object_methods</span> <span class="op">=</span> <span class="ident">gen_object_methods</span>(<span class="kw-2">&amp;</span><span class="ident">iface_name</span>, <span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">events</span>, <span class="ident">Side::Server</span>);
             <span class="kw">let</span> <span class="ident">sinces</span> <span class="op">=</span> <span class="ident">gen_since_constants</span>(<span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">requests</span>, <span class="kw-2">&amp;</span><span class="ident">iface</span>.<span class="ident">events</span>);
-            <span class="kw">let</span> <span class="ident">c_interface</span> <span class="op">=</span> <span class="kw">super</span><span class="ident">::c_interface_gen::generate_interface</span>(<span class="kw-2">&amp;</span><span class="ident">iface</span>);
+            <span class="kw">let</span> <span class="ident">c_interface</span> <span class="op">=</span> <span class="kw">super</span><span class="ident">::c_interface_gen::generate_interface</span>(<span class="ident">iface</span>);
 
             <span class="macro">quote!</span> {
                 #<span class="ident">doc_attr</span>
