@@ -149,6 +149,22 @@
 <span id="149">149</span>
 <span id="150">150</span>
 <span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
 </pre><pre class="rust"><code><span class="doccomment">//! wlr-procotols extension family</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module regroup bindings to the protocol extensions from</span>
@@ -178,7 +194,13 @@
         <span class="doccomment">//! An interface to control data devices, particularly to manage the current selection and</span>
         <span class="doccomment">//! take the role of a clipboard manager.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(<span class="string">&quot;wlr-data-control&quot;</span>, [<span class="ident">v1</span>], [(<span class="ident">wl_seat</span>, <span class="ident">wl_seat_interface</span>)], []);
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-data-control-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">export_dmabuf</span> {
@@ -186,12 +208,13 @@
         <span class="doccomment">//!</span>
         <span class="doccomment">//! An interface to capture surfaces in an efficient way by exporting DMA-BUFs.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-export-dmabuf&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-export-dmabuf-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">foreign_toplevel</span> {
@@ -199,16 +222,13 @@
         <span class="doccomment">//!</span>
         <span class="doccomment">//! Use for creating taskbars and docks.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-foreign-toplevel-management&quot;</span>,
-            [<span class="ident">v1</span>],
-            [
-                (<span class="ident">wl_seat</span>, <span class="ident">wl_seat_interface</span>),
-                (<span class="ident">wl_surface</span>, <span class="ident">wl_surface_interface</span>),
-                (<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>)
-            ],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-foreign-toplevel-management-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">gamma_control</span> {
@@ -216,29 +236,37 @@
         <span class="doccomment">//!</span>
         <span class="doccomment">//! This protocol allows a privileged client to set the gamma tables for outputs.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-gamma-control&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-gamma-control-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">input_inhibitor</span> {
         <span class="doccomment">//! Inhibits input events to other clients</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(<span class="string">&quot;wlr-input-inhibitor&quot;</span>, [<span class="ident">v1</span>], [], []);
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-input-inhibitor-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">layer_shell</span> {
         <span class="doccomment">//! Layered shell protocol</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-layer-shell&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>), (<span class="ident">wl_surface</span>, <span class="ident">wl_surface_interface</span>)],
-            [(<span class="ident">xdg_shell</span>, <span class="ident">xdg_popup</span>, <span class="ident">xdg_popup_interface</span>)]
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-layer-shell-unstable-v1.xml&quot;</span>,
+                [<span class="ident"><span class="kw">crate</span>::xdg_shell</span>]
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">output_management</span> {
@@ -246,12 +274,13 @@
         <span class="doccomment">//!</span>
         <span class="doccomment">//! This protocol exposes interfaces to obtain and modify output device configuration.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-output-management&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-output-management-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">output_power_management</span> {
@@ -262,12 +291,13 @@
         <span class="doccomment">//! intent is to allow special clients like desktop shells to power</span>
         <span class="doccomment">//! down outputs when the system is idle.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-output-power-management&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-output-power-management-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">screencopy</span> {
@@ -276,12 +306,13 @@
         <span class="doccomment">//! This protocol allows clients to ask the compositor to copy part of the</span>
         <span class="doccomment">//! screen content to a client buffer.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-screencopy&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_buffer</span>, <span class="ident">wl_buffer_interface</span>), (<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>), (<span class="ident">wl_shm</span>, <span class="ident">wl_shm_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-screencopy-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">virtual_pointer</span> {
@@ -290,12 +321,13 @@
         <span class="doccomment">//! This protocol allows clients to emulate a physical pointer device. The</span>
         <span class="doccomment">//! requests are mostly mirror opposites of those specified in wl_pointer.</span>
 
-        <span class="macro">wayland_protocol_versioned!</span>(
-            <span class="string">&quot;wlr-virtual-pointer&quot;</span>,
-            [<span class="ident">v1</span>],
-            [(<span class="ident">wl_seat</span>, <span class="ident">wl_seat_interface</span>), (<span class="ident">wl_output</span>, <span class="ident">wl_output_interface</span>), (<span class="ident">wl_pointer</span>, <span class="ident">wl_pointer_interface</span>)],
-            []
-        );
+        <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+        <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+            <span class="macro">wayland_protocol!</span>(
+                <span class="string">&quot;./wlr-protocols/unstable/wlr-virtual-pointer-unstable-v1.xml&quot;</span>,
+                []
+            );
+        }
     }
 
 

@@ -47,28 +47,8 @@
 <span id="47">47</span>
 <span id="48">48</span>
 <span id="49">49</span>
-<span id="50">50</span>
-<span id="51">51</span>
-<span id="52">52</span>
-<span id="53">53</span>
-<span id="54">54</span>
-<span id="55">55</span>
-<span id="56">56</span>
-<span id="57">57</span>
-<span id="58">58</span>
-<span id="59">59</span>
-<span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
-<span id="63">63</span>
-<span id="64">64</span>
 </pre><pre class="rust"><code><span class="macro">macro_rules!</span> <span class="ident">wayland_protocol</span>(
-    (
-        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">expr</span>,
-        [$((<span class="macro-nonterminal">$</span><span class="macro-nonterminal">import</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ident</span>)),<span class="kw-2">*</span>],
-        <span class="comment">// Path declaration in prot_name is to allow importing from another class of protocols, such as unstable</span>
-        [$(($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_name</span>:<span class="ident">ident</span>)::<span class="op">+</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_import</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_iface</span>: <span class="ident">ident</span>)),<span class="kw-2">*</span>]
-    ) =&gt; {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>:<span class="ident">expr</span>, [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">imports</span>:<span class="ident">path</span>),<span class="kw-2">*</span>]) =&gt; {
         <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client&quot;</span>)]</span>
         <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::generated::client</span>;
 
@@ -83,47 +63,37 @@
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client&quot;</span>)]</span>
             <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">client</span> {
                 <span class="doccomment">//! Client-side API of this protocol</span>
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">Main</span>, <span class="ident">Attached</span>, <span class="ident">Proxy</span>, <span class="ident">ProxyMap</span>, <span class="ident">AnonymousObject</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::map</span>::{<span class="ident">Object</span>, <span class="ident">ObjectMetadata</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons</span>::{<span class="ident">Interface</span>, <span class="ident">MessageGroup</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::wire</span>::{<span class="ident">Argument</span>, <span class="ident">MessageDesc</span>, <span class="ident">ArgumentType</span>, <span class="ident">Message</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::smallvec</span>;
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_client::protocol</span>::{$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">import</span>),<span class="kw-2">*</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_client::sys</span>;
-                $(
-                    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="kw">crate</span>::$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_name</span> ::)<span class="kw-2">*</span><span class="ident">client</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_import</span>;
-                )<span class="op">*</span>
-                <span class="macro">include!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;OUT_DIR&quot;</span>), <span class="string">&quot;/&quot;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="string">&quot;_client_api.rs&quot;</span>));
+                <span class="kw">use</span> <span class="ident">wayland_client</span>;
+                <span class="kw">use</span> <span class="ident">wayland_client::protocol</span>::<span class="kw-2">*</span>;
+                $(<span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">imports</span>::{<span class="ident">client</span>::<span class="kw-2">*</span>};)<span class="op">*</span>
+
+                <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">__interfaces</span> {
+                    <span class="kw">use</span> <span class="ident">wayland_client::protocol::__interfaces</span>::<span class="kw-2">*</span>;
+                    $(<span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">imports</span>::{<span class="ident">client::__interfaces</span>::<span class="kw-2">*</span>};)<span class="op">*</span>
+                    <span class="macro">wayland_scanner::generate_interfaces!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>);
+                }
+                <span class="kw">use</span> <span class="ident"><span class="self">self</span>::__interfaces</span>::<span class="kw-2">*</span>;
+
+                <span class="macro">wayland_scanner::generate_client_code!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>);
             }
 
             <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server&quot;</span>)]</span>
             <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">server</span> {
                 <span class="doccomment">//! Server-side API of this protocol</span>
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_server</span>::{<span class="ident">Main</span>, <span class="ident">AnonymousObject</span>, <span class="ident">Resource</span>, <span class="ident">ResourceMap</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::map</span>::{<span class="ident">Object</span>, <span class="ident">ObjectMetadata</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons</span>::{<span class="ident">Interface</span>, <span class="ident">MessageGroup</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::wire</span>::{<span class="ident">Argument</span>, <span class="ident">MessageDesc</span>, <span class="ident">ArgumentType</span>, <span class="ident">Message</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_commons::smallvec</span>;
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_server::protocol</span>::{$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">import</span>),<span class="kw-2">*</span>};
-                <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="ident">wayland_server::sys</span>;
-                $(
-                    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">use</span> <span class="kw">crate</span>::$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_name</span> ::)<span class="kw-2">*</span><span class="ident">server</span>::<span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_import</span>;
-                )<span class="op">*</span>
-                <span class="macro">include!</span>(<span class="macro">concat!</span>(<span class="macro">env!</span>(<span class="string">&quot;OUT_DIR&quot;</span>), <span class="string">&quot;/&quot;</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="string">&quot;_server_api.rs&quot;</span>));
+                <span class="kw">use</span> <span class="ident">wayland_server</span>;
+                <span class="kw">use</span> <span class="ident">wayland_server::protocol</span>::<span class="kw-2">*</span>;
+                $(<span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">imports</span>::{<span class="ident">server</span>::<span class="kw-2">*</span>};)<span class="op">*</span>
+
+                <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">__interfaces</span> {
+                    <span class="kw">use</span> <span class="ident">wayland_server::protocol::__interfaces</span>::<span class="kw-2">*</span>;
+                    $(<span class="kw">use</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">imports</span>::{<span class="ident">server::__interfaces</span>::<span class="kw-2">*</span>};)<span class="op">*</span>
+                    <span class="macro">wayland_scanner::generate_interfaces!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>);
+                }
+                <span class="kw">use</span> <span class="ident"><span class="self">self</span>::__interfaces</span>::<span class="kw-2">*</span>;
+
+                <span class="macro">wayland_scanner::generate_server_code!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">path</span>);
             }
         }
-    }
-);
-
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;staging_protocols&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unstable_protocols&quot;</span>))]</span>
-<span class="macro">macro_rules!</span> <span class="ident">wayland_protocol_versioned</span>(
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">expr</span>, [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span>: <span class="ident">ident</span>),<span class="kw-2">*</span>], <span class="macro-nonterminal">$</span><span class="macro-nonterminal">std_imports</span>:<span class="ident">tt</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_imports</span>:<span class="ident">tt</span>) =&gt; {
-        $(
-            <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
-            <span class="kw">pub</span> <span class="kw">mod</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span> {
-                <span class="macro">wayland_protocol!</span>(<span class="macro">concat!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>, <span class="string">&quot;-&quot;</span>, <span class="macro">stringify!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span>)), <span class="macro-nonterminal">$</span><span class="macro-nonterminal">std_imports</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">prot_imports</span>);
-            }
-        )<span class="op">*</span>
     }
 );
 </code></pre></div>

@@ -30,11 +30,8 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
-<span id="33">33</span>
-<span id="34">34</span>
-<span id="35">35</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This crate provides bindings to the official wayland protocol extensions</span>
-<span class="doccomment">//! provided in https://cgit.freedesktop.org/wayland/wayland-protocols</span>
+<span class="doccomment">//! provided in &lt;https://gitlab.freedesktop.org/wayland/wayland-protocols&gt;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! These bindings are built on top of the crates wayland-client and wayland-server.</span>
 <span class="doccomment">//!</span>
@@ -52,12 +49,9 @@
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>)]</span>
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">bitflags</span>;
-
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">protocol_macro</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;staging_protocols&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unstable_protocols&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">staging</span>;
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unstable_protocols&quot;</span>)]</span>

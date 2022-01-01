@@ -39,6 +39,7 @@
 <span id="39">39</span>
 <span id="40">40</span>
 <span id="41">41</span>
+<span id="42">42</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Staging protocols from wayland-protocols</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The protocols described this module are in the staging process and will soon be made part of a</span>
@@ -73,12 +74,13 @@
     <span class="doccomment">//! intend to activate. This can for example be used to display a visual hint</span>
     <span class="doccomment">//! about what application is being started.</span>
 
-    <span class="macro">wayland_protocol_versioned!</span>(
-        <span class="string">&quot;xdg-activation&quot;</span>,
-        [<span class="ident">v1</span>],
-        [(<span class="ident">wl_seat</span>, <span class="ident">wl_seat_interface</span>), (<span class="ident">wl_surface</span>, <span class="ident">wl_surface_interface</span>)],
-        []
-    );
+    <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">missing_docs</span>)]</span>
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+        <span class="macro">wayland_protocol!</span>(
+            <span class="string">&quot;./protocols/staging/xdg-activation/xdg-activation-v1.xml&quot;</span>,
+            []
+        );
+    }
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_protocols" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>

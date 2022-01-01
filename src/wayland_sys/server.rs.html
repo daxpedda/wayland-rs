@@ -284,6 +284,7 @@
 <span id="284">284</span>
 <span id="285">285</span>
 <span id="286">286</span>
+<span id="287">287</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Bindings to the client library `libwayland-server.so`</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The generated handle is named `WAYLAND_SERVER_HANDLE`</span>
@@ -339,6 +340,8 @@
         <span class="kw">fn</span> <span class="ident">wl_client_get_destroy_listener</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>, <span class="ident">wl_notify_func_t</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_listener</span>,
         <span class="kw">fn</span> <span class="ident">wl_client_post_no_memory</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>) -&gt; (),
         <span class="kw">fn</span> <span class="ident">wl_resource_create</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>, <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">wl_interface</span>, <span class="ident">c_int</span>, <span class="ident">u32</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_resource</span>,
+        <span class="kw">fn</span> <span class="ident">wl_client_get_link</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_list</span>,
+        <span class="kw">fn</span> <span class="ident">wl_client_from_link</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_list</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>,
     <span class="comment">// wl_display</span>
         <span class="kw">fn</span> <span class="ident">wl_client_create</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>, <span class="ident">c_int</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_client</span>,
         <span class="kw">fn</span> <span class="ident">wl_display_create</span>() -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>,
@@ -360,6 +363,7 @@
         <span class="kw">fn</span> <span class="ident">wl_display_init_shm</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>) -&gt; <span class="ident">c_int</span>,
         <span class="kw">fn</span> <span class="ident">wl_display_add_client_created_listener</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>, <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_listener</span>) -&gt; (),
         <span class="kw">fn</span> <span class="ident">wl_display_set_global_filter</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>, <span class="ident">wl_display_global_filter_func_t</span>, <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>) -&gt; (),
+        <span class="kw">fn</span> <span class="ident">wl_display_get_client_list</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_display</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_list</span>,
     <span class="comment">// wl_event_loop</span>
         <span class="kw">fn</span> <span class="ident">wl_event_loop_create</span>() -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_event_loop</span>,
         <span class="kw">fn</span> <span class="ident">wl_event_loop_destroy</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_event_loop</span>) -&gt; (),
@@ -378,6 +382,7 @@
         <span class="kw">fn</span> <span class="ident">wl_event_source_remove</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_event_source</span>) -&gt; <span class="ident">c_int</span>,
         <span class="kw">fn</span> <span class="ident">wl_event_source_check</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_event_source</span>) -&gt; (),
     <span class="comment">// wl_global</span>
+        <span class="kw">fn</span> <span class="ident">wl_global_remove</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_global</span>) -&gt; (),
         <span class="kw">fn</span> <span class="ident">wl_global_destroy</span>(<span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">wl_global</span>) -&gt; (),
         <span class="kw">fn</span> <span class="ident">wl_global_get_user_data</span>(<span class="kw-2">*</span><span class="kw">const</span> <span class="ident">wl_global</span>) -&gt; <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">c_void</span>,
     <span class="comment">// wl_resource</span>
@@ -446,10 +451,7 @@
                 <span class="prelude-val">Ok</span>(<span class="ident">h</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">Some</span>(<span class="ident">h</span>),
                 <span class="prelude-val">Err</span>(<span class="ident">::dlib::DlError::CantOpen</span>(<span class="kw">_</span>)) =&gt; <span class="kw">continue</span>,
                 <span class="prelude-val">Err</span>(<span class="ident">::dlib::DlError::MissingSymbol</span>(<span class="ident">s</span>)) =&gt; {
-                    <span class="kw">if</span> <span class="ident">::std::env::var_os</span>(<span class="string">&quot;WAYLAND_RS_DEBUG&quot;</span>).<span class="ident">is_some</span>() {
-                        <span class="comment">// only print debug messages if WAYLAND_RS_DEBUG is set</span>
-                        <span class="macro">eprintln!</span>(<span class="string">&quot;[wayland-server] Found library {} cannot be used: symbol {} is missing.&quot;</span>, <span class="ident">ver</span>, <span class="ident">s</span>);
-                    }
+                    <span class="macro">log::error!</span>(<span class="string">&quot;Found library {} cannot be used: symbol {} is missing.&quot;</span>, <span class="ident">ver</span>, <span class="ident">s</span>);
                     <span class="kw">return</span> <span class="prelude-val">None</span>;
                 }
             }

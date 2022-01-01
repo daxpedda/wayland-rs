@@ -296,7 +296,7 @@
 <span id="296">296</span>
 <span id="297">297</span>
 <span id="298">298</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol</span>::<span class="kw-2">*</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">super</span>::protocol</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident">std::io::Read</span>;
 <span class="kw">use</span> <span class="ident">xml::attribute::OwnedAttribute</span>;
 <span class="kw">use</span> <span class="ident">xml::reader::ParserConfig</span>;
@@ -320,7 +320,7 @@
     )
 );
 
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_stream</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Read</span><span class="op">&gt;</span>(<span class="ident">stream</span>: <span class="ident">S</span>) -&gt; <span class="ident">Protocol</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Read</span><span class="op">&gt;</span>(<span class="ident">stream</span>: <span class="ident">S</span>) -&gt; <span class="ident">Protocol</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">reader</span> <span class="op">=</span>
         <span class="ident">EventReader::new_with_config</span>(<span class="ident">stream</span>, <span class="ident">ParserConfig::new</span>().<span class="ident">trim_whitespace</span>(<span class="bool-val">true</span>));
     <span class="ident">reader</span>.<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;Could not read from event reader&quot;</span>);
