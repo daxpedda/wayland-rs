@@ -523,65 +523,6 @@
 <span id="523">523</span>
 <span id="524">524</span>
 <span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
 <span class="kw">use</span> <span class="ident">futures_channel::mpsc</span>::{<span class="ident">unbounded</span>, <span class="ident">UnboundedReceiver</span>, <span class="ident">UnboundedSender</span>};
@@ -945,16 +886,24 @@
 <span class="doccomment">/// where</span>
 <span class="doccomment">///     // `D` is the type which has delegated to this type.</span>
 <span class="doccomment">///     D: Dispatch&lt;wl_registry::WlRegistry, UserData = Self::UserData&gt;,</span>
+<span class="doccomment">///     // If your delegate type has some internal state, it&#39;ll need to access it, and you can</span>
+<span class="doccomment">///     // require it via an AsMut&lt;_&gt; implementation for example</span>
+<span class="doccomment">///     D: AsMut&lt;DelegateToMe&gt;,</span>
 <span class="doccomment">/// {</span>
 <span class="doccomment">///     fn event(</span>
-<span class="doccomment">///         &amp;mut self,</span>
+<span class="doccomment">///         data: &amp;mut D,</span>
 <span class="doccomment">///         _proxy: &amp;wl_registry::WlRegistry,</span>
 <span class="doccomment">///         _event: wl_registry::Event,</span>
-<span class="doccomment">///         _data: &amp;Self::UserData,</span>
+<span class="doccomment">///         _udata: &amp;Self::UserData,</span>
 <span class="doccomment">///         _connhandle: &amp;mut wayland_client::ConnectionHandle,</span>
 <span class="doccomment">///         _qhandle: &amp;wayland_client::QueueHandle&lt;D&gt;,</span>
 <span class="doccomment">///     ) {</span>
 <span class="doccomment">///         // Here the delegate may handle incoming events as it pleases.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///         // For example, it retrives its state and does some processing with it</span>
+<span class="doccomment">///         let me: &amp;mut DelegateToMe = data.as_mut();</span>
+<span class="doccomment">///         // do something with `me` ...</span>
+<span class="doccomment">/// #       std::mem::drop(me) // use `me` to avoid a warning</span>
 <span class="doccomment">///     }</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
@@ -968,10 +917,10 @@
     <span class="doccomment">/// The implementation of this function may vary depending on protocol requirements. Typically the client</span>
     <span class="doccomment">/// will respond to the server by sending requests to the proxy.</span>
     <span class="kw">fn</span> <span class="ident">event</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">D</span>,
         <span class="ident">proxy</span>: <span class="kw-2">&amp;</span><span class="ident">I</span>,
         <span class="ident">event</span>: <span class="ident">I::Event</span>,
-        <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
+        <span class="ident">udata</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
         <span class="ident">connhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">ConnectionHandle</span>,
         <span class="ident">qhandle</span>: <span class="kw-2">&amp;</span><span class="ident">QueueHandle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
     );
@@ -1015,13 +964,13 @@
 <span class="doccomment">/// #</span>
 <span class="doccomment">/// # impl&lt;D&gt; DelegateDispatch&lt;wl_registry::WlRegistry, D&gt; for DelegateToMe</span>
 <span class="doccomment">/// # where</span>
-<span class="doccomment">/// #     D: Dispatch&lt;wl_registry::WlRegistry, UserData = Self::UserData&gt;,</span>
+<span class="doccomment">/// #     D: Dispatch&lt;wl_registry::WlRegistry, UserData = Self::UserData&gt; + AsMut&lt;DelegateToMe&gt;,</span>
 <span class="doccomment">/// # {</span>
 <span class="doccomment">/// #     fn event(</span>
-<span class="doccomment">/// #         &amp;mut self,</span>
+<span class="doccomment">/// #         _data: &amp;mut D,</span>
 <span class="doccomment">/// #         _proxy: &amp;wl_registry::WlRegistry,</span>
 <span class="doccomment">/// #         _event: wl_registry::Event,</span>
-<span class="doccomment">/// #         _data: &amp;Self::UserData,</span>
+<span class="doccomment">/// #         _udata: &amp;Self::UserData,</span>
 <span class="doccomment">/// #         _connhandle: &amp;mut wayland_client::ConnectionHandle,</span>
 <span class="doccomment">/// #         _qhandle: &amp;wayland_client::QueueHandle&lt;D&gt;,</span>
 <span class="doccomment">/// #     ) {</span>
@@ -1037,12 +986,14 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Use delegate_dispatch to implement Dispatch&lt;wl_registry::WlRegistry&gt; for ExampleApp.</span>
-<span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_registry::WlRegistry] =&gt; DelegateToMe ; |app| {</span>
-<span class="doccomment">///     // Return an `&amp;mut` reference to the field the Dispatch implementation provided by the macro should</span>
-<span class="doccomment">///     // forward events to.</span>
-<span class="doccomment">///     // You may also use a function to get the delegate since this is like a closure.</span>
-<span class="doccomment">///     &amp;mut app.delegate</span>
-<span class="doccomment">/// });</span>
+<span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_registry::WlRegistry] =&gt; DelegateToMe);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// // But DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide this impl</span>
+<span class="doccomment">/// impl AsMut&lt;DelegateToMe&gt; for ExampleApp {</span>
+<span class="doccomment">///     fn as_mut(&amp;mut self) -&gt; &amp;mut DelegateToMe {</span>
+<span class="doccomment">///         &amp;mut self.delegate</span>
+<span class="doccomment">///     }</span>
+<span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // To explain the macro above, you may read it as the following:</span>
 <span class="doccomment">/// //</span>
@@ -1067,49 +1018,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```ignore</span>
 <span class="doccomment">/// # // This is not tested because xdg_output is in wayland-protocols.</span>
-<span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_output::WlOutput, xdg_output::XdgOutput] =&gt; OutputDelegate ; |app| {</span>
-<span class="doccomment">///     &amp;mut app.output_delegate</span>
-<span class="doccomment">/// });</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// If your delegate contains a lifetime, you will need to explicitly declare the user data type and</span>
-<span class="doccomment">/// use the anonymous lifetime.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use std::marker::PhantomData;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// use wayland_client::{delegate_dispatch, DelegateDispatch, DelegateDispatchBase, Dispatch, protocol::wl_registry};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// struct ExampleApp;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// struct DelegateWithLifetime&lt;&#39;a&gt;(PhantomData&lt;&amp;&#39;a mut ()&gt;);</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// // ... DelegateDispatch impl here...</span>
-<span class="doccomment">/// # impl DelegateDispatchBase&lt;wl_registry::WlRegistry&gt; for DelegateWithLifetime&lt;&#39;_&gt; {</span>
-<span class="doccomment">/// #     type UserData = ();</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">/// # impl&lt;D&gt; DelegateDispatch&lt;wl_registry::WlRegistry, D&gt; for DelegateWithLifetime&lt;&#39;_&gt;</span>
-<span class="doccomment">/// # where</span>
-<span class="doccomment">/// #     D: Dispatch&lt;wl_registry::WlRegistry, UserData = Self::UserData&gt;,</span>
-<span class="doccomment">/// # {</span>
-<span class="doccomment">/// #     fn event(</span>
-<span class="doccomment">/// #         &amp;mut self,</span>
-<span class="doccomment">/// #         _proxy: &amp;wl_registry::WlRegistry,</span>
-<span class="doccomment">/// #         _event: wl_registry::Event,</span>
-<span class="doccomment">/// #         _data: &amp;Self::UserData,</span>
-<span class="doccomment">/// #         _connhandle: &amp;mut wayland_client::ConnectionHandle,</span>
-<span class="doccomment">/// #         _qhandle: &amp;wayland_client::QueueHandle&lt;D&gt;,</span>
-<span class="doccomment">/// #     ) {</span>
-<span class="doccomment">/// #     }</span>
-<span class="doccomment">/// # }</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// delegate_dispatch!(ExampleApp: &lt;UserData = ()&gt; [wl_registry::WlRegistry] =&gt; DelegateWithLifetime&lt;&#39;_&gt; ; |_app| {</span>
-<span class="doccomment">///     &amp;mut DelegateWithLifetime(PhantomData)</span>
-<span class="doccomment">/// });</span>
+<span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_output::WlOutput, xdg_output::XdgOutput] =&gt; OutputDelegate);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">delegate_dispatch</span> {
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span>: <span class="ident">ty</span>: [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ty</span>),<span class="kw-2">*</span>] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span>: <span class="ident">ty</span> ; <span class="op">|</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatcher</span>: <span class="ident">ident</span><span class="op">|</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">closure</span>: <span class="ident">block</span>) =&gt; {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span>: <span class="ident">ty</span>: [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ty</span>),<span class="kw-2">*</span>] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span>: <span class="ident">ty</span>) =&gt; {
         $(
             <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Dispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span> {
                 <span class="kw">type</span> <span class="ident">UserData</span> <span class="op">=</span> <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatchBase</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::UserData</span>;
@@ -1122,45 +1035,14 @@
                     <span class="ident">connhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::ConnectionHandle</span>,
                     <span class="ident">qhandle</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::QueueHandle</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
                 ) {
-                    <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatcher</span> <span class="op">=</span> <span class="self">self</span>; <span class="comment">// We need to do this so the closure can see the dispatcher field.</span>
-                    <span class="kw">let</span> <span class="ident">delegate</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="op">=</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">closure</span> };
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::event</span>(<span class="ident">delegate</span>, <span class="ident">proxy</span>, <span class="ident">event</span>, <span class="ident">data</span>, <span class="ident">connhandle</span>, <span class="ident">qhandle</span>)
+                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::event</span>(<span class="self">self</span>, <span class="ident">proxy</span>, <span class="ident">event</span>, <span class="ident">data</span>, <span class="ident">connhandle</span>, <span class="ident">qhandle</span>)
                 }
 
                 <span class="kw">fn</span> <span class="ident">event_created_child</span>(
                     <span class="ident">opcode</span>: <span class="ident">u16</span>,
                     <span class="ident">qhandle</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::QueueHandle</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
                 ) -&gt; <span class="ident">::std::sync::Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::ObjectData</span><span class="op">&gt;</span> {
-                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::event_created_child</span>(<span class="ident">opcode</span>, <span class="ident">qhandle</span>)
-                }
-            }
-        )<span class="op">*</span>
-    };
-
-    <span class="comment">// Explicitly specify the UserData if there is a lifetime.</span>
-    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span>: <span class="ident">ty</span>: <span class="op">&lt;</span><span class="ident">UserData</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">user_data</span>: <span class="ident">ty</span><span class="op">&gt;</span> [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ty</span>),<span class="kw-2">*</span>] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span>: <span class="ident">ty</span> ; <span class="op">|</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatcher</span>: <span class="ident">ident</span><span class="op">|</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">closure</span>: <span class="ident">block</span>) =&gt; {
-        $(
-            <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Dispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span> {
-                <span class="kw">type</span> <span class="ident">UserData</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">user_data</span>;
-
-                <span class="kw">fn</span> <span class="ident">event</span>(
-                    <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
-                    <span class="ident">proxy</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>,
-                    <span class="ident">event</span>: <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Proxy</span><span class="op">&gt;</span><span class="ident">::Event</span>,
-                    <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
-                    <span class="ident">connhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::ConnectionHandle</span>,
-                    <span class="ident">qhandle</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::QueueHandle</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
-                ) {
-                    <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatcher</span> <span class="op">=</span> <span class="self">self</span>; <span class="comment">// We need to do this so the closure can see the dispatcher field.</span>
-                    <span class="kw">let</span> <span class="ident">delegate</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="op">=</span> { <span class="macro-nonterminal">$</span><span class="macro-nonterminal">closure</span> };
-                    <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::event</span>(<span class="ident">delegate</span>, <span class="ident">proxy</span>, <span class="ident">event</span>, <span class="ident">data</span>, <span class="ident">connhandle</span>, <span class="ident">qhandle</span>)
-                }
-
-                <span class="kw">fn</span> <span class="ident">event_created_child</span>(
-                    <span class="ident">opcode</span>: <span class="ident">u16</span>,
-                    <span class="ident">qhandle</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::QueueHandle</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>
-                ) -&gt; <span class="ident">::std::sync::Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::ObjectData</span><span class="op">&gt;</span> {
-                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::event_created_child</span>(<span class="ident">opcode</span>, <span class="ident">qhandle</span>)
+                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::event_created_child</span>(<span class="ident">opcode</span>, <span class="ident">qhandle</span>)
                 }
             }
         )<span class="op">*</span>
