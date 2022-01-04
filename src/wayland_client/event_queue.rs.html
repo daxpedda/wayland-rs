@@ -523,11 +523,31 @@
 <span id="523">523</span>
 <span id="524">524</span>
 <span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
 
 <span class="kw">use</span> <span class="ident">futures_channel::mpsc</span>::{<span class="ident">unbounded</span>, <span class="ident">UnboundedReceiver</span>, <span class="ident">UnboundedSender</span>};
 <span class="kw">use</span> <span class="ident">wayland_backend</span>::{
-    <span class="ident">client</span>::{<span class="ident">Backend</span>, <span class="ident">Handle</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>},
+    <span class="ident">client</span>::{<span class="ident">Backend</span>, <span class="ident">Handle</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>, <span class="ident">ReadEventsGuard</span>, <span class="ident">WaylandError</span>},
     <span class="ident">protocol::Message</span>,
 };
 
@@ -705,6 +725,26 @@
                 <span class="ident">data</span>,
             )
         }
+    }
+
+    <span class="doccomment">/// Start a synchronized read from the socket</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is needed if you plan to wait on readiness of the Wayland socket using an event</span>
+    <span class="doccomment">/// loop. See [`ReadEventsGuard`] for details. Once the events are received, you&#39;ll then</span>
+    <span class="doccomment">/// need to dispatch them from the event queue using</span>
+    <span class="doccomment">/// [`EventQueue::dispatch_pending()`](EventQueue::dispatch_pending).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If you don&#39;t need to manage multiple event sources, see</span>
+    <span class="doccomment">/// [`blocking_dispatch()`](EventQueue::blocking_dispatch) for a simpler mechanism.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prepare_read</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ReadEventsGuard</span>, <span class="ident">WaylandError</span><span class="op">&gt;</span> {
+        <span class="ident">ReadEventsGuard::try_new</span>(<span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">clone</span>())
+    }
+
+    <span class="doccomment">/// Flush pending outgoing events to the server</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This needs to be done regularly to ensure the server receives all your requests.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">WaylandError</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">flush</span>()
     }
 
     <span class="kw">fn</span> <span class="ident">dispatching_impl</span>(
