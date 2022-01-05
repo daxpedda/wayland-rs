@@ -510,6 +510,14 @@
 <span id="510">510</span>
 <span id="511">511</span>
 <span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">proc_macro2</span>::{<span class="ident">Ident</span>, <span class="ident">Literal</span>, <span class="ident">Span</span>, <span class="ident">TokenStream</span>};
 
 <span class="kw">use</span> <span class="ident">quote</span>::{<span class="ident">format_ident</span>, <span class="ident">quote</span>, <span class="ident">ToTokens</span>};
@@ -744,7 +752,15 @@
                 } <span class="kw">else</span> {
                     <span class="ident">field_type_inner</span>.<span class="ident">into_token_stream</span>()
                 };
+
+                <span class="kw">let</span> <span class="ident">doc_attr</span> <span class="op">=</span> <span class="ident">arg</span>
+                    .<span class="ident">description</span>
+                    .<span class="ident">as_ref</span>()
+                    .<span class="ident">map</span>(<span class="ident">description_to_doc_attr</span>)
+                    .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">arg</span>.<span class="ident">summary</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">to_doc_attr</span>(<span class="ident">s</span>)));
+
                 <span class="prelude-val">Some</span>(<span class="macro">quote!</span> {
+                    #<span class="ident">doc_attr</span>
                     #<span class="ident">field_name</span>: #<span class="ident">field_type</span>
                 })
             });

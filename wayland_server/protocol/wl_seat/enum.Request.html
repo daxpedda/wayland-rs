@@ -18,7 +18,8 @@ capability, or has had the pointer capability in the past.
 It is a protocol violation to issue this request on a seat that has
 never had the pointer capability. The missing_capability error will
 be sent in this case.</p>
-</div><div class="sub-variant" id="variant.GetPointer.fields"><h3>Fields of <b>GetPointer</b></h3><div><span id="variant.GetPointer.field.id" class="variant small-section-header"><a href="#variant.GetPointer.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_pointer/struct.WlPointer.html" title="struct wayland_server::protocol::wl_pointer::WlPointer">WlPointer</a>&gt;</code></span></div></div><div id="variant.GetKeyboard" class="variant small-section-header"><a href="#variant.GetKeyboard" class="anchor field"></a><code>GetKeyboard</code></div><div class="docblock"><p>return keyboard object</p>
+</div><div class="sub-variant" id="variant.GetPointer.fields"><h3>Fields of <b>GetPointer</b></h3><div><span id="variant.GetPointer.field.id" class="variant small-section-header"><a href="#variant.GetPointer.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_pointer/struct.WlPointer.html" title="struct wayland_server::protocol::wl_pointer::WlPointer">WlPointer</a>&gt;</code></span><div class="docblock"><p>seat pointer</p>
+</div></div></div><div id="variant.GetKeyboard" class="variant small-section-header"><a href="#variant.GetKeyboard" class="anchor field"></a><code>GetKeyboard</code></div><div class="docblock"><p>return keyboard object</p>
 <p>The ID provided will be initialized to the wl_keyboard interface
 for this seat.</p>
 <p>This request only takes effect if the seat has the keyboard
@@ -26,7 +27,8 @@ capability, or has had the keyboard capability in the past.
 It is a protocol violation to issue this request on a seat that has
 never had the keyboard capability. The missing_capability error will
 be sent in this case.</p>
-</div><div class="sub-variant" id="variant.GetKeyboard.fields"><h3>Fields of <b>GetKeyboard</b></h3><div><span id="variant.GetKeyboard.field.id" class="variant small-section-header"><a href="#variant.GetKeyboard.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_keyboard/struct.WlKeyboard.html" title="struct wayland_server::protocol::wl_keyboard::WlKeyboard">WlKeyboard</a>&gt;</code></span></div></div><div id="variant.GetTouch" class="variant small-section-header"><a href="#variant.GetTouch" class="anchor field"></a><code>GetTouch</code></div><div class="docblock"><p>return touch object</p>
+</div><div class="sub-variant" id="variant.GetKeyboard.fields"><h3>Fields of <b>GetKeyboard</b></h3><div><span id="variant.GetKeyboard.field.id" class="variant small-section-header"><a href="#variant.GetKeyboard.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_keyboard/struct.WlKeyboard.html" title="struct wayland_server::protocol::wl_keyboard::WlKeyboard">WlKeyboard</a>&gt;</code></span><div class="docblock"><p>seat keyboard</p>
+</div></div></div><div id="variant.GetTouch" class="variant small-section-header"><a href="#variant.GetTouch" class="anchor field"></a><code>GetTouch</code></div><div class="docblock"><p>return touch object</p>
 <p>The ID provided will be initialized to the wl_touch interface
 for this seat.</p>
 <p>This request only takes effect if the seat has the touch
@@ -34,7 +36,8 @@ capability, or has had the touch capability in the past.
 It is a protocol violation to issue this request on a seat that has
 never had the touch capability. The missing_capability error will
 be sent in this case.</p>
-</div><div class="sub-variant" id="variant.GetTouch.fields"><h3>Fields of <b>GetTouch</b></h3><div><span id="variant.GetTouch.field.id" class="variant small-section-header"><a href="#variant.GetTouch.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_touch/struct.WlTouch.html" title="struct wayland_server::protocol::wl_touch::WlTouch">WlTouch</a>&gt;</code></span></div></div><div id="variant.Release" class="variant small-section-header"><a href="#variant.Release" class="anchor field"></a><code>Release</code></div><div class="docblock"><p>release the seat object</p>
+</div><div class="sub-variant" id="variant.GetTouch.fields"><h3>Fields of <b>GetTouch</b></h3><div><span id="variant.GetTouch.field.id" class="variant small-section-header"><a href="#variant.GetTouch.field.id" class="anchor field"></a><code>id:&nbsp;<a class="struct" href="../../struct.New.html" title="struct wayland_server::New">New</a>&lt;<a class="struct" href="../wl_touch/struct.WlTouch.html" title="struct wayland_server::protocol::wl_touch::WlTouch">WlTouch</a>&gt;</code></span><div class="docblock"><p>seat touch interface</p>
+</div></div></div><div id="variant.Release" class="variant small-section-header"><a href="#variant.Release" class="anchor field"></a><code>Release</code></div><div class="docblock"><p>release the seat object</p>
 <p>Using this request a client can tell the server that it is not going to
 use the seat object anymore.</p>
 <p>This is a destructor, once received this object cannot be used any longer.

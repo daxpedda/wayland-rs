@@ -14,7 +14,8 @@ pending release from other wl_surface.commit requests, no additional
 explicit or implicit synchronization is required to safely reuse or
 destroy the buffer.</p>
 <p>This event destroys the zwp_linux_buffer_release_v1 object.</p>
-</div><div class="sub-variant" id="variant.FencedRelease.fields"><h3>Fields of <b>FencedRelease</b></h3><div><span id="variant.FencedRelease.field.fence" class="variant small-section-header"><a href="#variant.FencedRelease.field.fence" class="anchor field"></a><code>fence:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span></div></div><div id="variant.ImmediateRelease" class="variant small-section-header"><a href="#variant.ImmediateRelease" class="anchor field"></a><code>ImmediateRelease</code></div><div class="docblock"><p>release buffer immediately</p>
+</div><div class="sub-variant" id="variant.FencedRelease.fields"><h3>Fields of <b>FencedRelease</b></h3><div><span id="variant.FencedRelease.field.fence" class="variant small-section-header"><a href="#variant.FencedRelease.field.fence" class="anchor field"></a><code>fence:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span><div class="docblock"><p>fence for last operation on buffer</p>
+</div></div></div><div id="variant.ImmediateRelease" class="variant small-section-header"><a href="#variant.ImmediateRelease" class="anchor field"></a><code>ImmediateRelease</code></div><div class="docblock"><p>release buffer immediately</p>
 <p>Sent when the compositor has finalised its usage of the associated
 buffer for the relevant commit, and either performed no operations
 using it, or has a guarantee that all its operations on that buffer for

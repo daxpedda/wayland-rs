@@ -31,7 +31,8 @@ raised.</p>
 synchronization, an UNSUPPORTED_BUFFER error is raised.</p>
 <p>If at surface commit time there is no buffer attached, a NO_BUFFER
 error is raised.</p>
-</div><div class="sub-variant" id="variant.SetAcquireFence.fields"><h3>Fields of <b>SetAcquireFence</b></h3><div><span id="variant.SetAcquireFence.field.fd" class="variant small-section-header"><a href="#variant.SetAcquireFence.field.fd" class="anchor field"></a><code>fd:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span></div></div><div id="variant.GetRelease" class="variant small-section-header"><a href="#variant.GetRelease" class="anchor field"></a><code>GetRelease</code></div><div class="docblock"><p>release fence for last-attached buffer</p>
+</div><div class="sub-variant" id="variant.SetAcquireFence.fields"><h3>Fields of <b>SetAcquireFence</b></h3><div><span id="variant.SetAcquireFence.field.fd" class="variant small-section-header"><a href="#variant.SetAcquireFence.field.fd" class="anchor field"></a><code>fd:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span><div class="docblock"><p>acquire fence fd</p>
+</div></div></div><div id="variant.GetRelease" class="variant small-section-header"><a href="#variant.GetRelease" class="anchor field"></a><code>GetRelease</code></div><div class="docblock"><p>release fence for last-attached buffer</p>
 <p>Create a listener for the release of the buffer attached by the
 client with wl_surface.attach. See zwp_linux_buffer_release_v1
 documentation for more information.</p>

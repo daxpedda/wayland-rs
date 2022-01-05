@@ -9,7 +9,8 @@ pub enum Event {
 successful. It provides the new wl_buffer referencing the dmabuf(s).</p>
 <p>Upon receiving this event, the client should destroy the
 zlinux_dmabuf_params object.</p>
-</div><div class="sub-variant" id="variant.Created.fields"><h3>Fields of <b>Created</b></h3><div><span id="variant.Created.field.buffer" class="variant small-section-header"><a href="#variant.Created.field.buffer" class="anchor field"></a><code>buffer:&nbsp;<a class="struct" href="../../../../../../wayland_server/protocol/wl_buffer/struct.WlBuffer.html" title="struct wayland_server::protocol::wl_buffer::WlBuffer">WlBuffer</a></code></span></div></div><div id="variant.Failed" class="variant small-section-header"><a href="#variant.Failed" class="anchor field"></a><code>Failed</code></div><div class="docblock"><p>buffer creation failed</p>
+</div><div class="sub-variant" id="variant.Created.fields"><h3>Fields of <b>Created</b></h3><div><span id="variant.Created.field.buffer" class="variant small-section-header"><a href="#variant.Created.field.buffer" class="anchor field"></a><code>buffer:&nbsp;<a class="struct" href="../../../../../../wayland_server/protocol/wl_buffer/struct.WlBuffer.html" title="struct wayland_server::protocol::wl_buffer::WlBuffer">WlBuffer</a></code></span><div class="docblock"><p>the newly created wl_buffer</p>
+</div></div></div><div id="variant.Failed" class="variant small-section-header"><a href="#variant.Failed" class="anchor field"></a><code>Failed</code></div><div class="docblock"><p>buffer creation failed</p>
 <p>This event indicates that the attempted buffer creation has
 failed. It usually means that one of the dmabuf constraints
 has not been fulfilled.</p>

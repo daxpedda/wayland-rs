@@ -11,7 +11,8 @@ green and blue channels. Each gamma ramp is an array of 16-byte unsigned
 integers which has the same length as the gamma size.</p>
 <p>The file descriptor data must have the same length as three times the
 gamma size.</p>
-</div><div class="sub-variant" id="variant.SetGamma.fields"><h3>Fields of <b>SetGamma</b></h3><div><span id="variant.SetGamma.field.fd" class="variant small-section-header"><a href="#variant.SetGamma.field.fd" class="anchor field"></a><code>fd:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span></div></div><div id="variant.Destroy" class="variant small-section-header"><a href="#variant.Destroy" class="anchor field"></a><code>Destroy</code></div><div class="docblock"><p>destroy this control</p>
+</div><div class="sub-variant" id="variant.SetGamma.fields"><h3>Fields of <b>SetGamma</b></h3><div><span id="variant.SetGamma.field.fd" class="variant small-section-header"><a href="#variant.SetGamma.field.fd" class="anchor field"></a><code>fd:&nbsp;<a class="type" href="https://doc.rust-lang.org/1.57.0/std/os/fd/raw/type.RawFd.html" title="type std::os::fd::raw::RawFd">RawFd</a></code></span><div class="docblock"><p>gamma table file descriptor</p>
+</div></div></div><div id="variant.Destroy" class="variant small-section-header"><a href="#variant.Destroy" class="anchor field"></a><code>Destroy</code></div><div class="docblock"><p>destroy this control</p>
 <p>Destroys the gamma control object. If the object is still valid, this
 restores the original gamma tables.</p>
 <p>This is a destructor, once sent this object cannot be used any longer.</p>

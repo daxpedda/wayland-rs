@@ -21,7 +21,8 @@ the current configuration changes: only the actual changes are sent.</p>
 <p>This allows changes to the output configuration to be seen as atomic,
 even if they happen via multiple events.</p>
 <p>A serial is sent to be used in a future create_configuration request.</p>
-</div><div class="sub-variant" id="variant.Done.fields"><h3>Fields of <b>Done</b></h3><div><span id="variant.Done.field.serial" class="variant small-section-header"><a href="#variant.Done.field.serial" class="anchor field"></a><code>serial:&nbsp;<a class="primitive" href="https://doc.rust-lang.org/1.57.0/std/primitive.u32.html">u32</a></code></span></div></div><div id="variant.Finished" class="variant small-section-header"><a href="#variant.Finished" class="anchor field"></a><code>Finished</code></div><div class="docblock"><p>the compositor has finished with the manager</p>
+</div><div class="sub-variant" id="variant.Done.fields"><h3>Fields of <b>Done</b></h3><div><span id="variant.Done.field.serial" class="variant small-section-header"><a href="#variant.Done.field.serial" class="anchor field"></a><code>serial:&nbsp;<a class="primitive" href="https://doc.rust-lang.org/1.57.0/std/primitive.u32.html">u32</a></code></span><div class="docblock"><p>current configuration serial</p>
+</div></div></div><div id="variant.Finished" class="variant small-section-header"><a href="#variant.Finished" class="anchor field"></a><code>Finished</code></div><div class="docblock"><p>the compositor has finished with the manager</p>
 <p>This event indicates that the compositor is done sending manager events.
 The compositor will destroy the object immediately after sending this
 event, so it will become invalid and the client should release any
