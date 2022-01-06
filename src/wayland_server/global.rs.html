@@ -275,8 +275,8 @@
         <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>,
         <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
         <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::GlobalData</span>,
-        <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">D::UserData</span>;
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
+    );
 
     <span class="doccomment">/// Checks if the global should be advertised to some client.</span>
     <span class="doccomment">///</span>
@@ -304,14 +304,14 @@
                     <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
                     <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
                     <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Client</span>,
-                    <span class="ident">resource</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::New</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span>,
+                    <span class="ident">resource</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::New</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span>,
                     <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::GlobalData</span>,
                     <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
                 ) {
                     <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::bind</span>(<span class="self">self</span>, <span class="ident">dhandle</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">global_data</span>, <span class="ident">data_init</span>)
                 }
 
-                <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">client</span>: <span class="ident">Client</span>, <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::GlobalData</span>) -&gt; <span class="ident">bool</span> {
+                <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">client</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Client</span>, <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::GlobalData</span>) -&gt; <span class="ident">bool</span> {
                     <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::can_view</span>(<span class="ident">client</span>, <span class="ident">global_data</span>)
                 }
             }
