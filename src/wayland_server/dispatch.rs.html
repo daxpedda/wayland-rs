@@ -293,7 +293,7 @@
         <span class="ident">resource</span>: <span class="kw-2">&amp;</span><span class="ident">I</span>,
         <span class="ident">request</span>: <span class="ident">I::Request</span>,
         <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
-        <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
+        <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
         <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
     );
 }
@@ -346,7 +346,7 @@
         <span class="ident">data</span>: <span class="op">&lt;</span><span class="ident">D</span> <span class="kw">as</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::UserData</span>,
     ) -&gt; <span class="ident">I</span>
     <span class="kw">where</span>
-        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
         <span class="kw">let</span> <span class="ident">arc</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">ResourceData</span>::<span class="op">&lt;</span><span class="ident">I</span>, <span class="kw">_</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="ident">data</span>));
         <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">store</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">arc</span>.<span class="ident">clone</span>());
@@ -385,7 +385,7 @@
         <span class="ident">resource</span>: <span class="kw-2">&amp;</span><span class="ident">I</span>,
         <span class="ident">request</span>: <span class="ident">I::Request</span>,
         <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
-        <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DisplayHandle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
+        <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
         <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
     );
 }
@@ -399,7 +399,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span>
         <span class="ident">I</span>: <span class="ident">Resource</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
         <span class="ident">U</span>: <span class="ident">DestructionNotify</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
-        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">UserData</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span>,
+        <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">UserData</span> <span class="op">=</span> <span class="ident">U</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     <span class="op">&gt;</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ResourceData</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span>
 {
     <span class="kw">fn</span> <span class="ident">request</span>(
@@ -485,7 +485,7 @@
 <span class="doccomment">/// #         _resource: &amp;wl_output::WlOutput,</span>
 <span class="doccomment">/// #         _request: wl_output::Request,</span>
 <span class="doccomment">/// #         _data: &amp;Self::UserData,</span>
-<span class="doccomment">/// #         _dhandle: &amp;mut wayland_server::DisplayHandle&lt;D&gt;,</span>
+<span class="doccomment">/// #         _dhandle: &amp;mut wayland_server::DisplayHandle,</span>
 <span class="doccomment">/// #         _data_init: &amp;mut wayland_server::DataInit&lt;&#39;_, D&gt;,</span>
 <span class="doccomment">/// #     ) {</span>
 <span class="doccomment">/// #     }</span>
@@ -533,7 +533,7 @@
                     <span class="ident">resource</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>,
                     <span class="ident">request</span>: <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Resource</span><span class="op">&gt;</span><span class="ident">::Request</span>,
                     <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>,
-                    <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
+                    <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
                     <span class="ident">data_init</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
                 ) {
                     <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::request</span>(<span class="self">self</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">request</span>, <span class="ident">data</span>, <span class="ident">dhandle</span>, <span class="ident">data_init</span>)
