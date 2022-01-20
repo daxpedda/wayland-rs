@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-backend&#x2F;src&#x2F;rs&#x2F;socket.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>socket.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../wayland_backend/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-backend&#x2F;src&#x2F;rs&#x2F;socket.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>socket.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../wayland_backend/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -616,14 +617,14 @@
     <span class="doccomment">/// The `buffer` slice should be at least `MAX_BYTES_OUT` long and the `fds`</span>
     <span class="doccomment">/// slice `MAX_FDS_OUT` long, otherwise some data of the received message may</span>
     <span class="doccomment">/// be lost.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rcv_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>], <span class="ident">fds</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">RawFd</span>]) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">rcv_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">u8</span>], <span class="ident">fds</span>: <span class="kw-2">&amp;mut</span> [<span class="ident">RawFd</span>]) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cmsg</span> <span class="op">=</span> <span class="macro">nix::cmsg_space!</span>([<span class="ident">RawFd</span>; <span class="ident">MAX_FDS_OUT</span>]);
         <span class="kw">let</span> <span class="ident">iov</span> <span class="op">=</span> [<span class="ident">uio::IoVec::from_mut_slice</span>(<span class="ident">buffer</span>)];
 
         <span class="kw">let</span> <span class="ident">msg</span> <span class="op">=</span> <span class="ident">socket::recvmsg</span>(
             <span class="self">self</span>.<span class="ident">fd</span>,
             <span class="kw-2">&amp;</span><span class="ident">iov</span>[..],
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">cmsg</span>),
+            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;mut</span> <span class="ident">cmsg</span>),
             <span class="ident">socket::MsgFlags::MSG_DONTWAIT</span> <span class="op">|</span> <span class="ident">socket::MsgFlags::MSG_CMSG_CLOEXEC</span>,
         )<span class="question-mark">?</span>;
 
@@ -662,7 +663,7 @@
 }
 
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+    <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">::nix::unistd::close</span>(<span class="self">self</span>.<span class="ident">fd</span>);
     }
 }
@@ -695,14 +696,14 @@
     }
 
     <span class="doccomment">/// Flush the contents of the outgoing buffer into the socket</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">written</span> <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">get_contents</span>();
             <span class="kw">if</span> <span class="ident">words</span>.<span class="ident">is_empty</span>() {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
             }
             <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-                <span class="ident">::std::slice::from_raw_parts</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
+                <span class="ident">::std::slice::from_raw_parts</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
             };
             <span class="kw">let</span> <span class="ident">fds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">out_fds</span>.<span class="ident">get_contents</span>();
             <span class="kw">let</span> <span class="ident">written</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">send_msg</span>(<span class="ident">bytes</span>, <span class="ident">fds</span>)<span class="question-mark">?</span>;
@@ -718,7 +719,7 @@
         <span class="prelude-val">Ok</span>(())
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blocking_flush</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blocking_flush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">loop</span> {
             <span class="kw">match</span> <span class="self">self</span>.<span class="ident">flush</span>() {
                 <span class="prelude-val">Ok</span>(()) =&gt; <span class="kw">return</span> <span class="prelude-val">Ok</span>(()),
@@ -727,7 +728,7 @@
             }
 
             <span class="ident">nix::poll::poll</span>(
-                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">nix::poll::PollFd::new</span>(<span class="self">self</span>.<span class="ident">as_raw_fd</span>(), <span class="ident">nix::poll::PollFlags::POLLOUT</span>)],
+                <span class="kw-2">&amp;mut</span> [<span class="ident">nix::poll::PollFd::new</span>(<span class="self">self</span>.<span class="ident">as_raw_fd</span>(), <span class="ident">nix::poll::PollFlags::POLLOUT</span>)],
                 <span class="op">-</span><span class="number">1</span>,
             )<span class="question-mark">?</span>;
         }
@@ -740,7 +741,7 @@
     <span class="comment">//</span>
     <span class="comment">// if false is returned, it means there is not enough space</span>
     <span class="comment">// in the buffer</span>
-    <span class="kw">fn</span> <span class="ident">attempt_write_message</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">attempt_write_message</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="ident">write_to_buffers</span>(
             <span class="ident">msg</span>,
             <span class="self">self</span>.<span class="ident">out_data</span>.<span class="ident">get_writable_storage</span>(),
@@ -762,7 +763,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// If the message is too big to fit in the buffer, the error `Error::Sys(E2BIG)`</span>
     <span class="doccomment">/// will be returned.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_message</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_message</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">attempt_write_message</span>(<span class="ident">msg</span>)<span class="question-mark">?</span> {
             <span class="comment">// the attempt failed, there is not enough space in the buffer</span>
             <span class="comment">// we need to flush it</span>
@@ -778,7 +779,7 @@
 
     <span class="doccomment">/// Try to fill the incoming buffers of this socket, to prepare</span>
     <span class="doccomment">/// a new round of parsing.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fill_incoming_buffers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fill_incoming_buffers</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">IoResult</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="comment">// reorganize the buffers</span>
         <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">move_to_front</span>();
         <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">move_to_front</span>();
@@ -786,7 +787,7 @@
         <span class="kw">let</span> (<span class="ident">in_bytes</span>, <span class="ident">in_fds</span>) <span class="op">=</span> {
             <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_data</span>.<span class="ident">get_writable_storage</span>();
             <span class="kw">let</span> <span class="ident">bytes</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-                <span class="ident">::std::slice::from_raw_parts_mut</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
+                <span class="ident">::std::slice::from_raw_parts_mut</span>(<span class="ident">words</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">u8</span>, <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="number">4</span>)
             };
             <span class="kw">let</span> <span class="ident">fds</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">in_fds</span>.<span class="ident">get_writable_storage</span>();
             <span class="self">self</span>.<span class="ident">socket</span>.<span class="ident">rcv_msg</span>(<span class="ident">bytes</span>, <span class="ident">fds</span>)<span class="question-mark">?</span>
@@ -807,7 +808,7 @@
     <span class="doccomment">/// must provide the signature of the associated request/event, in the form of</span>
     <span class="doccomment">/// a `&amp;&#39;static [ArgumentType]`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">read_one_message</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="kw-2">mut</span> <span class="ident">signature</span>: <span class="ident">F</span>,
     ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>, <span class="ident">MessageParseError</span><span class="op">&gt;</span>
     <span class="kw">where</span>
@@ -865,12 +866,12 @@
     }
 
     <span class="doccomment">/// Advance the internal counter of occupied space</span>
-    <span class="kw">fn</span> <span class="ident">advance</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">advance</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
         <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytes</span>;
     }
 
     <span class="doccomment">/// Advance the read offset of current occupied space</span>
-    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
+    <span class="kw">fn</span> <span class="ident">offset</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">bytes</span>: <span class="ident">usize</span>) {
         <span class="self">self</span>.<span class="ident">offset</span> <span class="op">+</span><span class="op">=</span> <span class="ident">bytes</span>;
     }
 
@@ -878,7 +879,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This only sets the counter of occupied space back to zero,</span>
     <span class="doccomment">/// allowing previous content to be overwritten.</span>
-    <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+    <span class="kw">fn</span> <span class="ident">clear</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="self">self</span>.<span class="ident">offset</span> <span class="op">=</span> <span class="number">0</span>;
     }
@@ -889,17 +890,17 @@
     }
 
     <span class="doccomment">/// Get mutable access to the unoccupied space of the buffer</span>
-    <span class="kw">fn</span> <span class="ident">get_writable_storage</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>] {
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">storage</span>[(<span class="self">self</span>.<span class="ident">occupied</span>)..]
+    <span class="kw">fn</span> <span class="ident">get_writable_storage</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> [<span class="ident">T</span>] {
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">storage</span>[(<span class="self">self</span>.<span class="ident">occupied</span>)..]
     }
 
     <span class="doccomment">/// Move the unread contents of the buffer to the front, to ensure</span>
     <span class="doccomment">/// maximal write space availability</span>
-    <span class="kw">fn</span> <span class="ident">move_to_front</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
+    <span class="kw">fn</span> <span class="ident">move_to_front</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="kw">unsafe</span> {
             <span class="ident">::std::ptr::copy</span>(
-                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">storage</span>[<span class="self">self</span>.<span class="ident">offset</span>] <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>,
-                <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">storage</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>,
+                <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">storage</span>[<span class="self">self</span>.<span class="ident">offset</span>] <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">T</span>,
+                <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">storage</span>[<span class="number">0</span>] <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">T</span>,
                 <span class="self">self</span>.<span class="ident">occupied</span> <span class="op">-</span> <span class="self">self</span>.<span class="ident">offset</span>,
             );
         }
@@ -1126,5 +1127,4 @@
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="wayland_backend" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
 </body></html>
