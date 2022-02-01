@@ -302,6 +302,12 @@
 <span id="301">301</span>
 <span id="302">302</span>
 <span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">env</span>,
     <span class="ident">io::ErrorKind</span>,
@@ -575,12 +581,18 @@
     }
 }
 
+<span class="doccomment">/// An error when trying to establish a Wayland connection.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ConnectError</span> {
+    <span class="doccomment">/// The wayland library could not be loaded.</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;The wayland library could not be loaded&quot;</span>)]</span>
     <span class="ident">NoWaylandLib</span>,
+
+    <span class="doccomment">/// Could not find wayland compositor</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;Could not find wayland compositor&quot;</span>)]</span>
     <span class="ident">NoCompositor</span>,
+
+    <span class="doccomment">/// `WAYLAND_SOCKET` was set but contained garbage</span>
     <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;WAYLAND_SOCKET was set but contained garbage&quot;</span>)]</span>
     <span class="ident">InvalidFd</span>,
 }
