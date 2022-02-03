@@ -283,7 +283,7 @@
         <span class="ident">msg</span>: <span class="ident">Message</span><span class="op">&lt;</span><span class="ident">ObjectId</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>;
     <span class="doccomment">/// Notification that the object has been destroyed and is no longer active</span>
-    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">client_id</span>: <span class="ident">ClientId</span>, <span class="ident">object_id</span>: <span class="ident">ObjectId</span>);
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>, <span class="ident">client_id</span>: <span class="ident">ClientId</span>, <span class="ident">object_id</span>: <span class="ident">ObjectId</span>);
     <span class="doccomment">/// Helper for forwarding a Debug implementation of your `ObjectData` type</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// By default will just print `ObjectData { ... }`</span>
@@ -491,7 +491,7 @@
         <span class="macro">panic!</span>(<span class="string">&quot;Received a message on an uninitialized object: {:?}&quot;</span>, <span class="ident">msg</span>);
     }
 
-    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="ident">ClientId</span>, <span class="kw">_</span>: <span class="ident">ObjectId</span>) {}
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>, <span class="kw">_</span>: <span class="ident">ClientId</span>, <span class="kw">_</span>: <span class="ident">ObjectId</span>) {}
 
     <span class="kw">fn</span> <span class="ident">debug</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;UninitObjectData&quot;</span>).<span class="ident">finish</span>()
