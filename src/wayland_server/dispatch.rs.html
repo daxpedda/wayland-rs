@@ -265,6 +265,23 @@
 <span id="264">264</span>
 <span id="265">265</span>
 <span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">wayland_backend::server</span>::{<span class="ident">ClientId</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>};
@@ -379,6 +396,19 @@
         <span class="ident">dhandle</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DisplayHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>,
         <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
     );
+
+    <span class="doccomment">/// Called when the object this user data is associated with has been destroyed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Note this type only provides an immutable reference to the user data, you will need to use</span>
+    <span class="doccomment">/// interior mutability to change it.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Typically a [`Mutex`](std::sync::Mutex) would be used to have interior mutability.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You are given the [`ObjectId`] and [`ClientId`] associated with the destroyed object for cleanup</span>
+    <span class="doccomment">/// convenience.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// By default this method does nothing.</span>
+    <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>, <span class="ident">_client</span>: <span class="ident">ClientId</span>, <span class="ident">_resource</span>: <span class="ident">ObjectId</span>, <span class="ident">_data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>) {}
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span> <span class="ident">ResourceData</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span> {
@@ -526,6 +556,10 @@
                     <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
                 ) {
                     <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::request</span>(<span class="self">self</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">request</span>, <span class="ident">data</span>, <span class="ident">dhandle</span>, <span class="ident">data_init</span>)
+                }
+
+                <span class="kw">fn</span> <span class="ident">destroyed</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">client</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::ClientId</span>, <span class="ident">resource</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::backend::ObjectId</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="ident"><span class="self">Self</span>::UserData</span>) {
+                    <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::destroyed</span>(<span class="self">self</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">data</span>)
                 }
             }
         )<span class="op">*</span>
