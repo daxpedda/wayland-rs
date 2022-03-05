@@ -70,6 +70,7 @@
 <span id="68">68</span>
 <span id="69">69</span>
 <span id="70">70</span>
+<span id="71">71</span>
 </pre><pre class="rust"><code><span class="doccomment">//! FFI bindings to the wayland system libraries.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The names exported by this crate should *not* be used directly, but through</span>
@@ -99,6 +100,7 @@
 <span class="doccomment">//! `is_lib_available()` which returns whether the library could be loaded. They always return true</span>
 <span class="doccomment">//! if the feature `dlopen` is absent, as we link against the library directly in that case.</span>
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">non_camel_case_types</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
 <span class="comment">// If compiling with neither the `client` or `server` feature (non-sensical but</span>
 <span class="comment">// it&#39;s what happens when running `cargo test --all` from the workspace root),</span>

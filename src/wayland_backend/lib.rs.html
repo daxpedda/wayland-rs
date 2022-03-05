@@ -63,7 +63,7 @@
 </pre><pre class="rust"><code><span class="doccomment">//! Backend API for wayland crates</span>
 
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
-<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
 <span class="kw">pub</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">smallvec</span>;
 

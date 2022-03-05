@@ -22,6 +22,8 @@
 <span id="20">20</span>
 <span id="21">21</span>
 <span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implementations of the Wayland backends using the system `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::ArgumentType</span>;
@@ -40,7 +42,9 @@
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">free_arrays</span>(<span class="ident">signature</span>: <span class="kw-2">&amp;</span>[<span class="ident">ArgumentType</span>], <span class="ident">arglist</span>: <span class="kw-2">&amp;</span>[<span class="ident">wl_argument</span>]) {
     <span class="kw">for</span> (<span class="ident">typ</span>, <span class="ident">arg</span>) <span class="kw">in</span> <span class="ident">signature</span>.<span class="ident">iter</span>().<span class="ident">zip</span>(<span class="ident">arglist</span>.<span class="ident">iter</span>()) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">ArgumentType::Array</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="ident">typ</span> {
-            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">Box::from_raw</span>(<span class="ident">arg</span>.<span class="ident">a</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_array</span>);
+            <span class="comment">// Safety: the arglist provided arglist must be valid for associated signature</span>
+            <span class="comment">// and contains pointers to boxed arrays as appropriate</span>
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">Box::from_raw</span>(<span class="ident">arg</span>.<span class="ident">a</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_array</span>) };
         }
     }
 }

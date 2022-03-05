@@ -32,6 +32,7 @@
 <span id="30">30</span>
 <span id="31">31</span>
 <span id="32">32</span>
+<span id="33">33</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This crate provides bindings to the official wayland protocol extensions</span>
 <span class="doccomment">//! provided in &lt;https://gitlab.freedesktop.org/wayland/wayland-protocols&gt;</span>
 <span class="doccomment">//!</span>
@@ -49,6 +50,7 @@
 <span class="doccomment">//! by the cargo feature `nightly`.</span>
 
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>)]</span>
+<span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">mod</span> <span class="ident">protocol_macro</span>;
