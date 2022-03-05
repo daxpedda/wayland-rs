@@ -111,6 +111,8 @@
 <span id="109">109</span>
 <span id="110">110</span>
 <span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 
 <span class="doccomment">//! EGL utilities</span>
@@ -134,9 +136,6 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_available</span>() -&gt; <span class="ident">bool</span> {
     <span class="ident">is_lib_available</span>()
 }
-
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">WlEglSurface</span> {}
-<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Sync</span> <span class="kw">for</span> <span class="ident">WlEglSurface</span> {}
 
 <span class="doccomment">/// EGL surface</span>
 <span class="doccomment">///</span>
@@ -164,11 +163,12 @@
         <span class="kw">if</span> <span class="ident">ptr</span>.<span class="ident">is_null</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>)
         } <span class="kw">else</span> {
+            <span class="comment">// SAFETY: We are sure the pointer is valid and the interface is correct.</span>
             <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">WlEglSurface::new_from_raw</span>(<span class="ident">ptr</span>, <span class="ident">width</span>, <span class="ident">height</span>) })
         }
     }
 
-    <span class="doccomment">/// Create an EGL surface from a raw pointer to a wayland surface</span>
+    <span class="doccomment">/// Create an EGL surface from a raw pointer to a wayland surface.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// # Safety</span>
     <span class="doccomment">///</span>
@@ -214,6 +214,10 @@
         <span class="self">self</span>.<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">c_void</span>
     }
 }
+
+<span class="comment">// SAFETY: We own the pointer to the wl_egl_window and can therefore be transferred to another thread.</span>
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">Send</span> <span class="kw">for</span> <span class="ident">WlEglSurface</span> {}
+<span class="comment">// Note that WlEglSurface is !Sync. This is because the pointer performs no internal synchronization.</span>
 
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">WlEglSurface</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
