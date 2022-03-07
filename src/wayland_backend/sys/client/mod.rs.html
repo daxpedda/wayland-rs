@@ -1072,10 +1072,43 @@
 <span id="1070">1070</span>
 <span id="1071">1071</span>
 <span id="1072">1072</span>
+<span id="1073">1073</span>
+<span id="1074">1074</span>
+<span id="1075">1075</span>
+<span id="1076">1076</span>
+<span id="1077">1077</span>
+<span id="1078">1078</span>
+<span id="1079">1079</span>
+<span id="1080">1080</span>
+<span id="1081">1081</span>
+<span id="1082">1082</span>
+<span id="1083">1083</span>
+<span id="1084">1084</span>
+<span id="1085">1085</span>
+<span id="1086">1086</span>
+<span id="1087">1087</span>
+<span id="1088">1088</span>
+<span id="1089">1089</span>
+<span id="1090">1090</span>
+<span id="1091">1091</span>
+<span id="1092">1092</span>
+<span id="1093">1093</span>
+<span id="1094">1094</span>
+<span id="1095">1095</span>
+<span id="1096">1096</span>
+<span id="1097">1097</span>
+<span id="1098">1098</span>
+<span id="1099">1099</span>
+<span id="1100">1100</span>
+<span id="1101">1101</span>
+<span id="1102">1102</span>
+<span id="1103">1103</span>
+<span id="1104">1104</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Client-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">cell::RefCell</span>,
+    <span class="ident">collections::HashSet</span>,
     <span class="ident">ffi::CStr</span>,
     <span class="ident">os::raw</span>::{<span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>},
     <span class="ident">os::unix</span>::{<span class="ident">io::RawFd</span>, <span class="ident">net::UnixStream</span>, <span class="ident">prelude::IntoRawFd</span>},
@@ -1285,6 +1318,7 @@
     <span class="ident">display_id</span>: <span class="ident">ObjectId</span>,
     <span class="ident">last_error</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">WaylandError</span><span class="op">&gt;</span>,
     <span class="ident">pending_placeholder</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>, <span class="ident">u32</span>)<span class="op">&gt;</span>,
+    <span class="ident">known_proxies</span>: <span class="ident">HashSet</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">wl_proxy</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// A pure rust implementation of a Wayland client backend</span>
@@ -1336,6 +1370,7 @@
                 },
                 <span class="ident">last_error</span>: <span class="prelude-val">None</span>,
                 <span class="ident">pending_placeholder</span>: <span class="prelude-val">None</span>,
+                <span class="ident">known_proxies</span>: <span class="ident">HashSet::new</span>(),
             },
         })
     }
@@ -1812,13 +1847,22 @@
                 <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_get_id</span>, <span class="ident">ret</span>) },
                 <span class="ident">interface</span>: <span class="ident">child_interface</span>,
             };
-            <span class="kw">let</span> <span class="ident">child_udata</span> <span class="op">=</span> <span class="ident">Box::new</span>(<span class="ident">ProxyUserData</span> {
-                <span class="ident">alive</span>: <span class="ident">child_alive</span>,
-                <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">expect</span>(
-                    <span class="string">&quot;Sending a request creating an object without providing an object data.&quot;</span>,
-                ),
-                <span class="ident">interface</span>: <span class="ident">child_interface</span>,
-            });
+            <span class="kw">let</span> <span class="ident">child_udata</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">data</span> {
+                <span class="prelude-val">Some</span>(<span class="ident">data</span>) =&gt; {
+                    <span class="ident">Box::new</span>(<span class="ident">ProxyUserData</span> { <span class="ident">alive</span>: <span class="ident">child_alive</span>, <span class="ident">data</span>, <span class="ident">interface</span>: <span class="ident">child_interface</span> })
+                }
+                <span class="prelude-val">None</span> =&gt; {
+                    <span class="comment">// we destroy this proxy before panicking to avoid a leak, as it cannot be destroyed by the</span>
+                    <span class="comment">// main destructor given it does not yet have a proper user-data</span>
+                    <span class="kw">unsafe</span> {
+                        <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">ret</span>);
+                    }
+                    <span class="macro">panic!</span>(
+                        <span class="string">&quot;Sending a request creating an object without providing an object data.&quot;</span>
+                    );
+                }
+            };
+            <span class="self">self</span>.<span class="ident">known_proxies</span>.<span class="ident">insert</span>(<span class="ident">ret</span>);
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(
                     <span class="ident">WAYLAND_CLIENT_HANDLE</span>,
@@ -1854,6 +1898,7 @@
                 <span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
                 <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">destroyed</span>(<span class="ident">id</span>.<span class="ident">clone</span>());
             }
+            <span class="self">self</span>.<span class="ident">known_proxies</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">id</span>.<span class="ident">ptr</span>);
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">id</span>.<span class="ident">ptr</span>);
             }
@@ -2062,8 +2107,15 @@
     };
 
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">HANDLE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="ident">handle</span><span class="op">|</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">handle</span>.<span class="ident">borrow_mut</span>();
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="kw-2">ref</span> <span class="ident">new_id</span>, <span class="kw">_</span>)) <span class="op">=</span> <span class="ident">created</span> {
+            <span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">insert</span>(<span class="ident">new_id</span>.<span class="ident">ptr</span>);
+        }
+        <span class="kw">if</span> <span class="ident">message_desc</span>.<span class="ident">is_destructor</span> {
+            <span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">proxy</span>);
+        }
         <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">clone</span>().<span class="ident">event</span>(
-            <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">handle</span>.<span class="ident">borrow_mut</span>(),
+            <span class="kw-2">&amp;mut</span> <span class="ident">handle</span>,
             <span class="ident">Message</span> { <span class="ident">sender_id</span>: <span class="ident">id</span>.<span class="ident">clone</span>(), <span class="ident">opcode</span>: <span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">u16</span>, <span class="ident">args</span>: <span class="ident">parsed_args</span> },
         )
     });
@@ -2103,7 +2155,19 @@
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">Backend</span> {
     <span class="kw">fn</span> <span class="ident">drop</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">evq</span>.<span class="ident">is_null</span>() {
-            <span class="comment">// we are own the connection, clone it</span>
+            <span class="comment">// we are own the connection, cleanup and close it</span>
+            <span class="kw">for</span> <span class="ident">proxy_ptr</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">known_proxies</span>.<span class="ident">drain</span>() {
+                <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+                    <span class="ident">Box::from_raw</span>(<span class="macro">ffi_dispatch!</span>(
+                        <span class="ident">WAYLAND_CLIENT_HANDLE</span>,
+                        <span class="ident">wl_proxy_get_user_data</span>,
+                        <span class="ident">proxy_ptr</span>
+                    ) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>)
+                };
+                <span class="kw">unsafe</span> {
+                    <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_proxy_destroy</span>, <span class="ident">proxy_ptr</span>);
+                }
+            }
             <span class="kw">unsafe</span> {
                 <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_CLIENT_HANDLE</span>, <span class="ident">wl_display_disconnect</span>, <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">display</span>)
             }
