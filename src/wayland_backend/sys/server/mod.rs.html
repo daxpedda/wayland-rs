@@ -1436,6 +1436,13 @@
 <span id="1434">1434</span>
 <span id="1435">1435</span>
 <span id="1436">1436</span>
+<span id="1437">1437</span>
+<span id="1438">1438</span>
+<span id="1439">1439</span>
+<span id="1440">1440</span>
+<span id="1441">1441</span>
+<span id="1442">1442</span>
+<span id="1443">1443</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -2335,6 +2342,13 @@
             <span class="kw">return</span>;
         }
 
+        <span class="comment">// Safety: at this point we already checked that the pointer is valid</span>
+        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span>
+            <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_client</span>, <span class="ident">id</span>.<span class="ident">ptr</span>) };
+        <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) }.<span class="ident">unwrap</span>();
+        <span class="comment">// mark the client as dead</span>
+        <span class="ident">client_id</span>.<span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
+
         <span class="kw">unsafe</span> {
             <span class="macro">ffi_dispatch!</span>(
                 <span class="ident">WAYLAND_SERVER_HANDLE</span>,
@@ -2798,14 +2812,14 @@
     }
 
     <span class="kw">match</span> (<span class="ident">created</span>, <span class="ident">ret</span>) {
-        (<span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="ident">child_udata_ptr</span>)), <span class="prelude-val">Some</span>(<span class="ident">child_data</span>)) =&gt; {
-            <span class="comment">// Safety: child_udata_ptr is valid, we created it earlier</span>
-            <span class="kw">unsafe</span> {
-                (<span class="kw-2">*</span><span class="ident">child_udata_ptr</span>).<span class="ident">data</span> <span class="op">=</span> <span class="ident">child_data</span>;
-            }
-        }
+        (<span class="prelude-val">Some</span>((<span class="kw">_</span>, <span class="ident">child_udata_ptr</span>)), <span class="prelude-val">Some</span>(<span class="ident">child_data</span>)) =&gt; <span class="kw">unsafe</span> {
+            (<span class="kw-2">*</span><span class="ident">child_udata_ptr</span>).<span class="ident">data</span> <span class="op">=</span> <span class="ident">child_data</span>;
+        },
         (<span class="prelude-val">Some</span>((<span class="ident">child_id</span>, <span class="kw">_</span>)), <span class="prelude-val">None</span>) =&gt; {
-            <span class="macro">panic!</span>(<span class="string">&quot;Callback creating object {} did not provide any object data.&quot;</span>, <span class="ident">child_id</span>);
+            <span class="comment">// Accept a missing object data if a protocol error occured (and the object is already dead)</span>
+            <span class="kw">if</span> <span class="ident">client_id</span>.<span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>) {
+                <span class="macro">panic!</span>(<span class="string">&quot;Callback creating object {} did not provide any object data.&quot;</span>, <span class="ident">child_id</span>);
+            }
         }
         (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="kw">_</span>)) =&gt; {
             <span class="macro">panic!</span>(<span class="string">&quot;An object data was returned from a callback not creating any object&quot;</span>);
