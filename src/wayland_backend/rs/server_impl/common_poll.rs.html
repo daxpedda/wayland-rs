@@ -374,7 +374,7 @@
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">ClientId</span>, <span class="ident">InnerHandle</span>};
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerBackend</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerBackend</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">handle</span>: <span class="ident">Handle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
     <span class="ident">poll_fd</span>: <span class="ident">RawFd</span>,
 }
@@ -664,7 +664,7 @@
     }
 }
 
-<span class="kw">enum</span> <span class="ident">DispatchAction</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">enum</span> <span class="ident">DispatchAction</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">Request</span> {
         <span class="ident">object</span>: <span class="ident">Object</span><span class="op">&lt;</span><span class="ident">Data</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
         <span class="ident">object_id</span>: <span class="ident">InnerObjectId</span>,

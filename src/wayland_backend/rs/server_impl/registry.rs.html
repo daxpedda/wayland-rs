@@ -277,7 +277,7 @@
 */</span>
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">struct</span> <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">struct</span> <span class="ident">Global</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>,
     <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>,
     <span class="ident">version</span>: <span class="ident">u32</span>,
@@ -287,7 +287,7 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Registry</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Registry</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">globals</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Global</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">known_registries</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">InnerObjectId</span><span class="op">&gt;</span>,
     <span class="ident">last_serial</span>: <span class="ident">u32</span>,

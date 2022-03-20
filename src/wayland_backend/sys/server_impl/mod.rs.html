@@ -1266,6 +1266,12 @@
 <span id="1264">1264</span>
 <span id="1265">1265</span>
 <span id="1266">1266</span>
+<span id="1267">1267</span>
+<span id="1268">1268</span>
+<span id="1269">1269</span>
+<span id="1270">1270</span>
+<span id="1271">1271</span>
+<span id="1272">1272</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -1486,7 +1492,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerHandle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerHandle</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">display</span>: <span class="kw-2">*mut</span> <span class="ident">wl_display</span>,
     <span class="ident">pending_destructors</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PendingDestructor</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">_data</span>: <span class="ident">std::marker::PhantomData</span><span class="op">&lt;</span><span class="kw">fn</span>(<span class="kw-2">&amp;mut</span> <span class="ident">D</span>)<span class="op">&gt;</span>,
@@ -1494,7 +1500,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerBackend</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">InnerBackend</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="ident">handle</span>: <span class="ident">Handle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
 }
 
@@ -1658,7 +1664,7 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">InnerHandle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> <span class="ident">InnerHandle</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">object_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ObjectInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">id</span>.<span class="ident">alive</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">alive</span><span class="op">|</span> <span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>)).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
@@ -2121,7 +2127,10 @@
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_client</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>, <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>) -&gt; <span class="ident">InnerClientId</span> {
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_client</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
+    <span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>,
+    <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+) -&gt; <span class="ident">InnerClientId</span> {
     <span class="kw">let</span> <span class="ident">alive</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">AtomicBool::new</span>(<span class="bool-val">true</span>));
     <span class="kw">let</span> <span class="ident">client_data</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">ClientUserData</span> { <span class="ident">alive</span>: <span class="ident">alive</span>.<span class="ident">clone</span>(), <span class="ident">data</span> }));
 
@@ -2136,7 +2145,7 @@
     <span class="ident">InnerClientId</span> { <span class="ident">ptr</span>: <span class="ident">client</span>, <span class="ident">alive</span> }
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_id_from_ptr</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_id_from_ptr</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
     <span class="comment">// Safety: the provided pointer is a valid and initialized wl_client for type parameter D</span>
     <span class="kw">unsafe</span> {
         <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>)
@@ -2144,7 +2153,7 @@
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_user_data</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_user_data</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">client</span>.<span class="ident">is_null</span>() {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
@@ -2162,7 +2171,10 @@
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">client_destroy_notify</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">listener</span>: <span class="kw-2">*mut</span> <span class="ident">wl_listener</span>, <span class="ident">client_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>) {
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">client_destroy_notify</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
+    <span class="ident">listener</span>: <span class="kw-2">*mut</span> <span class="ident">wl_listener</span>,
+    <span class="ident">client_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
+) {
     <span class="comment">// Safety: if this function is invoked by libwayland its arguments must be valid</span>
     <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> {
         <span class="ident">Box::from_raw</span>(<span class="ident">signal::rust_listener_get_user_data</span>(<span class="ident">listener</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>)
@@ -2182,7 +2194,7 @@
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">global_bind</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">global_bind</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
     <span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>,
     <span class="ident">data</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
     <span class="ident">version</span>: <span class="ident">u32</span>,
@@ -2229,7 +2241,7 @@
     })
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">global_filter</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">global_filter</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
     <span class="ident">client</span>: <span class="kw-2">*const</span> <span class="ident">wl_client</span>,
     <span class="ident">global</span>: <span class="kw-2">*const</span> <span class="ident">wl_global</span>,
     <span class="kw">_</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
@@ -2258,7 +2270,7 @@
     )
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_resource</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_resource</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
     <span class="ident">resource</span>: <span class="kw-2">*mut</span> <span class="ident">wl_resource</span>,
     <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>,
     <span class="ident">data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -2284,7 +2296,7 @@
     (<span class="ident">InnerObjectId</span> { <span class="ident">interface</span>, <span class="ident">alive</span>: <span class="prelude-val">Some</span>(<span class="ident">alive</span>), <span class="ident">id</span>, <span class="ident">ptr</span>: <span class="ident">resource</span> }, <span class="ident">udata</span>)
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">resource_dispatcher</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">resource_dispatcher</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
     <span class="kw">_</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>,
     <span class="ident">resource</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
     <span class="ident">opcode</span>: <span class="ident">u32</span>,
@@ -2470,7 +2482,7 @@
     <span class="number">0</span>
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">resource_destructor</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">resource</span>: <span class="kw-2">*mut</span> <span class="ident">wl_resource</span>) {
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">resource_destructor</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">resource</span>: <span class="kw-2">*mut</span> <span class="ident">wl_resource</span>) {
     <span class="comment">// Safety: if this destructor is called resource is valid and initialized by us</span>
     <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw">unsafe</span> {
         <span class="ident">Box::from_raw</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_user_data</span>, <span class="ident">resource</span>)

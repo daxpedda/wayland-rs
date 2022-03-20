@@ -283,6 +283,23 @@
 <span id="281">281</span>
 <span id="282">282</span>
 <span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">wayland_backend::server</span>::{<span class="ident">ClientId</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>};
@@ -344,7 +361,7 @@
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">D</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">store</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
@@ -361,6 +378,23 @@
         <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">store</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">arc</span>.<span class="ident">clone</span>());
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">obj</span> <span class="op">=</span> <span class="ident">resource</span>.<span class="ident">id</span>;
         <span class="ident">obj</span>.<span class="ident">__set_object_data</span>(<span class="ident">arc</span>);
+        <span class="ident">obj</span>
+    }
+
+    <span class="doccomment">/// Set a custom [`ObjectData`] for this object</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This object data is not managed by `wayland-server`, as a result you will not</span>
+    <span class="doccomment">/// be able to retreive it through [`Resource::data()`](Resource::data).</span>
+    <span class="doccomment">/// Instead, you&#39;ll need to directly retrieve it using</span>
+    <span class="doccomment">/// [`DisplayHandle::get_object_data()`](DisplayHandle::get_object_data).</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">custom_init</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Resource</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">I</span> {
+        <span class="kw-2">*</span><span class="self">self</span>.<span class="ident">store</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>.<span class="ident">clone</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">obj</span> <span class="op">=</span> <span class="ident">resource</span>.<span class="ident">id</span>;
+        <span class="ident">obj</span>.<span class="ident">__set_object_data</span>(<span class="ident">data</span>.<span class="ident">into_any_arc</span>());
         <span class="ident">obj</span>
     }
 }
