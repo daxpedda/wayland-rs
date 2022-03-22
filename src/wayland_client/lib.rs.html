@@ -108,10 +108,12 @@
 <span id="106">106</span>
 <span id="107">107</span>
 <span id="108">108</span>
+<span id="109">109</span>
 </pre><pre class="rust"><code><span class="doccomment">//! wayland-client</span>
 
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">coverage</span>, <span class="ident">feature</span>(<span class="ident">no_coverage</span>))]</span>
 
 <span class="kw">use</span> <span class="ident">wayland_backend</span>::{
     <span class="ident">client</span>::{<span class="ident">InvalidId</span>, <span class="ident">ObjectId</span>, <span class="ident">WaylandError</span>},
