@@ -149,7 +149,7 @@
 <span class="doccomment">//! This library is used to interface with the OpenGL stack, and creating</span>
 <span class="doccomment">//! EGL surfaces from a wayland surface.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! See WlEglSurface documentation for details.</span>
+<span class="doccomment">//! See [`WlEglSurface`] documentation for details.</span>
 
 <span class="kw">use</span> <span class="ident">std::os::raw::c_void</span>;
 
@@ -158,7 +158,7 @@
 
 <span class="doccomment">/// Checks if the wayland-egl lib is available and can be used</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// Trying to create an `WlEglSurface` while this function returns</span>
+<span class="doccomment">/// Trying to create an [`WlEglSurface`] while this function returns</span>
 <span class="doccomment">/// `false` will result in a panic.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_available</span>() -&gt; <span class="ident">bool</span> {
     <span class="ident">is_lib_available</span>()
@@ -166,11 +166,11 @@
 
 <span class="doccomment">/// EGL surface</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This object is a simple wrapper around a `WlSurface` to add the EGL</span>
-<span class="doccomment">/// capabilities. Just use the `ptr` method once this object is created</span>
-<span class="doccomment">/// to get the window pointer your OpenGL library is needing to initialize the</span>
-<span class="doccomment">/// EGL context (you&#39;ll most likely need the display ptr as well, that you can</span>
-<span class="doccomment">/// get via the `ptr` method of the `Proxy` trait on the `WlDisplay` object).</span>
+<span class="doccomment">/// This object is a simple wrapper around a `wl_surface` to add the EGL</span>
+<span class="doccomment">/// capabilities. Just use the [`ptr()`](WlEglSurface::ptr) method once this object</span>
+<span class="doccomment">/// is created to get the window pointer your OpenGL library is needing to initialize</span>
+<span class="doccomment">/// the EGL context (you&#39;ll most likely need the display ptr as well, that you can</span>
+<span class="doccomment">/// get via the [`ObjectId::as_ptr()`] method on of the `wl_display` ID).</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WlEglSurface</span> {
     <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wl_egl_window</span>,

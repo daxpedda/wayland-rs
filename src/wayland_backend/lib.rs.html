@@ -64,10 +64,42 @@
 <span id="62">62</span>
 <span id="63">63</span>
 <span id="64">64</span>
+<span id="65">65</span>
+<span id="66">66</span>
+<span id="67">67</span>
+<span id="68">68</span>
+<span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
+<span id="79">79</span>
+<span id="80">80</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Backend API for wayland crates</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate provide low-level APIs for interacting with the Wayland protocol,</span>
 <span class="doccomment">//! both client-side and server-side.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Two possible backends are provided by this crate: the system backend ([`sys`] module)</span>
+<span class="doccomment">//! which relies on the system-provided wayland libraries, and the rust backend ([`rs`] module)</span>
+<span class="doccomment">//! which is an alternative rust implementation of the protocol. The rust backend is always</span>
+<span class="doccomment">//! available, and the system backend is controlled by the `client_system` and `server_system`</span>
+<span class="doccomment">//! cargo features. The `dlopen` cargo feature ensures that the system wayland</span>
+<span class="doccomment">//! libraries are loaded dynamically at runtime, so that your executable does not link them and</span>
+<span class="doccomment">//! can gracefully handle their absence (for example by falling back to X11).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Additionnaly the default backends are reexported as toplevel `client` and `server` modules</span>
+<span class="doccomment">//! in this crate. For both client and server, the default backend is the system one if the</span>
+<span class="doccomment">//! associated cargo feature is enabled, and the rust one otherwise. Using these reexports is the</span>
+<span class="doccomment">//! recommended way to use the crate.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Both backends have the exact same API, except that the system backend additionnaly provides</span>
+<span class="doccomment">//! functions related to FFI.</span>
 
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>

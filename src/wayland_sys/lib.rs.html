@@ -71,6 +71,8 @@
 <span id="69">69</span>
 <span id="70">70</span>
 <span id="71">71</span>
+<span id="72">72</span>
+<span id="73">73</span>
 </pre><pre class="rust"><code><span class="doccomment">//! FFI bindings to the wayland system libraries.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The names exported by this crate should *not* be used directly, but through</span>
@@ -125,7 +127,9 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">libc</span>::{<span class="ident">gid_t</span>, <span class="ident">pid_t</span>, <span class="ident">uid_t</span>};
 
-<span class="comment">// Small hack while #[macro_reexport] is not stable</span>
+<span class="comment">// We cannot just reexport dlib::ffi_dispatch, because it&#39;d then</span>
+<span class="comment">// use the &quot;dlopen&quot; feature *on the crate invoking it* rather than</span>
+<span class="comment">// the &quot;dlopen&quot; feature of wayland-sys.</span>
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;dlopen&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>

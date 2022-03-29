@@ -444,7 +444,6 @@
 <span id="442">442</span>
 <span id="443">443</span>
 <span id="444">444</span>
-<span id="445">445</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
@@ -456,11 +455,10 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! First of all, you need to create a [`CursorTheme`], which represents the full cursor theme.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! From this theme, using the `get_cursor` method, you can load a specific [`Cursor`],</span>
-<span class="doccomment">//! which can contain several images if the cursor is animated. It also provides you with the</span>
-<span class="doccomment">//! means of querying which frame of the animation should be displayed at</span>
-<span class="doccomment">//! what time, as well as handles to the buffers containing these frames, to</span>
-<span class="doccomment">//! attach them to a wayland surface.</span>
+<span class="doccomment">//! From this theme, using the [`get_cursor()`](CursorTheme::get_cursor) method, you can load a</span>
+<span class="doccomment">//! specific [`Cursor`], which can contain several images if the cursor is animated. It also provides</span>
+<span class="doccomment">//! you with the means of querying which frame of the animation should be displayed at what time, as</span>
+<span class="doccomment">//! well as handles to the buffers containing these frames, to attach them to a wayland surface.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Example</span>
 <span class="doccomment">//!</span>
@@ -474,8 +472,10 @@
 <span class="doccomment">//! # use std::time::{Instant, Duration};</span>
 <span class="doccomment">//! # fn test(connection: &amp;mut wayland_client::Connection, cursor_surface: &amp;wayland_client::protocol::wl_surface::WlSurface, shm: wayland_client::protocol::wl_shm::WlShm) {</span>
 <span class="doccomment">//! // Load the default cursor theme.</span>
-<span class="doccomment">//! let mut cursor_theme = CursorTheme::load(&amp;mut connection.handle(), shm, 32).expect(&quot;Could not load cursor theme&quot;);</span>
-<span class="doccomment">//! let cursor = cursor_theme.get_cursor(&amp;mut connection.handle(), &quot;wait&quot;).expect(&quot;Cursor not provided by theme&quot;);</span>
+<span class="doccomment">//! let mut cursor_theme = CursorTheme::load(&amp;mut connection.handle(), shm, 32)</span>
+<span class="doccomment">//!     .expect(&quot;Could not load cursor theme&quot;);</span>
+<span class="doccomment">//! let cursor = cursor_theme.get_cursor(&amp;mut connection.handle(), &quot;wait&quot;)</span>
+<span class="doccomment">//!     .expect(&quot;Cursor not provided by theme&quot;);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let start_time = Instant::now();</span>
 <span class="doccomment">//! loop {</span>
@@ -701,7 +701,7 @@
 
     <span class="doccomment">/// Given a time, calculate which frame to show, and how much time remains until the next frame.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// Time will wrap, so if for instance the cursor has an animation during 100ms,</span>
+    <span class="doccomment">/// Time will wrap, so if for instance the cursor has an animation lasting 100ms,</span>
     <span class="doccomment">/// then calling this function with 5ms and 105ms as input gives the same output.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">frame_and_duration</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">millis</span>: <span class="ident">u32</span>) -&gt; <span class="ident">FrameAndDuration</span> {
         <span class="ident">millis</span> <span class="op">%</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">total_duration</span>;
@@ -736,9 +736,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// You can access the `WlBuffer` via `Deref`.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ## Usage of proxies</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Note that this proxy will be considered as &quot;unmanaged&quot; by the crate, as such you should</span>
+<span class="doccomment">/// Note that this buffer is internally managed by wayland-cursor, as such you should</span>
 <span class="doccomment">/// not try to act on it beyond assigning it to `wl_surface`s.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">CursorImageBuffer</span> {
