@@ -1516,7 +1516,7 @@
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InitError::NoWaylandLib</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">display</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_display_create</span>,) };
+        <span class="kw">let</span> <span class="ident">display</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_display_create</span>) };
         <span class="kw">if</span> <span class="ident">display</span>.<span class="ident">is_null</span>() {
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-backend-sys] libwayland reported an allocation failure.&quot;</span>);
         }
