@@ -114,6 +114,31 @@
 <span id="112">112</span>
 <span id="113">113</span>
 <span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
@@ -128,7 +153,7 @@
 
 <span class="kw">use</span> <span class="ident">std::os::raw::c_void</span>;
 
-<span class="kw">use</span> <span class="ident">wayland_backend</span>::{<span class="ident">client::InvalidId</span>, <span class="ident">sys::client::ObjectId</span>};
+<span class="kw">use</span> <span class="ident">wayland_backend::client::ObjectId</span>;
 <span class="kw">use</span> <span class="ident">wayland_sys</span>::{<span class="ident">client::wl_proxy</span>, <span class="ident">egl</span>::<span class="kw-2">*</span>, <span class="ident">ffi_dispatch</span>};
 
 <span class="doccomment">/// Checks if the wayland-egl lib is available and can be used</span>
@@ -156,17 +181,21 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This method will check that the provided `ObjectId` is still alive and from the</span>
     <span class="doccomment">/// correct interface (`wl_surface`).</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">surface</span>: <span class="ident">ObjectId</span>, <span class="ident">width</span>: <span class="ident">i32</span>, <span class="ident">height</span>: <span class="ident">i32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">WlEglSurface</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You must always destroy the [`WlEglSurface`] *before* the underling `wl_surface`</span>
+    <span class="doccomment">/// protocol object.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">surface</span>: <span class="ident">ObjectId</span>, <span class="ident">width</span>: <span class="ident">i32</span>, <span class="ident">height</span>: <span class="ident">i32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">WlEglSurface</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">surface</span>.<span class="ident">interface</span>().<span class="ident">name</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;wl_surface&quot;</span> {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidId</span>);
         }
 
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">surface</span>.<span class="ident">as_ptr</span>();
         <span class="kw">if</span> <span class="ident">ptr</span>.<span class="ident">is_null</span>() {
-            <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>)
+            <span class="comment">// ObjectId::as_ptr() returns NULL if the surface is no longer alive</span>
+            <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidId</span>)
         } <span class="kw">else</span> {
             <span class="comment">// SAFETY: We are sure the pointer is valid and the interface is correct.</span>
-            <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">WlEglSurface::new_from_raw</span>(<span class="ident">ptr</span>, <span class="ident">width</span>, <span class="ident">height</span>) })
+            <span class="kw">unsafe</span> { <span class="ident">WlEglSurface::new_from_raw</span>(<span class="ident">ptr</span>, <span class="ident">width</span>, <span class="ident">height</span>) }
         }
     }
 
@@ -175,9 +204,19 @@
     <span class="doccomment">/// # Safety</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The provided pointer must be a valid `wl_surface` pointer from `libwayland-client`.</span>
-    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_from_raw</span>(<span class="ident">surface</span>: <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>, <span class="ident">width</span>: <span class="ident">i32</span>, <span class="ident">height</span>: <span class="ident">i32</span>) -&gt; <span class="ident">WlEglSurface</span> {
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">new_from_raw</span>(
+        <span class="ident">surface</span>: <span class="kw-2">*mut</span> <span class="ident">wl_proxy</span>,
+        <span class="ident">width</span>: <span class="ident">i32</span>,
+        <span class="ident">height</span>: <span class="ident">i32</span>,
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">WlEglSurface</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">width</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">height</span> <span class="op">&lt;</span><span class="op">=</span> <span class="number">0</span> {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::InvalidSize</span>);
+        }
         <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_EGL_HANDLE</span>, <span class="ident">wl_egl_window_create</span>, <span class="ident">surface</span>, <span class="ident">width</span>, <span class="ident">height</span>);
-        <span class="ident">WlEglSurface</span> { <span class="ident">ptr</span> }
+        <span class="kw">if</span> <span class="ident">ptr</span>.<span class="ident">is_null</span>() {
+            <span class="macro">panic!</span>(<span class="string">&quot;egl window allocation failed&quot;</span>);
+        }
+        <span class="prelude-val">Ok</span>(<span class="ident">WlEglSurface</span> { <span class="ident">ptr</span> })
     }
 
     <span class="doccomment">/// Fetch current size of the EGL surface</span>
@@ -227,6 +266,17 @@
             <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_EGL_HANDLE</span>, <span class="ident">wl_egl_window_destroy</span>, <span class="self">self</span>.<span class="ident">ptr</span>);
         }
     }
+}
+
+<span class="doccomment">/// EGL surface creation error.</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">thiserror::Error</span>, <span class="ident">Debug</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Error</span> {
+    <span class="doccomment">/// Surface width or height are &lt;= 0.</span>
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;surface width or height is &lt;= 0&quot;</span>)]</span>
+    <span class="ident">InvalidSize</span>,
+    <span class="doccomment">/// Passed surface object is not a surface.</span>
+    <span class="attribute">#[<span class="ident">error</span>(<span class="string">&quot;object id is not a surface&quot;</span>)]</span>
+    <span class="ident">InvalidId</span>,
 }
 </code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_egl" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
