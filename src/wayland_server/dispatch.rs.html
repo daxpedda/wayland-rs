@@ -462,7 +462,7 @@
         <span class="ident">client_id</span>: <span class="ident">wayland_backend::server::ClientId</span>,
         <span class="ident">msg</span>: <span class="ident">wayland_backend::protocol::Message</span><span class="op">&lt;</span><span class="ident">wayland_backend::server::ObjectId</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dhandle</span> <span class="op">=</span> <span class="ident">DisplayHandle::from_handle</span>(<span class="ident">handle</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dhandle</span> <span class="op">=</span> <span class="ident">DisplayHandle::from</span>(<span class="ident">handle</span>);
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Client::from_id</span>(<span class="kw-2">&amp;mut</span> <span class="ident">dhandle</span>, <span class="ident">client_id</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">v</span>) =&gt; <span class="ident">v</span>,
             <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {

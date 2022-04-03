@@ -309,6 +309,16 @@
 <span id="307">307</span>
 <span id="308">308</span>
 <span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">env</span>,
     <span class="ident">io::ErrorKind</span>,
@@ -440,7 +450,7 @@
         <span class="kw">let</span> <span class="ident">done</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>));
         {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">backend</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">ConnectionHandle::from_handle</span>(<span class="ident">backend</span>.<span class="ident">handle</span>());
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">ConnectionHandle::from</span>(<span class="ident">backend</span>.<span class="ident">handle</span>());
             <span class="kw">let</span> <span class="ident">display</span> <span class="op">=</span> <span class="ident">handle</span>.<span class="ident">display</span>();
             <span class="kw">let</span> <span class="ident">cb_done</span> <span class="op">=</span> <span class="ident">done</span>.<span class="ident">clone</span>();
             <span class="kw">let</span> <span class="ident">sync_data</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">SyncData</span> { <span class="ident">done</span>: <span class="ident">cb_done</span> });
@@ -506,6 +516,8 @@
 }
 
 <span class="doccomment">/// A handle to the Wayland connection</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// A connection handle may be constructed from a [`Handle`] using it&#39;s [`From`] implementation.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ConnectionHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">inner</span>: <span class="ident">HandleInner</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>,
@@ -528,8 +540,9 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">ConnectionHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">from_handle</span>(<span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Handle</span>) -&gt; <span class="ident">ConnectionHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
-        <span class="ident">ConnectionHandle</span> { <span class="ident">inner</span>: <span class="ident">HandleInner::Handle</span>(<span class="ident">handle</span>) }
+    <span class="doccomment">/// Returns the underlying [`Handle`] from `wayland-backend`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">backend_handle</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Handle</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">handle</span>()
     }
 
     <span class="doccomment">/// Get the `WlDisplay` associated with this connection</span>
@@ -579,6 +592,13 @@
     <span class="doccomment">/// Get the protocol information related to given object ID</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">object_info</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">ObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ObjectInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">handle</span>().<span class="ident">info</span>(<span class="ident">id</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Handle</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ConnectionHandle</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Creates a [`ConnectionHandle`] using a [`&amp;mut Handle`](Handle) from `wayland-backend`.</span>
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">Handle</span>) -&gt; <span class="self">Self</span> {
+        <span class="ident">ConnectionHandle</span> { <span class="ident">inner</span>: <span class="ident">HandleInner::Handle</span>(<span class="ident">handle</span>) }
     }
 }
 
