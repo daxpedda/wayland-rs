@@ -1,6 +1,9 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-client&#x2F;src&#x2F;event_queue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_queue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a class="sidebar-logo" href="../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_client/index.html"><img class="rust-logo" src="../../rust-logo.png" alt="logo"></a><nav class="sub"><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `wayland-client/src/event_queue.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>event_queue.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><script defer src="../../main.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script>
+    <noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"></h2>
+    </nav>
+    <nav class="sidebar"><a class="sidebar-logo" href="../../wayland_client/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
+        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../wayland_client/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -547,15 +550,57 @@
 <span id="545">545</span>
 <span id="546">546</span>
 <span id="547">547</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>};
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{
+    <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
+    <span class="ident">Arc</span>, <span class="ident">Mutex</span>,
+};
 
 <span class="kw">use</span> <span class="ident">futures_channel::mpsc</span>::{<span class="ident">unbounded</span>, <span class="ident">UnboundedReceiver</span>, <span class="ident">UnboundedSender</span>};
+<span class="kw">use</span> <span class="ident">nix::Error</span>;
 <span class="kw">use</span> <span class="ident">wayland_backend</span>::{
     <span class="ident">client</span>::{<span class="ident">Backend</span>, <span class="ident">Handle</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>, <span class="ident">ReadEventsGuard</span>, <span class="ident">WaylandError</span>},
     <span class="ident">protocol::Message</span>,
 };
 
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">DispatchError</span>, <span class="ident">Proxy</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">conn::SyncData</span>, <span class="ident">ConnectionHandle</span>, <span class="ident">DispatchError</span>, <span class="ident">Proxy</span>};
 
 <span class="doccomment">/// A trait which provides an implementation for handling events from the server on a proxy with some type of</span>
 <span class="doccomment">/// associated user data.</span>
@@ -711,7 +756,7 @@
     <span class="doccomment">/// This method is similar to [`dispatch_pending`](EventQueue::dispatch_pending), but if there are no</span>
     <span class="doccomment">/// pending events it will also block waiting for the Wayland server to send an event.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// A simple app event loop can consist in invoking this method in a loop.</span>
+    <span class="doccomment">/// A simple app event loop can consist of invoking this method in a loop.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">blocking_dispatch</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">DispatchError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">dispatched</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::dispatching_impl</span>(
             <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>(),
@@ -730,6 +775,40 @@
                 <span class="ident">data</span>,
             )
         }
+    }
+
+    <span class="doccomment">/// Synchronous roundtrip</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function will cause a synchronous round trip with the wayland server. This function will block</span>
+    <span class="doccomment">/// until all requests in the queue are sent and processed by the server.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function may be useful during initial setup with the compositor. This function may also be useful</span>
+    <span class="doccomment">/// where you need to guarantee all requests prior to calling this function are completed.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sync_roundtrip</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">DispatchError</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">done</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>));
+
+        {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">backend</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handle</span> <span class="op">=</span> <span class="ident">ConnectionHandle::from</span>(<span class="ident">backend</span>.<span class="ident">handle</span>());
+            <span class="kw">let</span> <span class="ident">display</span> <span class="op">=</span> <span class="ident">handle</span>.<span class="ident">display</span>();
+            <span class="kw">let</span> <span class="ident">cb_done</span> <span class="op">=</span> <span class="ident">done</span>.<span class="ident">clone</span>();
+            <span class="kw">let</span> <span class="ident">sync_data</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">SyncData</span> { <span class="ident">done</span>: <span class="ident">cb_done</span> });
+            <span class="ident">handle</span>
+                .<span class="ident">send_request</span>(
+                    <span class="kw-2">&amp;</span><span class="ident">display</span>,
+                    <span class="ident"><span class="kw">crate</span>::protocol::wl_display::Request::Sync</span> {},
+                    <span class="prelude-val">Some</span>(<span class="ident">sync_data</span>),
+                )
+                .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">WaylandError::Io</span>(<span class="ident">Error::EPIPE</span>.<span class="ident">into</span>()))<span class="question-mark">?</span>;
+        }
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dispatched</span> <span class="op">=</span> <span class="number">0</span>;
+
+        <span class="kw">while</span> <span class="op">!</span><span class="ident">done</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>) {
+            <span class="ident">dispatched</span> <span class="op">+</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">blocking_dispatch</span>(<span class="ident">data</span>)<span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>)
     }
 
     <span class="doccomment">/// Start a synchronized read from the socket</span>
@@ -1095,5 +1174,5 @@
     };
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.59.0 (9d1b2106e 2022-02-23)" ></div>
+</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.60.0 (7737e0b5c 2022-04-04)" ></div>
 </body></html>
