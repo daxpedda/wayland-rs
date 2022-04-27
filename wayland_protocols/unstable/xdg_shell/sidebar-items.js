@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["v5","Unstable version 5"],["v6","Unstable version 6"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["EVT_PRIMARY_OUTPUT_SINCE","The minimal object version supporting this event"]],"enum":[["Event",""],["Request",""]],"struct":[["KdePrimaryOutputV1",""]]});

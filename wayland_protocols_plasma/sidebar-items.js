@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["appmenu",""],["blur",""],["contrast",""],["dpms",""],["fake_input",""],["idle",""],["keystate",""],["output_device",""],["output_management",""],["plasma_shell",""],["plasma_virtual_desktop",""],["primary_output",""],["screencast",""],["server_decoration",""],["server_decoration_palette",""],["shadow",""],["slide",""]]});

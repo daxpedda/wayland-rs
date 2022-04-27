@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_COMMIT_SINCE","The minimal object version supporting this request"],["REQ_RELEASE_SINCE","The minimal object version supporting this request"],["REQ_SET_REGION_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["OrgKdeKwinBlur",""]]});

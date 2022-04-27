@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["REQ_CREATE_CONFIGURATION_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["KdeOutputManagementV2",""]]});
