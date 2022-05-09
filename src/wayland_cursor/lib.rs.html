@@ -442,11 +442,6 @@
 <span id="437">437</span>
 <span id="438">438</span>
 <span id="439">439</span>
-<span id="440">440</span>
-<span id="441">441</span>
-<span id="442">442</span>
-<span id="443">443</span>
-<span id="444">444</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
@@ -465,19 +460,16 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Example</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Several functions of this crate send wayland requests under the hood, requiring you to provide a</span>
-<span class="doccomment">//! [`ConnectionHandle`] to load a cursor theme.</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! use wayland_cursor::CursorTheme;</span>
 <span class="doccomment">//! # use std::ops::Deref;</span>
 <span class="doccomment">//! # use std::thread::sleep;</span>
 <span class="doccomment">//! # use std::time::{Instant, Duration};</span>
-<span class="doccomment">//! # fn test(connection: &amp;mut wayland_client::Connection, cursor_surface: &amp;wayland_client::protocol::wl_surface::WlSurface, shm: wayland_client::protocol::wl_shm::WlShm) {</span>
+<span class="doccomment">//! # fn test(connection: &amp;wayland_client::Connection, cursor_surface: &amp;wayland_client::protocol::wl_surface::WlSurface, shm: wayland_client::protocol::wl_shm::WlShm) {</span>
 <span class="doccomment">//! // Load the default cursor theme.</span>
-<span class="doccomment">//! let mut cursor_theme = CursorTheme::load(&amp;mut connection.handle(), shm, 32)</span>
+<span class="doccomment">//! let mut cursor_theme = CursorTheme::load(&amp;connection, shm, 32)</span>
 <span class="doccomment">//!     .expect(&quot;Could not load cursor theme&quot;);</span>
-<span class="doccomment">//! let cursor = cursor_theme.get_cursor(&amp;mut connection.handle(), &quot;wait&quot;)</span>
+<span class="doccomment">//! let cursor = cursor_theme.get_cursor(&quot;wait&quot;)</span>
 <span class="doccomment">//!     .expect(&quot;Cursor not provided by theme&quot;);</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! let start_time = Instant::now();</span>
@@ -489,8 +481,8 @@
 <span class="doccomment">//!     // Here, we obtain the right cursor frame...</span>
 <span class="doccomment">//!     let buffer = &amp;cursor[fr_info.frame_index];</span>
 <span class="doccomment">//!     // and attach it to a wl_surface.</span>
-<span class="doccomment">//!     cursor_surface.attach(&amp;mut connection.handle(), Some(&amp;buffer), 0, 0);</span>
-<span class="doccomment">//!     cursor_surface.commit(&amp;mut connection.handle());</span>
+<span class="doccomment">//!     cursor_surface.attach(Some(&amp;buffer), 0, 0);</span>
+<span class="doccomment">//!     cursor_surface.commit();</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     sleep(Duration::from_millis(fr_info.frame_duration as u64));</span>
 <span class="doccomment">//! }</span>
@@ -512,11 +504,11 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
 <span class="kw">use</span> {<span class="ident">nix::sys::memfd</span>, <span class="ident">std::ffi::CStr</span>};
 
-<span class="kw">use</span> <span class="ident">wayland_client::backend</span>::{<span class="ident">InvalidId</span>, <span class="ident">ObjectData</span>};
+<span class="kw">use</span> <span class="ident">wayland_client::backend</span>::{<span class="ident">InvalidId</span>, <span class="ident">ObjectData</span>, <span class="ident">WeakBackend</span>};
 <span class="kw">use</span> <span class="ident">wayland_client::protocol::wl_buffer::WlBuffer</span>;
 <span class="kw">use</span> <span class="ident">wayland_client::protocol::wl_shm</span>::{<span class="self">self</span>, <span class="ident">Format</span>, <span class="ident">WlShm</span>};
 <span class="kw">use</span> <span class="ident">wayland_client::protocol::wl_shm_pool</span>::{<span class="self">self</span>, <span class="ident">WlShmPool</span>};
-<span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">ConnectionHandle</span>, <span class="ident">Proxy</span>, <span class="ident">WEnum</span>};
+<span class="kw">use</span> <span class="ident">wayland_client</span>::{<span class="ident">Connection</span>, <span class="ident">Proxy</span>, <span class="ident">WEnum</span>};
 
 <span class="kw">use</span> <span class="ident">xcursor::parser</span> <span class="kw">as</span> <span class="ident">xparser</span>;
 <span class="kw">use</span> <span class="ident">xcursor::CursorTheme</span> <span class="kw">as</span> <span class="ident">XCursorTheme</span>;
@@ -531,6 +523,7 @@
     <span class="ident">pool</span>: <span class="ident">WlShmPool</span>,
     <span class="ident">pool_size</span>: <span class="ident">i32</span>,
     <span class="ident">file</span>: <span class="ident">File</span>,
+    <span class="ident">backend</span>: <span class="ident">WeakBackend</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">CursorTheme</span> {
@@ -539,12 +532,12 @@
     <span class="doccomment">/// Same as calling the following:</span>
     <span class="doccomment">/// ```</span>
     <span class="doccomment">/// # use wayland_cursor::CursorTheme;</span>
-    <span class="doccomment">/// # use wayland_client::{ConnectionHandle, backend::InvalidId, protocol::wl_shm};</span>
-    <span class="doccomment">/// # fn example(conn: &amp;mut ConnectionHandle, shm: wl_shm::WlShm, size: u32) -&gt; Result&lt;CursorTheme, InvalidId&gt; {</span>
+    <span class="doccomment">/// # use wayland_client::{Connection, backend::InvalidId, protocol::wl_shm};</span>
+    <span class="doccomment">/// # fn example(conn: &amp;Connection, shm: wl_shm::WlShm, size: u32) -&gt; Result&lt;CursorTheme, InvalidId&gt; {</span>
     <span class="doccomment">/// CursorTheme::load_or(conn, shm, &quot;default&quot;, size)</span>
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>, <span class="ident">shm</span>: <span class="ident">WlShm</span>, <span class="ident">size</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>, <span class="ident">shm</span>: <span class="ident">WlShm</span>, <span class="ident">size</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="ident">CursorTheme::load_or</span>(<span class="ident">conn</span>, <span class="ident">shm</span>, <span class="string">&quot;default&quot;</span>, <span class="ident">size</span>)
     }
 
@@ -554,7 +547,7 @@
     <span class="doccomment">/// `XCURSOR_SIZE` environment variables, respectively, or from the provided variables</span>
     <span class="doccomment">/// if those are invalid.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_or</span>(
-        <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>,
+        <span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>,
         <span class="ident">shm</span>: <span class="ident">WlShm</span>,
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="kw-2">mut</span> <span class="ident">size</span>: <span class="ident">u32</span>,
@@ -573,7 +566,7 @@
 
     <span class="doccomment">/// Create a new cursor theme, ignoring the system defaults.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_from_name</span>(
-        <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>,
+        <span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>,
         <span class="ident">shm</span>: <span class="ident">WlShm</span>,
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">size</span>: <span class="ident">u32</span>,
@@ -609,17 +602,18 @@
             <span class="ident">pool</span>,
             <span class="ident">pool_size</span>: <span class="ident">INITIAL_POOL_SIZE</span>,
             <span class="ident">cursors</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">backend</span>: <span class="ident">conn</span>.<span class="ident">backend</span>().<span class="ident">downgrade</span>(),
         })
     }
 
     <span class="doccomment">/// Retrieve a cursor from the theme.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This method returns [`None`] if this cursor is not provided either by the theme, or by one of its parents.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_cursor</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Cursor</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_cursor</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Cursor</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">cursors</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">cursor</span><span class="op">|</span> <span class="ident">cursor</span>.<span class="ident">name</span> <span class="op">==</span> <span class="ident">name</span>) {
             <span class="prelude-val">Some</span>(<span class="ident">i</span>) =&gt; <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">cursors</span>[<span class="ident">i</span>]),
             <span class="prelude-val">None</span> =&gt; {
-                <span class="kw">let</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">load_cursor</span>(<span class="ident">conn</span>, <span class="ident">name</span>, <span class="self">self</span>.<span class="ident">size</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">cursor</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">load_cursor</span>(<span class="ident">name</span>, <span class="self">self</span>.<span class="ident">size</span>)<span class="question-mark">?</span>;
                 <span class="self">self</span>.<span class="ident">cursors</span>.<span class="ident">push</span>(<span class="ident">cursor</span>);
                 <span class="self">self</span>.<span class="ident">cursors</span>.<span class="ident">iter</span>().<span class="ident">last</span>()
             }
@@ -629,12 +623,8 @@
     <span class="doccomment">/// This function loads a cursor, parses it and pushes the images onto the shm pool.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Keep in mind that if the cursor is already loaded, the function will make a duplicate.</span>
-    <span class="kw">fn</span> <span class="ident">load_cursor</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
-        <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>,
-        <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-        <span class="ident">size</span>: <span class="ident">u32</span>,
-    ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Cursor</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">load_cursor</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">size</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Cursor</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">conn</span> <span class="op">=</span> <span class="ident">Connection::from_backend</span>(<span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">upgrade</span>()<span class="question-mark">?</span>);
         <span class="kw">let</span> <span class="ident">icon_path</span> <span class="op">=</span> <span class="ident">XCursorTheme::load</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">name</span>).<span class="ident">load_icon</span>(<span class="ident">name</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">icon_file</span> <span class="op">=</span> <span class="ident">File::open</span>(<span class="ident">icon_path</span>).<span class="ident">ok</span>()<span class="question-mark">?</span>;
 
@@ -644,16 +634,16 @@
             <span class="ident">xparser::parse_xcursor</span>(<span class="kw-2">&amp;</span><span class="ident">buf</span>)<span class="question-mark">?</span>
         };
 
-        <span class="prelude-val">Some</span>(<span class="ident">Cursor::new</span>(<span class="ident">conn</span>, <span class="ident">name</span>, <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">images</span>, <span class="ident">size</span>))
+        <span class="prelude-val">Some</span>(<span class="ident">Cursor::new</span>(<span class="kw-2">&amp;</span><span class="ident">conn</span>, <span class="ident">name</span>, <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">images</span>, <span class="ident">size</span>))
     }
 
     <span class="doccomment">/// Grow the wl_shm_pool this theme is stored on.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This method does nothing if the provided size is smaller or equal to the pool&#39;s current size.</span>
-    <span class="kw">fn</span> <span class="ident">grow</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>, <span class="ident">size</span>: <span class="ident">i32</span>) {
+    <span class="kw">fn</span> <span class="ident">grow</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">size</span>: <span class="ident">i32</span>) {
         <span class="kw">if</span> <span class="ident">size</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">pool_size</span> {
             <span class="self">self</span>.<span class="ident">file</span>.<span class="ident">set_len</span>(<span class="ident">size</span> <span class="kw">as</span> <span class="ident">u64</span>).<span class="ident">expect</span>(<span class="string">&quot;Failed to set new buffer length&quot;</span>);
-            <span class="self">self</span>.<span class="ident">pool</span>.<span class="ident">resize</span>(<span class="ident">conn</span>, <span class="ident">size</span>);
+            <span class="self">self</span>.<span class="ident">pool</span>.<span class="ident">resize</span>(<span class="ident">size</span>);
             <span class="self">self</span>.<span class="ident">pool_size</span> <span class="op">=</span> <span class="ident">size</span>;
         }
     }
@@ -673,7 +663,7 @@
     <span class="doccomment">/// Each of the provided images will be written into `theme`.</span>
     <span class="doccomment">/// This will also grow `theme.pool` if necessary.</span>
     <span class="kw">fn</span> <span class="ident">new</span>(
-        <span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>,
+        <span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>,
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">theme</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CursorTheme</span>,
         <span class="ident">images</span>: <span class="kw-2">&amp;</span>[<span class="ident">XCursorImage</span>],
@@ -756,13 +746,13 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This function appends the pixels of the image to the provided file,</span>
     <span class="doccomment">/// and constructs a wl_buffer on that data.</span>
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">conn</span>: <span class="kw-2">&amp;mut</span> <span class="ident">ConnectionHandle</span>, <span class="ident">theme</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CursorTheme</span>, <span class="ident">image</span>: <span class="kw-2">&amp;</span><span class="ident">XCursorImage</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>, <span class="ident">theme</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CursorTheme</span>, <span class="ident">image</span>: <span class="kw-2">&amp;</span><span class="ident">XCursorImage</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">buf</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">image</span>.<span class="ident">pixels_rgba</span>;
         <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">theme</span>.<span class="ident">file</span>.<span class="ident">seek</span>(<span class="ident">SeekFrom::End</span>(<span class="number">0</span>)).<span class="ident">unwrap</span>();
 
         <span class="comment">// Resize memory before writing to it to handle shm correctly.</span>
         <span class="kw">let</span> <span class="ident">new_size</span> <span class="op">=</span> <span class="ident">offset</span> <span class="op">+</span> <span class="ident">buf</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>;
-        <span class="ident">theme</span>.<span class="ident">grow</span>(<span class="ident">conn</span>, <span class="ident">new_size</span> <span class="kw">as</span> <span class="ident">i32</span>);
+        <span class="ident">theme</span>.<span class="ident">grow</span>(<span class="ident">new_size</span> <span class="kw">as</span> <span class="ident">i32</span>);
 
         <span class="ident">theme</span>.<span class="ident">file</span>.<span class="ident">write_all</span>(<span class="ident">buf</span>).<span class="ident">unwrap</span>();
 
@@ -884,7 +874,7 @@
 <span class="kw">impl</span> <span class="ident">ObjectData</span> <span class="kw">for</span> <span class="ident">IgnoreObjectData</span> {
     <span class="kw">fn</span> <span class="ident">event</span>(
         <span class="self">self</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span>,
-        <span class="kw">_</span>: <span class="kw-2">&amp;mut</span> <span class="ident">wayland_client::backend::Handle</span>,
+        <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">wayland_client::backend::Backend</span>,
         <span class="kw">_</span>: <span class="ident">wayland_client::backend::protocol::Message</span><span class="op">&lt;</span><span class="ident">wayland_client::backend::ObjectId</span><span class="op">&gt;</span>,
     ) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="prelude-val">None</span>
