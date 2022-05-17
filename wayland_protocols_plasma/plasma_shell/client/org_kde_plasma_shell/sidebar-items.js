@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["REQ_GET_SURFACE_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["OrgKdePlasmaShell",""]]});
+initSidebarItems({"constant":[["REQ_GET_SURFACE_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["OrgKdePlasmaShell","create shell windows and helpers"]]});

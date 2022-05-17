@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwlrInputInhibitorV1",""]]});
+initSidebarItems({"constant":[["REQ_DESTROY_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["ZwlrInputInhibitorV1","inhibits input to other clients"]]});
