@@ -385,8 +385,55 @@
 <span id="380">380</span>
 <span id="381">381</span>
 <span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">ffi::CString</span>,
+    <span class="ident">os::unix</span>::{
+        <span class="ident">net::UnixStream</span>,
+        <span class="ident">prelude</span>::{<span class="ident">AsRawFd</span>, <span class="ident">RawFd</span>},
+    },
     <span class="ident">sync</span>::{<span class="ident">Arc</span>, <span class="ident">Mutex</span>, <span class="ident">Weak</span>},
 };
 
@@ -407,16 +454,18 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">clients</span>: <span class="ident">ClientStore</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">registry</span>: <span class="ident">Registry</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">pending_destructors</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PendingDestructor</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">poll_fd</span>: <span class="ident">RawFd</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">State</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">poll_fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">debug</span> <span class="op">=</span>
             <span class="macro">matches!</span>(<span class="ident">std::env::var_os</span>(<span class="string">&quot;WAYLAND_DEBUG&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">str</span>) <span class="kw">if</span> <span class="ident">str</span> <span class="op">==</span> <span class="string">&quot;1&quot;</span> <span class="op">|</span><span class="op">|</span> <span class="ident">str</span> <span class="op">==</span> <span class="string">&quot;server&quot;</span>);
         <span class="ident">State</span> {
             <span class="ident">clients</span>: <span class="ident">ClientStore::new</span>(<span class="ident">debug</span>),
             <span class="ident">registry</span>: <span class="ident">Registry::new</span>(),
             <span class="ident">pending_destructors</span>: <span class="ident">Vec::new</span>(),
+            <span class="ident">poll_fd</span>,
         }
     }
 
@@ -481,27 +530,20 @@
         <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">object_info</span>(<span class="ident">id</span>)
     }
 
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">insert_client</span>(<span class="ident">stream</span>, <span class="ident">data</span>)
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client</span>(<span class="ident">id</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">ErasedState</span>)
-            .<span class="ident">downcast_mut</span>::<span class="op">&lt;</span><span class="ident">State</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;Wrong type parameter passed to Handle::get_client_data().&quot;</span>);
-        <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="ident">state</span>.<span class="ident">clients</span>.<span class="ident">get_client</span>(<span class="ident">id</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">clone</span>())
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client_data_any</span>(<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client_data</span>(<span class="ident">id</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
@@ -636,11 +678,13 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ErasedState</span>: <span class="ident">downcast_rs::Downcast</span> {
     <span class="kw">fn</span> <span class="ident">object_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ObjectInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">with_all_clients</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">ClientId</span>));
     <span class="kw">fn</span> <span class="ident">with_all_objects_for</span>(
@@ -673,6 +717,51 @@
         <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">get_client</span>(<span class="ident">id</span>.<span class="ident">client_id</span>.<span class="ident">clone</span>())<span class="question-mark">?</span>.<span class="ident">object_info</span>(<span class="ident">id</span>)
     }
 
+    <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">client_fd</span> <span class="op">=</span> <span class="ident">stream</span>.<span class="ident">as_raw_fd</span>();
+        <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">create_client</span>(<span class="ident">stream</span>, <span class="ident">data</span>);
+
+        <span class="comment">// register the client to the internal epoll</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;linux&quot;</span>)]</span>
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> {
+            <span class="kw">use</span> <span class="ident">nix::sys::epoll</span>::<span class="kw-2">*</span>;
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">evt</span> <span class="op">=</span> <span class="ident">EpollEvent::new</span>(<span class="ident">EpollFlags::EPOLLIN</span>, <span class="ident">id</span>.<span class="ident">as_u64</span>());
+            <span class="ident">epoll_ctl</span>(<span class="self">self</span>.<span class="ident">poll_fd</span>, <span class="ident">EpollOp::EpollCtlAdd</span>, <span class="ident">client_fd</span>, <span class="kw-2">&amp;mut</span> <span class="ident">evt</span>)
+        };
+
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;dragonfly&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;freebsd&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;netbsd&quot;</span>,
+            <span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;openbsd&quot;</span>
+        ))]</span>
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> {
+            <span class="kw">use</span> <span class="ident">nix::sys::event</span>::<span class="kw-2">*</span>;
+            <span class="kw">let</span> <span class="ident">evt</span> <span class="op">=</span> <span class="ident">KEvent::new</span>(
+                <span class="ident">client_fd</span> <span class="kw">as</span> <span class="ident">usize</span>,
+                <span class="ident">EventFilter::EVFILT_READ</span>,
+                <span class="ident">EventFlag::EV_ADD</span> <span class="op">|</span> <span class="ident">EventFlag::EV_RECEIPT</span>,
+                <span class="ident">FilterFlag::empty</span>(),
+                <span class="number">0</span>,
+                <span class="ident">id</span>.<span class="ident">as_u64</span>() <span class="kw">as</span> <span class="ident">isize</span>,
+            );
+
+            <span class="ident">kevent_ts</span>(<span class="self">self</span>.<span class="ident">poll_fd</span>, <span class="kw-2">&amp;</span>[<span class="ident">evt</span>], <span class="kw-2">&amp;mut</span> [], <span class="prelude-val">None</span>).<span class="ident">map</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> ())
+        };
+
+        <span class="kw">match</span> <span class="ident">ret</span> {
+            <span class="prelude-val">Ok</span>(()) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">id</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) =&gt; {
+                <span class="self">self</span>.<span class="ident">kill_client</span>(<span class="ident">id</span>, <span class="ident">DisconnectReason::ConnectionClosed</span>);
+                <span class="prelude-val">Err</span>(<span class="ident">e</span>.<span class="ident">into</span>())
+            }
+        }
+    }
+
     <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">get_client</span>(<span class="ident">id</span>.<span class="ident">client_id</span>.<span class="ident">clone</span>()).<span class="ident">is_ok</span>() {
             <span class="prelude-val">Ok</span>(<span class="ident">ClientId</span> { <span class="ident">id</span>: <span class="ident">id</span>.<span class="ident">client_id</span> })
@@ -681,12 +770,9 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">clients</span>.<span class="ident">get_client</span>(<span class="ident">id</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">clone</span>().<span class="ident">into_any_arc</span>())
+        <span class="prelude-val">Ok</span>(<span class="ident">client</span>.<span class="ident">data</span>.<span class="ident">clone</span>())
     }
 
     <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {

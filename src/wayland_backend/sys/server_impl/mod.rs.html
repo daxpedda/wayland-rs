@@ -1448,30 +1448,6 @@
 <span id="1443">1443</span>
 <span id="1444">1444</span>
 <span id="1445">1445</span>
-<span id="1446">1446</span>
-<span id="1447">1447</span>
-<span id="1448">1448</span>
-<span id="1449">1449</span>
-<span id="1450">1450</span>
-<span id="1451">1451</span>
-<span id="1452">1452</span>
-<span id="1453">1453</span>
-<span id="1454">1454</span>
-<span id="1455">1455</span>
-<span id="1456">1456</span>
-<span id="1457">1457</span>
-<span id="1458">1458</span>
-<span id="1459">1459</span>
-<span id="1460">1460</span>
-<span id="1461">1461</span>
-<span id="1462">1462</span>
-<span id="1463">1463</span>
-<span id="1464">1464</span>
-<span id="1465">1465</span>
-<span id="1466">1466</span>
-<span id="1467">1467</span>
-<span id="1468">1468</span>
-<span id="1469">1469</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -1676,8 +1652,8 @@
     <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>,
 }
 
-<span class="kw">struct</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
-    <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="kw">struct</span> <span class="ident">ClientUserData</span> {
+    <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
     <span class="ident">alive</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">AtomicBool</span><span class="op">&gt;</span>,
 }
 
@@ -1747,28 +1723,6 @@
             })),
             <span class="ident">display_ptr</span>: <span class="ident">display</span>,
         })
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_client</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
-        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="macro">ffi_dispatch!</span>(
-                <span class="ident">WAYLAND_SERVER_HANDLE</span>,
-                <span class="ident">wl_client_create</span>,
-                <span class="ident">state</span>.<span class="ident">display</span>,
-                <span class="ident">stream</span>.<span class="ident">into_raw_fd</span>()
-            )
-        };
-
-        <span class="kw">if</span> <span class="ident">ret</span>.<span class="ident">is_null</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">std::io::Error::last_os_error</span>());
-        }
-
-        <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">init_client</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">ret</span>, <span class="ident">data</span>) })
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">flush</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">client</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ClientId</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
@@ -1892,39 +1846,20 @@
         <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">object_info</span>(<span class="ident">id</span>)
     }
 
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">insert_client</span>(<span class="ident">stream</span>, <span class="ident">data</span>)
+    }
+
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client</span>(<span class="ident">id</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
-        <span class="comment">// Keep this guard alive while the code is run to protect the C state</span>
-        <span class="kw">let</span> <span class="ident">_state</span> <span class="op">=</span> (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">ErasedState</span>)
-            .<span class="ident">downcast_mut</span>::<span class="op">&lt;</span><span class="ident">State</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;Wrong type parameter passed to Handle::get_client_data().&quot;</span>);
-
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">id</span>.<span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
-        }
-
-        <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">id</span>.<span class="ident">ptr</span>) {
-                <span class="prelude-val">Some</span>(<span class="ident">ptr</span>) =&gt; <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">ptr</span>,
-                <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>),
-            }
-        };
-
-        <span class="prelude-val">Ok</span>(<span class="ident">data</span>.<span class="ident">data</span>.<span class="ident">clone</span>())
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client_data_any</span>(<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">get_client_data</span>(<span class="ident">id</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
@@ -2154,12 +2089,14 @@
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ErasedState</span>: <span class="ident">downcast_rs::Downcast</span> {
     <span class="kw">fn</span> <span class="ident">object_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ObjectInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
-    <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">with_all_clients</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">FnMut</span>(<span class="ident">ClientId</span>));
     <span class="kw">fn</span> <span class="ident">with_all_objects_for</span>(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -2198,6 +2135,27 @@
         <span class="prelude-val">Ok</span>(<span class="ident">ObjectInfo</span> { <span class="ident">id</span>: <span class="ident">id</span>.<span class="ident">id</span>, <span class="ident">version</span>, <span class="ident">interface</span>: <span class="ident">id</span>.<span class="ident">interface</span> })
     }
 
+    <span class="kw">fn</span> <span class="ident">insert_client</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
+    ) -&gt; <span class="ident">std::io::Result</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="kw">unsafe</span> {
+            <span class="macro">ffi_dispatch!</span>(
+                <span class="ident">WAYLAND_SERVER_HANDLE</span>,
+                <span class="ident">wl_client_create</span>,
+                <span class="self">self</span>.<span class="ident">display</span>,
+                <span class="ident">stream</span>.<span class="ident">into_raw_fd</span>()
+            )
+        };
+
+        <span class="kw">if</span> <span class="ident">ret</span>.<span class="ident">is_null</span>() {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">std::io::Error::last_os_error</span>());
+        }
+
+        <span class="prelude-val">Ok</span>(<span class="kw">unsafe</span> { <span class="ident">init_client</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">ret</span>, <span class="ident">data</span>) })
+    }
+
     <span class="kw">fn</span> <span class="ident">get_client</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerObjectId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ClientId</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">id</span>.<span class="ident">alive</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">alive</span><span class="op">|</span> <span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>)).<span class="ident">unwrap_or</span>(<span class="bool-val">true</span>) {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
@@ -2205,26 +2163,23 @@
 
         <span class="kw">unsafe</span> {
             <span class="kw">let</span> <span class="ident">client_ptr</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_client</span>, <span class="ident">id</span>.<span class="ident">ptr</span>);
-            <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client_ptr</span>).<span class="ident">ok_or</span>(<span class="ident">InvalidId</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">ClientId</span> { <span class="ident">id</span> })
+            <span class="ident">client_id_from_ptr</span>(<span class="ident">client_ptr</span>).<span class="ident">ok_or</span>(<span class="ident">InvalidId</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">id</span><span class="op">|</span> <span class="ident">ClientId</span> { <span class="ident">id</span> })
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">get_client_data_any</span>(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
-        <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">std::any::Any</span> <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_client_data</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="op">!</span><span class="ident">id</span>.<span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>) {
             <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>);
         }
 
         <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-            <span class="kw">match</span> <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">id</span>.<span class="ident">ptr</span>) {
+            <span class="kw">match</span> <span class="ident">client_user_data</span>(<span class="ident">id</span>.<span class="ident">ptr</span>) {
                 <span class="prelude-val">Some</span>(<span class="ident">ptr</span>) =&gt; <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">ptr</span>,
                 <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">InvalidId</span>),
             }
         };
 
-        <span class="prelude-val">Ok</span>(<span class="ident">data</span>.<span class="ident">data</span>.<span class="ident">clone</span>().<span class="ident">into_any_arc</span>())
+        <span class="prelude-val">Ok</span>(<span class="ident">data</span>.<span class="ident">data</span>.<span class="ident">clone</span>())
     }
 
     <span class="kw">fn</span> <span class="ident">get_client_credentials</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerClientId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Credentials</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
@@ -2255,7 +2210,7 @@
         <span class="kw">unsafe</span> {
             <span class="kw">while</span> (<span class="kw-2">*</span><span class="ident">client_list</span>).<span class="ident">next</span> <span class="op">!</span><span class="op">=</span> <span class="ident">client_list</span> {
                 <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_client_from_link</span>, <span class="ident">client_list</span>);
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">id</span>) <span class="op">=</span> <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>) {
                     <span class="ident">f</span>(<span class="ident">ClientId</span> { <span class="ident">id</span> })
                 }
 
@@ -2442,7 +2397,7 @@
         <span class="comment">// Safety: at this point we already checked that the pointer is valid</span>
         <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span>
             <span class="kw">unsafe</span> { <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_client</span>, <span class="ident">id</span>.<span class="ident">ptr</span>) };
-        <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) }.<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>) }.<span class="ident">unwrap</span>();
         <span class="comment">// mark the client as dead</span>
         <span class="ident">client_id</span>.<span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
 
@@ -2461,7 +2416,7 @@
         <span class="kw">if</span> <span class="op">!</span><span class="ident">client_id</span>.<span class="ident">alive</span>.<span class="ident">load</span>(<span class="ident">Ordering::Acquire</span>) {
             <span class="kw">return</span>;
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">udata</span>) <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client_id</span>.<span class="ident">ptr</span>) } {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">udata</span>) <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_user_data</span>(<span class="ident">client_id</span>.<span class="ident">ptr</span>) } {
             <span class="kw">let</span> <span class="ident">udata</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">udata</span> };
             <span class="ident">udata</span>.<span class="ident">alive</span>.<span class="ident">store</span>(<span class="bool-val">false</span>, <span class="ident">Ordering::Release</span>);
             <span class="ident">udata</span>.<span class="ident">data</span>.<span class="ident">disconnected</span>(<span class="ident">ClientId</span> { <span class="ident">id</span>: <span class="ident">client_id</span>.<span class="ident">clone</span>() }, <span class="ident">reason</span>);
@@ -2525,12 +2480,12 @@
 
 <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">init_client</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
     <span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>,
-    <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
 ) -&gt; <span class="ident">InnerClientId</span> {
     <span class="kw">let</span> <span class="ident">alive</span> <span class="op">=</span> <span class="ident">Arc::new</span>(<span class="ident">AtomicBool::new</span>(<span class="bool-val">true</span>));
     <span class="kw">let</span> <span class="ident">client_data</span> <span class="op">=</span> <span class="ident">Box::into_raw</span>(<span class="ident">Box::new</span>(<span class="ident">ClientUserData</span> { <span class="ident">alive</span>: <span class="ident">alive</span>.<span class="ident">clone</span>(), <span class="ident">data</span> }));
 
-    <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">signal::rust_listener_create</span>(<span class="ident">client_destroy_notify</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>);
+    <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">signal::rust_listener_create</span>(<span class="ident">client_destroy_notify</span>);
     <span class="comment">// Safety: we just created listener and client_data, they are valid</span>
     <span class="kw">unsafe</span> {
         <span class="ident">signal::rust_listener_set_user_data</span>(<span class="ident">listener</span>, <span class="ident">client_data</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">c_void</span>);
@@ -2541,15 +2496,15 @@
     <span class="ident">InnerClientId</span> { <span class="ident">ptr</span>: <span class="ident">client</span>, <span class="ident">alive</span> }
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_id_from_ptr</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">InnerClientId</span><span class="op">&gt;</span> {
     <span class="comment">// Safety: the provided pointer is a valid and initialized wl_client for type parameter D</span>
     <span class="kw">unsafe</span> {
-        <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>)
+        <span class="ident">client_user_data</span>(<span class="ident">client</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">udata</span><span class="op">|</span> <span class="ident">InnerClientId</span> { <span class="ident">ptr</span>: <span class="ident">client</span>, <span class="ident">alive</span>: (<span class="kw-2">*</span><span class="ident">udata</span>).<span class="ident">alive</span>.<span class="ident">clone</span>() })
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_user_data</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+<span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">client_user_data</span>(<span class="ident">client</span>: <span class="kw-2">*mut</span> <span class="ident">wl_client</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&gt;</span> {
     <span class="kw">if</span> <span class="ident">client</span>.<span class="ident">is_null</span>() {
         <span class="kw">return</span> <span class="prelude-val">None</span>;
     }
@@ -2557,23 +2512,20 @@
         <span class="ident">WAYLAND_SERVER_HANDLE</span>,
         <span class="ident">wl_client_get_destroy_listener</span>,
         <span class="ident">client</span>,
-        <span class="ident">client_destroy_notify</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>
+        <span class="ident">client_destroy_notify</span>
     );
     <span class="kw">if</span> <span class="op">!</span><span class="ident">listener</span>.<span class="ident">is_null</span>() {
         <span class="comment">// Safety: the pointer we got must be valid if the client is still alive</span>
-        <span class="kw">unsafe</span> { <span class="prelude-val">Some</span>(<span class="ident">signal::rust_listener_get_user_data</span>(<span class="ident">listener</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>) }
+        <span class="kw">unsafe</span> { <span class="prelude-val">Some</span>(<span class="ident">signal::rust_listener_get_user_data</span>(<span class="ident">listener</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ClientUserData</span>) }
     } <span class="kw">else</span> {
         <span class="prelude-val">None</span>
     }
 }
 
-<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">client_destroy_notify</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(
-    <span class="ident">listener</span>: <span class="kw-2">*mut</span> <span class="ident">wl_listener</span>,
-    <span class="ident">client_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
-) {
+<span class="kw">unsafe</span> <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> <span class="kw">fn</span> <span class="ident">client_destroy_notify</span>(<span class="ident">listener</span>: <span class="kw-2">*mut</span> <span class="ident">wl_listener</span>, <span class="ident">client_ptr</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>) {
     <span class="comment">// Safety: if this function is invoked by libwayland its arguments must be valid</span>
     <span class="kw">let</span> <span class="ident">data</span> <span class="op">=</span> <span class="kw">unsafe</span> {
-        <span class="ident">Box::from_raw</span>(<span class="ident">signal::rust_listener_get_user_data</span>(<span class="ident">listener</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ClientUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>)
+        <span class="ident">Box::from_raw</span>(<span class="ident">signal::rust_listener_get_user_data</span>(<span class="ident">listener</span>) <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ClientUserData</span>)
     };
     <span class="kw">unsafe</span> {
         <span class="ident">signal::rust_listener_destroy</span>(<span class="ident">listener</span>);
@@ -2602,7 +2554,7 @@
     <span class="kw">let</span> <span class="ident">global_id</span> <span class="op">=</span> <span class="ident">InnerGlobalId</span> { <span class="ident">alive</span>: <span class="ident">global_udata</span>.<span class="ident">alive</span>.<span class="ident">clone</span>(), <span class="ident">ptr</span>: <span class="ident">global_udata</span>.<span class="ident">ptr</span> };
 
     <span class="comment">// Safety: libwayland invoked us with a valid wl_client</span>
-    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) } {
+    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>) } {
         <span class="prelude-val">Some</span>(<span class="ident">id</span>) =&gt; <span class="ident">id</span>,
         <span class="prelude-val">None</span> =&gt; <span class="kw">return</span>,
     };
@@ -2642,7 +2594,7 @@
     <span class="kw">_</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
 ) -&gt; <span class="ident">bool</span> {
     <span class="comment">// Safety: if we are invoked here, the client is a valid client initialized by us</span>
-    <span class="kw">let</span> <span class="ident">client_udata</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">client_user_data</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span>) } {
+    <span class="kw">let</span> <span class="ident">client_udata</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">client_user_data</span>(<span class="ident">client</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span>) } {
         <span class="prelude-val">Some</span>(<span class="ident">id</span>) =&gt; <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">id</span> },
         <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="bool-val">false</span>,
     };
@@ -2840,7 +2792,7 @@
     };
 
     <span class="comment">// Safety: the client ptr is valid and provided by libwayland</span>
-    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) }.<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>) }.<span class="ident">unwrap</span>();
 
     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="ident">HANDLE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">state_arc</span>, <span class="ident">data_ptr</span>)<span class="op">|</span> {
         <span class="comment">// Safety: the data pointer has been set by outside code and is valid</span>
@@ -2885,7 +2837,7 @@
     <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_id</span>, <span class="ident">resource</span>);
     <span class="kw">let</span> <span class="ident">client</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_client</span>, <span class="ident">resource</span>);
     <span class="comment">// if this destructor is invoked during cleanup, the client ptr is no longer valid and it&#39;ll return None</span>
-    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">client</span>) }.<span class="ident">unwrap_or</span>(<span class="ident">InnerClientId</span> {
+    <span class="kw">let</span> <span class="ident">client_id</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">client_id_from_ptr</span>(<span class="ident">client</span>) }.<span class="ident">unwrap_or</span>(<span class="ident">InnerClientId</span> {
         <span class="ident">ptr</span>: <span class="ident">std::ptr::null_mut</span>(),
         <span class="ident">alive</span>: <span class="ident">Arc::new</span>(<span class="ident">AtomicBool::new</span>(<span class="bool-val">false</span>)),
     });

@@ -781,7 +781,7 @@
     <span class="ident">last_serial</span>: <span class="ident">u32</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">killed</span>: <span class="ident">bool</span>,
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">Client</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
@@ -796,7 +796,7 @@
         <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
         <span class="ident">id</span>: <span class="ident">InnerClientId</span>,
         <span class="ident">debug</span>: <span class="ident">bool</span>,
-        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">socket</span> <span class="op">=</span> <span class="ident">BufferedSocket::new</span>(<span class="kw">unsafe</span> { <span class="ident">Socket::from_raw_fd</span>(<span class="ident">stream</span>.<span class="ident">into_raw_fd</span>()) });
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">map</span> <span class="op">=</span> <span class="ident">ObjectMap::new</span>();
@@ -1392,7 +1392,7 @@
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_client</span>(
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
         <span class="ident">stream</span>: <span class="ident">UnixStream</span>,
-        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">data</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ClientData</span><span class="op">&gt;</span>,
     ) -&gt; <span class="ident">InnerClientId</span> {
         <span class="kw">let</span> <span class="ident">serial</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_serial</span>();
         <span class="comment">// Find the next free place</span>
