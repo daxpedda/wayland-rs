@@ -530,7 +530,7 @@
 <span class="doccomment">/// // Use delegate_dispatch to implement Dispatch&lt;wl_output::WlOutput&gt; for ExampleApp.</span>
 <span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_output::WlOutput: UserData] =&gt; DelegateToMe);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // But DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide this impl</span>
+<span class="doccomment">/// // DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide the trait implementation.</span>
 <span class="doccomment">/// impl AsMut&lt;DelegateToMe&gt; for ExampleApp {</span>
 <span class="doccomment">///     fn as_mut(&amp;mut self) -&gt; &amp;mut DelegateToMe {</span>
 <span class="doccomment">///         &amp;mut self.delegate</span>

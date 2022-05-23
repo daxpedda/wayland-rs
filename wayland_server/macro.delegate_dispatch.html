@@ -30,7 +30,7 @@ to some other type.</p>
 <span class="comment">// Use delegate_dispatch to implement Dispatch&lt;wl_output::WlOutput&gt; for ExampleApp.</span>
 <span class="macro">delegate_dispatch!</span>(<span class="ident">ExampleApp</span>: [<span class="ident">wl_output::WlOutput</span>: <span class="ident">UserData</span>] =&gt; <span class="ident">DelegateToMe</span>);
 
-<span class="comment">// But DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide this impl</span>
+<span class="comment">// DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide the trait implementation.</span>
 <span class="kw">impl</span> <span class="ident">AsMut</span><span class="op">&lt;</span><span class="ident">DelegateToMe</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExampleApp</span> {
     <span class="kw">fn</span> <span class="ident">as_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">DelegateToMe</span> {
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">delegate</span>

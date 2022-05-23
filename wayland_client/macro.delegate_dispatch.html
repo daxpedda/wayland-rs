@@ -26,10 +26,10 @@ to some other type.</p>
     <span class="ident">delegate</span>: <span class="ident">DelegateToMe</span>,
 }
 
-<span class="comment">// Use delegate_dispatch to implement Dispatch&lt;wl_registry::WlRegistry&gt; for ExampleApp.</span>
+<span class="comment">// Use delegate_dispatch to implement Dispatch&lt;wl_registry::WlRegistry&gt; for ExampleApp with unit as the user data.</span>
 <span class="macro">delegate_dispatch!</span>(<span class="ident">ExampleApp</span>: [<span class="ident">wl_registry::WlRegistry</span>: ()] =&gt; <span class="ident">DelegateToMe</span>);
 
-<span class="comment">// But DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide this impl</span>
+<span class="comment">// DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide the trait implementation.</span>
 <span class="kw">impl</span> <span class="ident">AsMut</span><span class="op">&lt;</span><span class="ident">DelegateToMe</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ExampleApp</span> {
     <span class="kw">fn</span> <span class="ident">as_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">DelegateToMe</span> {
         <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">delegate</span>
@@ -38,8 +38,7 @@ to some other type.</p>
 
 <span class="comment">// To explain the macro above, you may read it as the following:</span>
 <span class="comment">//</span>
-<span class="comment">// For ExampleApp, delegate WlRegistry to DelegateToMe and use the closure to get an `&amp;mut` reference to</span>
-<span class="comment">// the delegate.</span>
+<span class="comment">// For ExampleApp, delegate WlRegistry to DelegateToMe.</span>
 
 <span class="comment">// Assert ExampleApp can Dispatch events for wl_registry</span>
 <span class="kw">fn</span> <span class="ident">assert_is_registry_delegate</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()

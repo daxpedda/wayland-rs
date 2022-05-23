@@ -951,6 +951,7 @@
 <span class="doccomment">/// struct DelegateToMe;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Now implement DelegateDispatch.</span>
+<span class="doccomment">/// // The second parameter specifies which type of user data is associated with the registry.</span>
 <span class="doccomment">/// impl&lt;D&gt; DelegateDispatch&lt;wl_registry::WlRegistry, (), D&gt; for DelegateToMe</span>
 <span class="doccomment">/// where</span>
 <span class="doccomment">///     // `D` is the type which has delegated to this type.</span>
@@ -1047,10 +1048,10 @@
 <span class="doccomment">///     delegate: DelegateToMe,</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // Use delegate_dispatch to implement Dispatch&lt;wl_registry::WlRegistry&gt; for ExampleApp.</span>
+<span class="doccomment">/// // Use delegate_dispatch to implement Dispatch&lt;wl_registry::WlRegistry&gt; for ExampleApp with unit as the user data.</span>
 <span class="doccomment">/// delegate_dispatch!(ExampleApp: [wl_registry::WlRegistry: ()] =&gt; DelegateToMe);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// // But DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide this impl</span>
+<span class="doccomment">/// // DelegateToMe requires that ExampleApp implements AsMut&lt;DelegateToMe&gt;, so we provide the trait implementation.</span>
 <span class="doccomment">/// impl AsMut&lt;DelegateToMe&gt; for ExampleApp {</span>
 <span class="doccomment">///     fn as_mut(&amp;mut self) -&gt; &amp;mut DelegateToMe {</span>
 <span class="doccomment">///         &amp;mut self.delegate</span>
@@ -1059,8 +1060,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// // To explain the macro above, you may read it as the following:</span>
 <span class="doccomment">/// //</span>
-<span class="doccomment">/// // For ExampleApp, delegate WlRegistry to DelegateToMe and use the closure to get an `&amp;mut` reference to</span>
-<span class="doccomment">/// // the delegate.</span>
+<span class="doccomment">/// // For ExampleApp, delegate WlRegistry to DelegateToMe.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // Assert ExampleApp can Dispatch events for wl_registry</span>
 <span class="doccomment">/// fn assert_is_registry_delegate&lt;T&gt;()</span>
