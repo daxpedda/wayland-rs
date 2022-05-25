@@ -194,8 +194,8 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Data</span>: <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">Data</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Create a new empty object map</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">ObjectMap</span><span class="op">&lt;</span><span class="ident">Data</span><span class="op">&gt;</span> {
-        <span class="ident">ObjectMap</span> { <span class="ident">client_objects</span>: <span class="ident">Vec::new</span>(), <span class="ident">server_objects</span>: <span class="ident">Vec::new</span>() }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">client_objects</span>: <span class="ident">Vec::new</span>(), <span class="ident">server_objects</span>: <span class="ident">Vec::new</span>() }
     }
 
     <span class="doccomment">/// Find an object in the store</span>

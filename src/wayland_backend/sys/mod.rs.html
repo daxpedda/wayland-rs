@@ -109,10 +109,6 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implementations of the Wayland backends using the system `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::ArgumentType</span>;
@@ -161,10 +157,8 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_ptr</span>(
         <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident"><span class="kw">crate</span>::protocol::Interface</span>,
         <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_proxy</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">client::ObjectId</span>, <span class="ident">client::InvalidId</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">client::ObjectId</span> {
-            <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="ident">client_impl::InnerObjectId::from_ptr</span>(<span class="ident">interface</span>, <span class="ident">ptr</span>) }<span class="question-mark">?</span>,
-        })
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">client::InvalidId</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="ident">client_impl::InnerObjectId::from_ptr</span>(<span class="ident">interface</span>, <span class="ident">ptr</span>) }<span class="question-mark">?</span> })
     }
 
     <span class="doccomment">/// Get the underlying libwayland pointer for this object</span>
@@ -194,10 +188,8 @@
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_ptr</span>(
         <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident"><span class="kw">crate</span>::protocol::Interface</span>,
         <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_resource</span>,
-    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">server::ObjectId</span>, <span class="ident">server::InvalidId</span><span class="op">&gt;</span> {
-        <span class="prelude-val">Ok</span>(<span class="ident">server::ObjectId</span> {
-            <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="ident">server_impl::InnerObjectId::from_ptr</span>(<span class="ident">interface</span>, <span class="ident">ptr</span>) }<span class="question-mark">?</span>,
-        })
+    ) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">server::InvalidId</span><span class="op">&gt;</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">id</span>: <span class="kw">unsafe</span> { <span class="ident">server_impl::InnerObjectId::from_ptr</span>(<span class="ident">interface</span>, <span class="ident">ptr</span>) }<span class="question-mark">?</span> })
     }
 
     <span class="doccomment">/// Returns the pointer that represents this object.</span>

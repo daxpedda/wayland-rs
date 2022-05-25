@@ -812,7 +812,7 @@
 
         <span class="ident">data</span>.<span class="ident">initialized</span>(<span class="ident">ClientId</span> { <span class="ident">id</span>: <span class="ident">id</span>.<span class="ident">clone</span>() });
 
-        <span class="ident">Client</span> { <span class="ident">socket</span>, <span class="ident">map</span>, <span class="ident">debug</span>, <span class="ident">id</span>, <span class="ident">killed</span>: <span class="bool-val">false</span>, <span class="ident">last_serial</span>: <span class="number">0</span>, <span class="ident">data</span> }
+        <span class="self">Self</span> { <span class="ident">socket</span>, <span class="ident">map</span>, <span class="ident">debug</span>, <span class="ident">id</span>, <span class="ident">killed</span>: <span class="bool-val">false</span>, <span class="ident">last_serial</span>: <span class="number">0</span>, <span class="ident">data</span> }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_object</span>(
@@ -1386,7 +1386,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">ClientStore</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">debug</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">ClientStore</span> { <span class="ident">clients</span>: <span class="ident">Vec::new</span>(), <span class="ident">last_serial</span>: <span class="number">0</span>, <span class="ident">debug</span> }
+        <span class="self">Self</span> { <span class="ident">clients</span>: <span class="ident">Vec::new</span>(), <span class="ident">last_serial</span>: <span class="number">0</span>, <span class="ident">debug</span> }
     }
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">create_client</span>(

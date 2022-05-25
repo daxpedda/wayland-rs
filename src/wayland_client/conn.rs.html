@@ -301,7 +301,7 @@
     <span class="doccomment">/// Try to connect to the Wayland server following the environment</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This is the standard way to initialize a Wayland connection.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connect_to_env</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Connection</span>, <span class="ident">ConnectError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connect_to_env</span>() -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ConnectError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">stream</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">txt</span>) <span class="op">=</span> <span class="ident">env::var</span>(<span class="string">&quot;WAYLAND_SOCKET&quot;</span>) {
             <span class="comment">// We should connect to the provided WAYLAND_SOCKET</span>
             <span class="kw">let</span> <span class="ident">fd</span> <span class="op">=</span> <span class="ident">txt</span>.<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>().<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ConnectError::InvalidFd</span>)<span class="question-mark">?</span>;
@@ -333,18 +333,18 @@
         };
 
         <span class="kw">let</span> <span class="ident">backend</span> <span class="op">=</span> <span class="ident">Backend::connect</span>(<span class="ident">stream</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ConnectError::NoWaylandLib</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">Connection</span> { <span class="ident">backend</span> })
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">backend</span> })
     }
 
     <span class="doccomment">/// Initialize a Wayland connection from an already existing Unix stream</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_socket</span>(<span class="ident">stream</span>: <span class="ident">UnixStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Connection</span>, <span class="ident">ConnectError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_socket</span>(<span class="ident">stream</span>: <span class="ident">UnixStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">ConnectError</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">backend</span> <span class="op">=</span> <span class="ident">Backend::connect</span>(<span class="ident">stream</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">ConnectError::NoWaylandLib</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">Connection</span> { <span class="ident">backend</span> })
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> { <span class="ident">backend</span> })
     }
 
     <span class="doccomment">/// Wrap an existing [`Backend`] into a Connection</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_backend</span>(<span class="ident">backend</span>: <span class="ident">Backend</span>) -&gt; <span class="ident">Connection</span> {
-        <span class="ident">Connection</span> { <span class="ident">backend</span> }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_backend</span>(<span class="ident">backend</span>: <span class="ident">Backend</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">backend</span> }
     }
 
     <span class="doccomment">/// Get the [`Backend`] underlying this Connection</span>

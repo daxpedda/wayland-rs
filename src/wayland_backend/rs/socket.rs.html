@@ -639,8 +639,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FromRawFd</span> <span class="kw">for</span> <span class="ident">Socket</span> {
-    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_raw_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="ident">Socket</span> {
-        <span class="ident">Socket</span> { <span class="ident">fd</span> }
+    <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_raw_fd</span>(<span class="ident">fd</span>: <span class="ident">RawFd</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">fd</span> }
     }
 }
 
@@ -667,8 +667,8 @@
 
 <span class="kw">impl</span> <span class="ident">BufferedSocket</span> {
     <span class="doccomment">/// Wrap a Socket into a Buffered Socket</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">socket</span>: <span class="ident">Socket</span>) -&gt; <span class="ident">BufferedSocket</span> {
-        <span class="ident">BufferedSocket</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">socket</span>: <span class="ident">Socket</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
             <span class="ident">socket</span>,
             <span class="ident">in_data</span>: <span class="ident">Buffer::new</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">MAX_BYTES_OUT</span> <span class="op">/</span> <span class="number">4</span>), <span class="comment">// Incoming buffers are twice as big in order to be</span>
             <span class="ident">in_fds</span>: <span class="ident">Buffer::new</span>(<span class="number">2</span> <span class="op">*</span> <span class="ident">MAX_FDS_OUT</span>),        <span class="comment">// able to store leftover data if needed</span>
@@ -842,8 +842,8 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Default</span><span class="op">&gt;</span> <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="ident">Buffer</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-        <span class="ident">Buffer</span> { <span class="ident">storage</span>: <span class="macro">vec!</span>[<span class="ident">T::default</span>(); <span class="ident">size</span>], <span class="ident">occupied</span>: <span class="number">0</span>, <span class="ident">offset</span>: <span class="number">0</span> }
+    <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">storage</span>: <span class="macro">vec!</span>[<span class="ident">T::default</span>(); <span class="ident">size</span>], <span class="ident">occupied</span>: <span class="number">0</span>, <span class="ident">offset</span>: <span class="number">0</span> }
     }
 
     <span class="doccomment">/// Advance the internal counter of occupied space</span>

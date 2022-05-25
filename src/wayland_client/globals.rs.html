@@ -223,14 +223,14 @@
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">GlobalList</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-        <span class="ident">GlobalList::new</span>()
+        <span class="ident"><span class="self">Self</span>::new</span>()
     }
 }
 
 <span class="kw">impl</span> <span class="ident">GlobalList</span> {
     <span class="doccomment">/// Create a new `GLobalList`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">GlobalList</span> {
-        <span class="ident">GlobalList</span> { <span class="ident">globals</span>: <span class="ident">Vec::new</span>() }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">globals</span>: <span class="ident">Vec::new</span>() }
     }
 
     <span class="doccomment">/// Access the list of currently advertized globals</span>

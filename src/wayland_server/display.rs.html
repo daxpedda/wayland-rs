@@ -252,7 +252,7 @@
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Handle</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DisplayHandle</span> {
     <span class="doccomment">/// Creates a [`DisplayHandle`] using a [`Handle`](Handle) from `wayland-backend`.</span>
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">handle</span>: <span class="ident">Handle</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">DisplayHandle</span> { <span class="ident">handle</span> }
+        <span class="self">Self</span> { <span class="ident">handle</span> }
     }
 }
 </code></pre></div>

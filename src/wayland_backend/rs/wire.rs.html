@@ -357,10 +357,6 @@
 <span id="352">352</span>
 <span id="353">353</span>
 <span id="354">354</span>
-<span id="355">355</span>
-<span id="356">356</span>
-<span id="357">357</span>
-<span id="358">358</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Types and routines used to manipulate arguments from the wire format</span>
 
 <span class="kw">use</span> <span class="ident">std::ffi::CStr</span>;
@@ -389,10 +385,10 @@
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">coverage</span>, <span class="ident">no_coverage</span>)]</span>
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">::std::fmt::Formatter</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">::std::fmt::Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">MessageWriteError::BufferTooSmall</span> =&gt; {
+            <span class="ident"><span class="self">Self</span>::BufferTooSmall</span> =&gt; {
                 <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;The provided buffer is too small to hold message content.&quot;</span>)
             }
-            <span class="ident">MessageWriteError::DupFdFailed</span>(<span class="ident">e</span>) =&gt; {
+            <span class="ident"><span class="self">Self</span>::DupFdFailed</span>(<span class="ident">e</span>) =&gt; {
                 <span class="macro">write!</span>(
                     <span class="ident">f</span>,
                     <span class="string">&quot;The message contains a file descriptor that could not be dup()-ed ({}).&quot;</span>,
@@ -420,15 +416,11 @@
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">coverage</span>, <span class="ident">no_coverage</span>)]</span>
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">::std::fmt::Formatter</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">::std::fmt::Error</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">MessageParseError::MissingFD</span> =&gt; {
+            <span class="ident"><span class="self">Self</span>::MissingFD</span> =&gt; {
                 <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;The message references a FD but the buffer FD is empty.&quot;</span>)
             }
-            <span class="ident">MessageParseError::MissingData</span> =&gt; {
-                <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;More data is needed to deserialize the message&quot;</span>)
-            }
-            <span class="ident">MessageParseError::Malformed</span> =&gt; {
-                <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;The message is malformed and cannot be parsed&quot;</span>)
-            }
+            <span class="ident"><span class="self">Self</span>::MissingData</span> =&gt; <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;More data is needed to deserialize the message&quot;</span>),
+            <span class="ident"><span class="self">Self</span>::Malformed</span> =&gt; <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="string">&quot;The message is malformed and cannot be parsed&quot;</span>),
         }
     }
 }
@@ -653,8 +645,8 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FdStore</span> {
-    <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">FdStore</span> {
-        <span class="ident">FdStore</span> { <span class="ident">fds</span>: <span class="ident">Vec::new</span>() }
+    <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">fds</span>: <span class="ident">Vec::new</span>() }
     }
     <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">fd</span>: <span class="ident">RawFd</span>) {
         <span class="self">self</span>.<span class="ident">fds</span>.<span class="ident">push</span>(<span class="ident">fd</span>);

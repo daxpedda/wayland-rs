@@ -699,7 +699,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">EventQueue</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">conn</span>: <span class="ident">Connection</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> (<span class="ident">tx</span>, <span class="ident">rx</span>) <span class="op">=</span> <span class="ident">unbounded</span>();
-        <span class="ident">EventQueue</span> { <span class="ident">rx</span>, <span class="ident">handle</span>: <span class="ident">QueueHandle</span> { <span class="ident">tx</span> }, <span class="ident">conn</span> }
+        <span class="self">Self</span> { <span class="ident">rx</span>, <span class="ident">handle</span>: <span class="ident">QueueHandle</span> { <span class="ident">tx</span> }, <span class="ident">conn</span> }
     }
 
     <span class="doccomment">/// Get a [`QueueHandle`] for this event queue</span>
@@ -815,7 +815,7 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Data</span><span class="op">&gt;</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">QueueHandle</span><span class="op">&lt;</span><span class="ident">Data</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self</span> {
-        <span class="ident">QueueHandle</span> { <span class="ident">tx</span>: <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">clone</span>() }
+        <span class="self">Self</span> { <span class="ident">tx</span>: <span class="self">self</span>.<span class="ident">tx</span>.<span class="ident">clone</span>() }
     }
 }
 

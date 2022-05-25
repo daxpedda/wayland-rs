@@ -378,14 +378,14 @@
     <span class="doccomment">/// Retrieve the type of a given argument instance</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_type</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ArgumentType</span> {
         <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
-            <span class="ident">Argument::Int</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Int</span>,
-            <span class="ident">Argument::Uint</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Uint</span>,
-            <span class="ident">Argument::Fixed</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Fixed</span>,
-            <span class="ident">Argument::Str</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Str</span>(<span class="ident">AllowNull::Yes</span>),
-            <span class="ident">Argument::Object</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Object</span>(<span class="ident">AllowNull::Yes</span>),
-            <span class="ident">Argument::NewId</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::NewId</span>(<span class="ident">AllowNull::Yes</span>),
-            <span class="ident">Argument::Array</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Array</span>(<span class="ident">AllowNull::Yes</span>),
-            <span class="ident">Argument::Fd</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Fd</span>,
+            <span class="ident"><span class="self">Self</span>::Int</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Int</span>,
+            <span class="ident"><span class="self">Self</span>::Uint</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Uint</span>,
+            <span class="ident"><span class="self">Self</span>::Fixed</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Fixed</span>,
+            <span class="ident"><span class="self">Self</span>::Str</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Str</span>(<span class="ident">AllowNull::Yes</span>),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Object</span>(<span class="ident">AllowNull::Yes</span>),
+            <span class="ident"><span class="self">Self</span>::NewId</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::NewId</span>(<span class="ident">AllowNull::Yes</span>),
+            <span class="ident"><span class="self">Self</span>::Array</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Array</span>(<span class="ident">AllowNull::Yes</span>),
+            <span class="ident"><span class="self">Self</span>::Fd</span>(<span class="kw">_</span>) =&gt; <span class="ident">ArgumentType::Fd</span>,
         }
     }
 }
@@ -394,14 +394,14 @@
     <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">coverage</span>, <span class="ident">no_coverage</span>)]</span>
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Argument::Int</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Uint</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Fixed</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Str</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Object</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::NewId</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Array</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">value</span>),
-            <span class="ident">Argument::Fd</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Int</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Uint</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Fixed</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Str</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Object</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::NewId</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Array</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{:?}&quot;</span>, <span class="ident">value</span>),
+            <span class="ident"><span class="self">Self</span>::Fd</span>(<span class="ident">value</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">value</span>),
         }
     }
 }
@@ -572,8 +572,8 @@
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">into_result</span>(<span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">WEnumError</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">WEnum::Value</span>(<span class="ident">v</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">v</span>),
-            <span class="ident">WEnum::Unknown</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">WEnumError</span> { <span class="ident">typ</span>: <span class="ident">std::any::type_name</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(), <span class="ident">value</span> }),
+            <span class="ident"><span class="self">Self</span>::Value</span>(<span class="ident">v</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">v</span>),
+            <span class="ident"><span class="self">Self</span>::Unknown</span>(<span class="ident">value</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">WEnumError</span> { <span class="ident">typ</span>: <span class="ident">std::any::type_name</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(), <span class="ident">value</span> }),
         }
     }
 }
@@ -586,10 +586,10 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">std::convert::TryFrom</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">WEnum</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Constructs an enum from the integer format used by the wayland protocol.</span>
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">u32</span>) -&gt; <span class="ident">WEnum</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">v</span>: <span class="ident">u32</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">T::try_from</span>(<span class="ident">v</span>) {
-            <span class="prelude-val">Ok</span>(<span class="ident">t</span>) =&gt; <span class="ident">WEnum::Value</span>(<span class="ident">t</span>),
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="ident">WEnum::Unknown</span>(<span class="ident">v</span>),
+            <span class="prelude-val">Ok</span>(<span class="ident">t</span>) =&gt; <span class="ident"><span class="self">Self</span>::Value</span>(<span class="ident">t</span>),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="ident"><span class="self">Self</span>::Unknown</span>(<span class="ident">v</span>),
         }
     }
 }

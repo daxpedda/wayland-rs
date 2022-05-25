@@ -538,7 +538,7 @@
     <span class="doccomment">/// # }</span>
     <span class="doccomment">/// ```</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">conn</span>: <span class="kw-2">&amp;</span><span class="ident">Connection</span>, <span class="ident">shm</span>: <span class="ident">WlShm</span>, <span class="ident">size</span>: <span class="ident">u32</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
-        <span class="ident">CursorTheme::load_or</span>(<span class="ident">conn</span>, <span class="ident">shm</span>, <span class="string">&quot;default&quot;</span>, <span class="ident">size</span>)
+        <span class="ident"><span class="self">Self</span>::load_or</span>(<span class="ident">conn</span>, <span class="ident">shm</span>, <span class="string">&quot;default&quot;</span>, <span class="ident">size</span>)
     }
 
     <span class="doccomment">/// Load a cursor theme, using `name` as fallback.</span>
@@ -561,7 +561,7 @@
             }
         }
 
-        <span class="ident">CursorTheme::load_from_name</span>(<span class="ident">conn</span>, <span class="ident">shm</span>, <span class="ident">name</span>, <span class="ident">size</span>)
+        <span class="ident"><span class="self">Self</span>::load_from_name</span>(<span class="ident">conn</span>, <span class="ident">shm</span>, <span class="ident">name</span>, <span class="ident">size</span>)
     }
 
     <span class="doccomment">/// Create a new cursor theme, ignoring the system defaults.</span>
@@ -595,7 +595,7 @@
 
         <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">String::from</span>(<span class="ident">name</span>);
 
-        <span class="prelude-val">Ok</span>(<span class="ident">CursorTheme</span> {
+        <span class="prelude-val">Ok</span>(<span class="self">Self</span> {
             <span class="ident">name</span>,
             <span class="ident">file</span>,
             <span class="ident">size</span>,
@@ -670,7 +670,7 @@
         <span class="ident">size</span>: <span class="ident">u32</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">total_duration</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="ident">images</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">CursorImageBuffer</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Cursor::nearest_images</span>(<span class="ident">size</span>, <span class="ident">images</span>)
+        <span class="kw">let</span> <span class="ident">images</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">CursorImageBuffer</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident"><span class="self">Self</span>::nearest_images</span>(<span class="ident">size</span>, <span class="ident">images</span>)
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">image</span><span class="op">|</span> {
                 <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">CursorImageBuffer::new</span>(<span class="ident">conn</span>, <span class="ident">theme</span>, <span class="ident">image</span>);
                 <span class="ident">total_duration</span> <span class="op">+</span><span class="op">=</span> <span class="ident">buffer</span>.<span class="ident">delay</span>;
@@ -679,7 +679,7 @@
             })
             .<span class="ident">collect</span>();
 
-        <span class="ident">Cursor</span> { <span class="ident">total_duration</span>, <span class="ident">name</span>: <span class="ident">String::from</span>(<span class="ident">name</span>), <span class="ident">images</span> }
+        <span class="self">Self</span> { <span class="ident">total_duration</span>, <span class="ident">name</span>: <span class="ident">String::from</span>(<span class="ident">name</span>), <span class="ident">images</span> }
     }
 
     <span class="kw">fn</span> <span class="ident">nearest_images</span>(<span class="ident">size</span>: <span class="ident">u32</span>, <span class="ident">images</span>: <span class="kw-2">&amp;</span>[<span class="ident">XCursorImage</span>]) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">XCursorImage</span><span class="op">&gt;</span> {
@@ -772,7 +772,7 @@
 
         <span class="kw">let</span> <span class="ident">buffer</span> <span class="op">=</span> <span class="ident">WlBuffer::from_id</span>(<span class="ident">conn</span>, <span class="ident">buffer_id</span>).<span class="ident">unwrap</span>();
 
-        <span class="ident">CursorImageBuffer</span> {
+        <span class="self">Self</span> {
             <span class="ident">buffer</span>,
             <span class="ident">delay</span>: <span class="ident">image</span>.<span class="ident">delay</span>,
             <span class="ident">xhot</span>: <span class="ident">image</span>.<span class="ident">xhot</span>,

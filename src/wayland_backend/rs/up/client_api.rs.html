@@ -429,7 +429,7 @@
     <span class="doccomment">/// The provided stream should correspond to an already established unix connection with</span>
     <span class="doccomment">/// the Wayland server. On this rust backend, this method never fails.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connect</span>(<span class="ident">stream</span>: <span class="ident">UnixStream</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">NoWaylandLib</span><span class="op">&gt;</span> {
-        <span class="ident">client_impl::InnerBackend::connect</span>(<span class="ident">stream</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">backend</span><span class="op">|</span> <span class="ident">Backend</span> { <span class="ident">backend</span> })
+        <span class="ident">client_impl::InnerBackend::connect</span>(<span class="ident">stream</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">backend</span><span class="op">|</span> <span class="self">Self</span> { <span class="ident">backend</span> })
     }
 
     <span class="doccomment">/// Get a [`WeakBackend`] from this backend</span>
