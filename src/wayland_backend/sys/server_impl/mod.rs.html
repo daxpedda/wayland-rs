@@ -1448,6 +1448,15 @@
 <span id="1443">1443</span>
 <span id="1444">1444</span>
 <span id="1445">1445</span>
+<span id="1446">1446</span>
+<span id="1447">1447</span>
+<span id="1448">1448</span>
+<span id="1449">1449</span>
+<span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -2085,6 +2094,10 @@
         };
         <span class="prelude-val">Ok</span>(<span class="ident">udata</span>.<span class="ident">handler</span>.<span class="ident">clone</span>())
     }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span> {
+        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">display_ptr</span>()
+    }
 }
 
 <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">trait</span> <span class="ident">ErasedState</span>: <span class="ident">downcast_rs::Downcast</span> {
@@ -2119,6 +2132,7 @@
     <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
     <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
     <span class="kw">fn</span> <span class="ident">global_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span>;
 }
 
 <span class="macro">downcast_rs::impl_downcast!</span>(<span class="ident">ErasedState</span>);
@@ -2475,6 +2489,10 @@
             <span class="ident">version</span>: <span class="ident">udata</span>.<span class="ident">version</span>,
             <span class="ident">disabled</span>: <span class="ident">udata</span>.<span class="ident">disabled</span>,
         })
+    }
+
+    <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span> {
+        <span class="self">self</span>.<span class="ident">display</span>
     }
 }
 

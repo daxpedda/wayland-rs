@@ -105,6 +105,14 @@
 <span id="100">100</span>
 <span id="101">101</span>
 <span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implementations of the Wayland backends using the system `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::ArgumentType</span>;
@@ -205,6 +213,14 @@
     <span class="doccomment">/// Access the underlying `*mut wl_display` pointer</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_display</span> {
         <span class="self">self</span>.<span class="ident">backend</span>.<span class="ident">display_ptr</span>()
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))]</span>
+<span class="kw">impl</span> <span class="ident">server::Handle</span> {
+    <span class="doccomment">/// Access the underlying `*mut wl_display` pointer</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_display</span> {
+        <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">display_ptr</span>()
     }
 }
 </code></pre></div>
