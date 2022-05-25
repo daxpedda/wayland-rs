@@ -1453,10 +1453,6 @@
 <span id="1448">1448</span>
 <span id="1449">1449</span>
 <span id="1450">1450</span>
-<span id="1451">1451</span>
-<span id="1452">1452</span>
-<span id="1453">1453</span>
-<span id="1454">1454</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -1791,10 +1787,6 @@
         } <span class="kw">else</span> {
             <span class="prelude-val">Ok</span>(<span class="ident">ret</span> <span class="kw">as</span> <span class="ident">usize</span>)
         }
-    }
-
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span> {
-        <span class="self">self</span>.<span class="ident">display_ptr</span>
     }
 }
 
