@@ -1453,6 +1453,20 @@
 <span id="1448">1448</span>
 <span id="1449">1449</span>
 <span id="1450">1450</span>
+<span id="1451">1451</span>
+<span id="1452">1452</span>
+<span id="1453">1453</span>
+<span id="1454">1454</span>
+<span id="1455">1455</span>
+<span id="1456">1456</span>
+<span id="1457">1457</span>
+<span id="1458">1458</span>
+<span id="1459">1459</span>
+<span id="1460">1460</span>
+<span id="1461">1461</span>
+<span id="1462">1462</span>
+<span id="1463">1463</span>
+<span id="1464">1464</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -2124,6 +2138,7 @@
     <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
     <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
     <span class="kw">fn</span> <span class="ident">global_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">is_known_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">global_ptr</span>: <span class="kw-2">*const</span> <span class="ident">wl_global</span>) -&gt; <span class="ident">bool</span>;
     <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span>;
 }
 
@@ -2483,6 +2498,10 @@
         })
     }
 
+    <span class="kw">fn</span> <span class="ident">is_known_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">global_ptr</span>: <span class="kw-2">*const</span> <span class="ident">wl_global</span>) -&gt; <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">known_globals</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">ginfo</span><span class="op">|</span> (<span class="ident">ginfo</span>.<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*const</span> <span class="ident">wl_global</span>) <span class="op">==</span> <span class="ident">global_ptr</span>)
+    }
+
     <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wl_display</span> {
         <span class="self">self</span>.<span class="ident">display</span>
     }
@@ -2603,6 +2622,15 @@
     <span class="ident">global</span>: <span class="kw-2">*const</span> <span class="ident">wl_global</span>,
     <span class="kw">_</span>: <span class="kw-2">*mut</span> <span class="ident">c_void</span>,
 ) -&gt; <span class="ident">bool</span> {
+    <span class="comment">// Safety: skip processing globals that do not belong to us</span>
+    <span class="kw">let</span> <span class="ident">is_known_global</span> <span class="op">=</span> <span class="ident">HANDLE</span>.<span class="ident">with</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">state_arc</span>, <span class="kw">_</span>)<span class="op">|</span> {
+        <span class="kw">let</span> <span class="ident">guard</span> <span class="op">=</span> <span class="ident">state_arc</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="ident">guard</span>.<span class="ident">is_known_global</span>(<span class="ident">global</span>)
+    });
+    <span class="kw">if</span> <span class="op">!</span><span class="ident">is_known_global</span> {
+        <span class="kw">return</span> <span class="bool-val">true</span>;
+    }
+
     <span class="comment">// Safety: if we are invoked here, the client is a valid client initialized by us</span>
     <span class="kw">let</span> <span class="ident">client_udata</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw">unsafe</span> { <span class="ident">client_user_data</span>(<span class="ident">client</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="kw">_</span>) } {
         <span class="prelude-val">Some</span>(<span class="ident">id</span>) =&gt; <span class="kw">unsafe</span> { <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">id</span> },
