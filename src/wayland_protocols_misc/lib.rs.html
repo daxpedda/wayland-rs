@@ -106,6 +106,20 @@
 <span id="101">101</span>
 <span id="102">102</span>
 <span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This crate provides Wayland object definitions for various orphan or deprecated protocol extensions.</span>
 <span class="doccomment">//! </span>
 <span class="doccomment">//! This crate provides bindings for protocols that are generally not officially supported,</span>
@@ -197,6 +211,19 @@
     <span class="macro">wayland_protocol!</span>(<span class="string">&quot;./protocols/input-method-unstable-v2.xml&quot;</span>, [<span class="ident">wayland_protocols::wp::text_input::zv3</span>]);
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unstable_protocols&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">zwp_virtual_keyboard_v1</span> {
+    <span class="doccomment">//! Virtual keyboard v1 unstable</span>
+    <span class="doccomment">//!</span>
+    <span class="doccomment">//! The virtual keyboard provides an application with requests which emulate</span>
+    <span class="doccomment">//! the behaviour of a physical keyboard.</span>
+    <span class="doccomment">//!</span>
+    <span class="doccomment">//! This interface can be used by clients on its own to provide raw input</span>
+    <span class="doccomment">//! events, or it can accompany the input method protocol.</span>
+
+    <span class="macro">wayland_protocol!</span>(<span class="string">&quot;./protocols/virtual-keyboard-unstable-v1.xml&quot;</span>, []);
+}
+
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">server_decoration</span> {
     <span class="doccomment">//! KDE server decoration protocol</span>
     <span class="doccomment">//!</span>
@@ -207,7 +234,9 @@
     <span class="doccomment">//! side decorations.</span>
     <span class="doccomment">//!</span>
     <span class="doccomment">//! Use in conjunction with zxdg_decoration_manager_v1 is undefined.</span>
+
     <span class="macro">wayland_protocol!</span>(<span class="string">&quot;./protocols/server-decoration.xml&quot;</span>, []);
-}</code></pre></div>
+}
+</code></pre></div>
 </section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="wayland_protocols_misc" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.61.0 (fe5b13d68 2022-05-18)" ></div>
 </body></html>
