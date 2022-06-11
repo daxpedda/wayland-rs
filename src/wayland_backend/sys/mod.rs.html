@@ -101,6 +101,28 @@
 <span id="96">96</span>
 <span id="97">97</span>
 <span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
+<span id="120">120</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implementations of the Wayland backends using the system `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::ArgumentType</span>;
@@ -156,6 +178,28 @@
     <span class="doccomment">/// Get the underlying libwayland pointer for this object</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_proxy</span> {
         <span class="self">self</span>.<span class="ident">id</span>.<span class="ident">as_ptr</span>()
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>))]</span>
+<span class="kw">impl</span> <span class="ident">client::Backend</span> {
+    <span class="doccomment">/// Creates a Backend from a foreign `*mut wl_display`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This is useful if you are writing a library that is expected to plug itself into an existing</span>
+    <span class="doccomment">/// Wayland connection.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This will initialize the [`Backend`] in &quot;guest&quot; mode, meaning it will not close the connection</span>
+    <span class="doccomment">/// on drop. After the [`Backend`] is dropped, if the server sends an event to an object that was</span>
+    <span class="doccomment">/// created from it, that event will be silently discarded. This may lead to protocol errors if the</span>
+    <span class="doccomment">/// server expects an answer to that event, as such you should make sure to cleanup your Wayland</span>
+    <span class="doccomment">/// state before dropping the [`Backend`].</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Safety</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// You need to ensure the `*mut wl_display` remains live as lon as the  [`Backend`] (or its clones)</span>
+    <span class="doccomment">/// exist.</span>
+    <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_foreign_display</span>(<span class="ident">display</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_display</span>) -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">backend</span>: <span class="kw">unsafe</span> { <span class="ident">client_impl::InnerBackend::from_foreign_display</span>(<span class="ident">display</span>) } }
     }
 }
 
