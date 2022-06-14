@@ -557,12 +557,85 @@
 <span id="552">552</span>
 <span id="553">553</span>
 <span id="554">554</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::convert::Infallible</span>;
+<span class="kw">use</span> <span class="ident">std::pin::Pin</span>;
+<span class="kw">use</span> <span class="ident">std::sync</span>::{
     <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
     <span class="ident">Arc</span>,
 };
+<span class="kw">use</span> <span class="ident">std::task</span>;
 
 <span class="kw">use</span> <span class="ident">futures_channel::mpsc</span>::{<span class="ident">unbounded</span>, <span class="ident">UnboundedReceiver</span>, <span class="ident">UnboundedSender</span>};
+<span class="kw">use</span> <span class="ident">futures_core::stream::Stream</span>;
 <span class="kw">use</span> <span class="ident">nix::Error</span>;
 <span class="kw">use</span> <span class="ident">wayland_backend</span>::{
     <span class="ident">client</span>::{<span class="ident">Backend</span>, <span class="ident">ObjectData</span>, <span class="ident">ObjectId</span>, <span class="ident">ReadEventsGuard</span>, <span class="ident">WaylandError</span>},
@@ -798,6 +871,71 @@
             <span class="ident">dispatched</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
         }
         <span class="prelude-val">Ok</span>(<span class="ident">dispatched</span>)
+    }
+
+    <span class="doccomment">/// Attempt to dispatch events from this queue, registering the current task for wakeup if no</span>
+    <span class="doccomment">/// events are pending.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method is similar to [`dispatch_pending`](EventQueue::dispatch_pending); it will not</span>
+    <span class="doccomment">/// perform reads on the Wayland socket.  Reads on the socket by other tasks or threads will</span>
+    <span class="doccomment">/// cause the current task to wake up if events are pending on this queue.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// use futures_channel::mpsc::Receiver;</span>
+    <span class="doccomment">/// use futures_util::future::{poll_fn,select};</span>
+    <span class="doccomment">/// use futures_util::stream::StreamExt;</span>
+    <span class="doccomment">/// use wayland_client::EventQueue;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// struct Data;</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// enum AppEvent {</span>
+    <span class="doccomment">///     SomethingHappened(u32),</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// impl Data {</span>
+    <span class="doccomment">///     fn handle(&amp;mut self, event: AppEvent) {</span>
+    <span class="doccomment">///         // actual event handling goes here</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// // An async task that is spawned on an executor in order to handle events that need access</span>
+    <span class="doccomment">/// // to a specific data object.</span>
+    <span class="doccomment">/// async fn run(data: &amp;mut Data, mut wl_queue: EventQueue&lt;Data&gt;, mut app_queue: Receiver&lt;AppEvent&gt;)</span>
+    <span class="doccomment">///     -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt;</span>
+    <span class="doccomment">/// {</span>
+    <span class="doccomment">///     use futures_util::future::Either;</span>
+    <span class="doccomment">///     loop {</span>
+    <span class="doccomment">///         match select(</span>
+    <span class="doccomment">///             poll_fn(|cx| wl_queue.poll_dispatch_pending(cx, data)),</span>
+    <span class="doccomment">///             app_queue.next(),</span>
+    <span class="doccomment">///         ).await {</span>
+    <span class="doccomment">///             Either::Left((res, _)) =&gt; match res? {},</span>
+    <span class="doccomment">///             Either::Right((Some(event), _)) =&gt; {</span>
+    <span class="doccomment">///                 data.handle(event);</span>
+    <span class="doccomment">///             }</span>
+    <span class="doccomment">///             Either::Right((None, _)) =&gt; return Ok(()),</span>
+    <span class="doccomment">///         }</span>
+    <span class="doccomment">///     }</span>
+    <span class="doccomment">/// }</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">poll_dispatch_pending</span>(
+        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">cx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">task::Context</span>,
+        <span class="ident">data</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
+    ) -&gt; <span class="ident">task::Poll</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Infallible</span>, <span class="ident">DispatchError</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw">loop</span> {
+            <span class="kw">match</span> <span class="ident">Pin::new</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">rx</span>).<span class="ident">poll_next</span>(<span class="ident">cx</span>) {
+                <span class="ident">task::Poll::Pending</span> =&gt; <span class="kw">return</span> <span class="ident">task::Poll::Pending</span>,
+                <span class="ident">task::Poll::Ready</span>(<span class="prelude-val">None</span>) =&gt; {
+                    <span class="comment">// We never close the channel, and we hold a valid sender in self.handle.tx, so</span>
+                    <span class="comment">// our event stream will never reach an end.</span>
+                    <span class="macro">unreachable!</span>(<span class="string">&quot;Got end of stream while holding a valid sender&quot;</span>);
+                }
+                <span class="ident">task::Poll::Ready</span>(<span class="prelude-val">Some</span>(<span class="ident">QueueEvent</span>(<span class="ident">cb</span>, <span class="ident">msg</span>, <span class="ident">odata</span>))) =&gt; {
+                    <span class="ident">cb</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">conn</span>, <span class="ident">msg</span>, <span class="ident">data</span>, <span class="ident">odata</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">handle</span>)<span class="question-mark">?</span>
+                }
+            }
+        }
     }
 }
 
