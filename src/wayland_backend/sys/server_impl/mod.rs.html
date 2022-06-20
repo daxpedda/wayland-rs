@@ -2731,11 +2731,11 @@
             }
             <span class="ident">ArgumentType::Object</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_resource</span> };
+                <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">ANONYMOUS_INTERFACE</span>);
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() {
                     <span class="comment">// retrieve the object relevant info</span>
                     <span class="kw">let</span> <span class="ident">obj_id</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_resource_get_id</span>, <span class="ident">obj</span>);
                     <span class="comment">// check if this is a local or distant proxy</span>
-                    <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap_or</span>(<span class="kw-2">&amp;</span><span class="ident">ANONYMOUS_INTERFACE</span>);
                     <span class="kw">let</span> <span class="ident">ret</span> <span class="op">=</span> <span class="macro">ffi_dispatch!</span>(
                         <span class="ident">WAYLAND_SERVER_HANDLE</span>,
                         <span class="ident">wl_resource_instance_of</span>,

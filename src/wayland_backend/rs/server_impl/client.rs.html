@@ -1296,6 +1296,7 @@
                 <span class="ident">Argument::Fixed</span>(<span class="ident">f</span>) =&gt; <span class="ident">Argument::Fixed</span>(<span class="ident">f</span>),
                 <span class="ident">Argument::Fd</span>(<span class="ident">f</span>) =&gt; <span class="ident">Argument::Fd</span>(<span class="ident">f</span>),
                 <span class="ident">Argument::Object</span>(<span class="ident">o</span>) =&gt; {
+                    <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>();
                     <span class="kw">if</span> <span class="ident">o</span> <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
                         <span class="comment">// Lookup the object to make the appropriate Id</span>
                         <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">find</span>(<span class="ident">o</span>) {
@@ -1308,7 +1309,7 @@
                                 <span class="kw">return</span> <span class="prelude-val">None</span>;
                             }
                         };
-                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">next_interface</span>) <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>() {
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">next_interface</span>) <span class="op">=</span> <span class="ident">next_interface</span> {
                             <span class="kw">if</span> <span class="op">!</span><span class="ident">same_interface_or_anonymous</span>(<span class="ident">next_interface</span>, <span class="ident">obj</span>.<span class="ident">interface</span>) {
                                 <span class="self">self</span>.<span class="ident">post_display_error</span>(
                                     <span class="ident">DisplayError::InvalidObject</span>,
@@ -1373,7 +1374,6 @@
                 }
             });
         }
-
         <span class="prelude-val">Some</span>((<span class="ident">new_args</span>, <span class="ident">message_desc</span>.<span class="ident">is_destructor</span>, <span class="ident">created_id</span>))
     }
 }
