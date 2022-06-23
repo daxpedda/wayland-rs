@@ -123,6 +123,14 @@
 <span id="118">118</span>
 <span id="119">119</span>
 <span id="120">120</span>
+<span id="121">121</span>
+<span id="122">122</span>
+<span id="123">123</span>
+<span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Implementations of the Wayland backends using the system `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::protocol::ArgumentType</span>;
@@ -150,6 +158,7 @@
 
 <span class="doccomment">/// Client-side implementation of a Wayland protocol backend using `libwayland`</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>)))]</span>
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;../client_api.rs&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">client</span>;
 
@@ -168,6 +177,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The provided pointer must be a valid pointer to a `wl_resource` and remain valid for as</span>
     <span class="doccomment">/// long as the retrieved `ObjectId` is used.</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_ptr</span>(
         <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident"><span class="kw">crate</span>::protocol::Interface</span>,
         <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_proxy</span>,
@@ -176,6 +186,7 @@
     }
 
     <span class="doccomment">/// Get the underlying libwayland pointer for this object</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_proxy</span> {
         <span class="self">self</span>.<span class="ident">id</span>.<span class="ident">as_ptr</span>()
     }
@@ -198,6 +209,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// You need to ensure the `*mut wl_display` remains live as lon as the  [`Backend`] (or its clones)</span>
     <span class="doccomment">/// exist.</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_foreign_display</span>(<span class="ident">display</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::client::wl_display</span>) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> { <span class="ident">backend</span>: <span class="kw">unsafe</span> { <span class="ident">client_impl::InnerBackend::from_foreign_display</span>(<span class="ident">display</span>) } }
     }
@@ -205,6 +217,7 @@
 
 <span class="doccomment">/// Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>)))]</span>
 <span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;../server_api.rs&quot;</span>]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">server</span>;
 
@@ -221,6 +234,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The provided pointer must be a valid pointer to a `wl_resource` and remain valid for as</span>
     <span class="doccomment">/// long as the retrieved `ObjectId` is used.</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">from_ptr</span>(
         <span class="ident">interface</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident"><span class="kw">crate</span>::protocol::Interface</span>,
         <span class="ident">ptr</span>: <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_resource</span>,
@@ -231,6 +245,7 @@
     <span class="doccomment">/// Returns the pointer that represents this object.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The pointer may be used to interoperate with libwayland.</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">as_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_resource</span> {
         <span class="self">self</span>.<span class="ident">id</span>.<span class="ident">as_ptr</span>()
     }
@@ -239,6 +254,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))]</span>
 <span class="kw">impl</span> <span class="ident">server::Handle</span> {
     <span class="doccomment">/// Access the underlying `*mut wl_display` pointer</span>
+    <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>)))]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">display_ptr</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">*mut</span> <span class="ident">wayland_sys::server::wl_display</span> {
         <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">display_ptr</span>()
     }
