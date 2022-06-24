@@ -1791,7 +1791,7 @@
         });
 
         <span class="kw">for</span> (<span class="ident">object</span>, <span class="ident">client_id</span>, <span class="ident">object_id</span>) <span class="kw">in</span>
-            <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pending_destructors</span>.<span class="ident">drain</span>(..)
+            <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pending_destructors</span>)
         {
             <span class="ident">object</span>.<span class="ident">destroyed</span>(<span class="ident">data</span>, <span class="ident">client_id</span>, <span class="ident">object_id</span>);
         }
