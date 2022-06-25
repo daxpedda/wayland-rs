@@ -297,7 +297,7 @@
     <span class="kw">let</span> <span class="ident">iface_const_name</span> <span class="op">=</span> <span class="macro">format_ident!</span>(<span class="string">&quot;{}_INTERFACE&quot;</span>, <span class="ident">interface</span>.<span class="ident">name</span>.<span class="ident">to_ascii_uppercase</span>());
 
     <span class="kw">let</span> <span class="ident">enums</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::common::generate_enums_for</span>(<span class="ident">interface</span>);
-    <span class="kw">let</span> <span class="ident">sinces</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::common::gen_since_constants</span>(<span class="kw-2">&amp;</span><span class="ident">interface</span>.<span class="ident">requests</span>, <span class="kw-2">&amp;</span><span class="ident">interface</span>.<span class="ident">events</span>);
+    <span class="kw">let</span> <span class="ident">sinces</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::common::gen_msg_constants</span>(<span class="kw-2">&amp;</span><span class="ident">interface</span>.<span class="ident">requests</span>, <span class="kw-2">&amp;</span><span class="ident">interface</span>.<span class="ident">events</span>);
 
     <span class="kw">let</span> <span class="ident">requests</span> <span class="op">=</span> <span class="ident"><span class="kw">crate</span>::common::gen_message_enum</span>(
         <span class="kw-2">&amp;</span><span class="macro">format_ident!</span>(<span class="string">&quot;Request&quot;</span>),
