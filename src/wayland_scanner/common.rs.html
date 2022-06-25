@@ -622,7 +622,7 @@
             <span class="ident">enum_decl</span> <span class="op">=</span> <span class="macro">quote!</span> {
                 #<span class="ident">doc_attr</span>
                 <span class="attribute">#[<span class="ident">repr</span>(<span class="ident">u32</span>)]</span>
-                <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+                <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>, <span class="ident">Hash</span>)]</span>
                 <span class="attribute">#[<span class="ident">non_exhaustive</span>]</span>
                 <span class="kw">pub</span> <span class="kw">enum</span> #<span class="ident">ident</span> {
                     #(#<span class="ident">variants</span>,)<span class="op">*</span>
