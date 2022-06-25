@@ -352,7 +352,7 @@
 <span class="macro">downcast_rs::impl_downcast!</span>(<span class="ident">sync</span> <span class="ident">ObjectData</span>);
 
 <span class="doccomment">/// An ID representing a Wayland object</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ObjectId</span> {
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">id</span>: <span class="ident">client_impl::InnerObjectId</span>,
 }
