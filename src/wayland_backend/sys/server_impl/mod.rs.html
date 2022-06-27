@@ -1838,9 +1838,9 @@
             <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_event_loop_dispatch</span>, <span class="ident">evl_ptr</span>, <span class="number">0</span>)
         });
 
-        <span class="kw">for</span> (<span class="ident">object</span>, <span class="ident">client_id</span>, <span class="ident">object_id</span>) <span class="kw">in</span>
-            <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pending_destructors</span>)
-        {
+        <span class="kw">let</span> <span class="ident">pending_destructors</span> <span class="op">=</span>
+            <span class="ident">std::mem::take</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">pending_destructors</span>);
+        <span class="kw">for</span> (<span class="ident">object</span>, <span class="ident">client_id</span>, <span class="ident">object_id</span>) <span class="kw">in</span> <span class="ident">pending_destructors</span> {
             <span class="ident">object</span>.<span class="ident">destroyed</span>(<span class="ident">data</span>, <span class="ident">client_id</span>, <span class="ident">object_id</span>);
         }
 
