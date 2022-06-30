@@ -1491,6 +1491,12 @@
 <span id="1486">1486</span>
 <span id="1487">1487</span>
 <span id="1488">1488</span>
+<span id="1489">1489</span>
+<span id="1490">1490</span>
+<span id="1491">1491</span>
+<span id="1492">1492</span>
+<span id="1493">1493</span>
+<span id="1494">1494</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -2505,10 +2511,16 @@
             <span class="kw-2">&amp;mut</span> <span class="kw-2">*</span>(<span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_global_get_user_data</span>, <span class="ident">id</span>.<span class="ident">ptr</span>)
                 <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">GlobalUserData</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>)
         };
-        <span class="ident">udata</span>.<span class="ident">disabled</span> <span class="op">=</span> <span class="bool-val">true</span>;
 
-        <span class="kw">unsafe</span> {
-            <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_global_remove</span>, <span class="ident">id</span>.<span class="ident">ptr</span>);
+        <span class="comment">// libwayland will abort if wl_global_remove is called more than once.</span>
+        <span class="comment">// This means we do nothing if the global is already disabled</span>
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">udata</span>.<span class="ident">disabled</span> {
+            <span class="ident">udata</span>.<span class="ident">disabled</span> <span class="op">=</span> <span class="bool-val">true</span>;
+
+            <span class="comment">// send the global_remove</span>
+            <span class="kw">unsafe</span> {
+                <span class="macro">ffi_dispatch!</span>(<span class="ident">WAYLAND_SERVER_HANDLE</span>, <span class="ident">wl_global_remove</span>, <span class="ident">id</span>.<span class="ident">ptr</span>);
+            }
         }
     }
 
