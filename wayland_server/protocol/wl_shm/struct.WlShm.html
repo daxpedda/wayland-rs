@@ -9,8 +9,8 @@
 memory.</p>
 <p>Clients can create wl_shm_pool objects using the create_pool
 request.</p>
-<p>At connection setup time, the wl_shm object emits one or more
-format events to inform clients about the valid pixel formats
+<p>On binding the wl_shm object one or more format events
+are emitted to inform clients about the valid pixel formats
 that can be used for buffers.</p>
 <p>See also the <a href="enum.Request.html" title="Request">Request</a> enum for this interface.</p>
 </div></details><h2 id="implementations" class="small-section-header">Implementations<a href="#implementations" class="anchor"></a></h2><div id="implementations-list"><details class="rustdoc-toggle implementors-toggle" open><summary><section id="impl" class="impl has-srclink"><span class="rightside"><a class="srclink" href="../../../src/wayland_server/lib.rs.html#37">source</a></span><a href="#impl" class="anchor"></a><h3 class="code-header in-band">impl <a class="struct" href="struct.WlShm.html" title="struct wayland_server::protocol::wl_shm::WlShm">WlShm</a></h3></section></summary><div class="impl-items"><details class="rustdoc-toggle method-toggle" open><summary><section id="method.format" class="method has-srclink"><span class="rightside"><a class="srclink" href="../../../src/wayland_server/lib.rs.html#37">source</a></span><a href="#method.format" class="anchor"></a><h4 class="code-header">pub fn <a href="#method.format" class="fnname">format</a>(&amp;self, format: <a class="enum" href="enum.Format.html" title="enum wayland_server::protocol::wl_shm::Format">Format</a>)</h4></section></summary><div class="docblock"><p>pixel format description</p>
