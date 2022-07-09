@@ -368,7 +368,7 @@
 <span class="doccomment">//! // the `Dispatch` documentation for more details about this.</span>
 <span class="doccomment">//! impl Dispatch&lt;wl_registry::WlRegistry, ()&gt; for AppData {</span>
 <span class="doccomment">//!     fn event(</span>
-<span class="doccomment">//!         &amp;mut self,</span>
+<span class="doccomment">//!         _state: &amp;mut Self,</span>
 <span class="doccomment">//!         _: &amp;wl_registry::WlRegistry,</span>
 <span class="doccomment">//!         event: wl_registry::Event,</span>
 <span class="doccomment">//!         _: &amp;(),</span>
@@ -484,7 +484,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wayland_backend::protocol::WEnum</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">conn</span>::{<span class="ident">ConnectError</span>, <span class="ident">Connection</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_queue</span>::{<span class="ident">DelegateDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">EventQueue</span>, <span class="ident">QueueHandle</span>, <span class="ident">QueueProxyData</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_queue</span>::{<span class="ident">Dispatch</span>, <span class="ident">EventQueue</span>, <span class="ident">QueueHandle</span>, <span class="ident">QueueProxyData</span>};
 
 <span class="doccomment">/// Generated protocol definitions</span>
 <span class="doccomment">///</span>

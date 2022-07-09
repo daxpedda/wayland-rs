@@ -38,7 +38,7 @@ process events for. This is ensured by the fact that, whenever creating an objec
 an other object, you need to pass a <a href="struct.QueueHandle.html" title="QueueHandle&lt;State&gt;"><code>QueueHandle&lt;State&gt;</code></a> from the <a href="struct.EventQueue.html" title="EventQueue"><code>EventQueue</code></a> that will be
 managing the newly created object.</p>
 <p>However, implementing all those traits on your own is a lot of (often uninteresting) work. To make this
-easier a composition mechanism is provided using the <a href="trait.DelegateDispatch.html" title="DelegateDispatch"><code>DelegateDispatch</code></a> trait and
+easier a composition mechanism is provided using the [<code>DelegateDispatch</code>] trait and
 <a href="macro.delegate_dispatch.html" title="delegate_dispatch!"><code>delegate_dispatch!</code></a> macro. This way, an other library (such as Smithay’s Client Toolkit) can provide
 generic <code>Dispatch&lt;_,_&gt;</code> immplementations that you can reuse on your own app by delegating thos objects to
 that provided implementation. See the documentation of those traits and macro for details.</p>
@@ -63,7 +63,7 @@ Wayland server and lists the globals this server advertized throught the <code>w
 <span class="comment">// the `Dispatch` documentation for more details about this.</span>
 <span class="kw">impl</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_registry::WlRegistry</span>, ()<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">AppData</span> {
     <span class="kw">fn</span> <span class="ident">event</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">_state</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>,
         <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">wl_registry::WlRegistry</span>,
         <span class="ident">event</span>: <span class="ident">wl_registry::Event</span>,
         <span class="kw">_</span>: <span class="kw-2">&amp;</span>(),
@@ -147,8 +147,8 @@ using <code>ObjectId::from_ptr()</code>, and then make the proxies using <a href
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="backend/index.html" title="wayland_client::backend mod">backend</a></div><div class="item-right docblock-short"><p>Backend reexports</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="mod" href="protocol/index.html" title="wayland_client::protocol mod">protocol</a></div><div class="item-right docblock-short"><p>Generated protocol definitions</p>
 </div></div></div><h2 id="macros" class="small-section-header"><a href="#macros">Macros</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.delegate_dispatch.html" title="wayland_client::delegate_dispatch macro">delegate_dispatch</a></div><div class="item-right docblock-short"><p>A helper macro which delegates a set of <a href="trait.Dispatch.html" title="Dispatch"><code>Dispatch</code></a> implementations for a proxy to some other type which
-implements <a href="trait.DelegateDispatch.html" title="DelegateDispatch"><code>DelegateDispatch</code></a> for each proxy.</p>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.delegate_dispatch.html" title="wayland_client::delegate_dispatch macro">delegate_dispatch</a></div><div class="item-right docblock-short"><p>A helper macro which delegates a set of <a href="trait.Dispatch.html" title="Dispatch"><code>Dispatch</code></a> implementations for proxies to some other type which
+provides a generic <a href="trait.Dispatch.html" title="Dispatch"><code>Dispatch</code></a> implementation.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="macro" href="macro.event_created_child.html" title="wayland_client::event_created_child macro">event_created_child</a></div><div class="item-right docblock-short"><p>Macro used to override <a href="trait.Dispatch.html#method.event_created_child" title="Dispatch::event_created_child()"><code>Dispatch::event_created_child()</code></a></p>
 </div></div></div><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
 <div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Connection.html" title="wayland_client::Connection struct">Connection</a></div><div class="item-right docblock-short"><p>The Wayland connection</p>
@@ -160,8 +160,7 @@ implements <a href="trait.DelegateDispatch.html" title="DelegateDispatch"><code>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.DispatchError.html" title="wayland_client::DispatchError enum">DispatchError</a></div><div class="item-right docblock-short"><p>Wayland dispatching error</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.WEnum.html" title="wayland_client::WEnum enum">WEnum</a></div><div class="item-right docblock-short"><p>An enum value in the protocol.</p>
 </div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
-<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.DelegateDispatch.html" title="wayland_client::DelegateDispatch trait">DelegateDispatch</a></div><div class="item-right docblock-short"><p>A trait which defines a delegate type to handle some type of proxy.</p>
-</div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Dispatch.html" title="wayland_client::Dispatch trait">Dispatch</a></div><div class="item-right docblock-short"><p>A trait providing an implementation for handling events a proxy through an <a href="struct.EventQueue.html" title="EventQueue"><code>EventQueue</code></a>.</p>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Dispatch.html" title="wayland_client::Dispatch trait">Dispatch</a></div><div class="item-right docblock-short"><p>A trait providing an implementation for handling events a proxy through an <a href="struct.EventQueue.html" title="EventQueue"><code>EventQueue</code></a>.</p>
 </div></div><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Proxy.html" title="wayland_client::Proxy trait">Proxy</a></div><div class="item-right docblock-short"><p>Trait representing a Wayland interface</p>
 </div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="wayland_client" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>
 </body></html>

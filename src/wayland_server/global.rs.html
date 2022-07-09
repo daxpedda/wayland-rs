@@ -232,37 +232,6 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
-<span id="230">230</span>
-<span id="231">231</span>
-<span id="232">232</span>
-<span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
-<span id="245">245</span>
-<span id="246">246</span>
-<span id="247">247</span>
-<span id="248">248</span>
-<span id="249">249</span>
-<span id="250">250</span>
-<span id="251">251</span>
-<span id="252">252</span>
-<span id="253">253</span>
-<span id="254">254</span>
-<span id="255">255</span>
-<span id="256">256</span>
-<span id="257">257</span>
-<span id="258">258</span>
-<span id="259">259</span>
-<span id="260">260</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">wayland_backend::server</span>::{
@@ -302,7 +271,8 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_data</span> <span class="op">=</span> <span class="prelude-val">None</span>;
 
-        <span class="ident">data</span>.<span class="ident">bind</span>(
+        <span class="op">&lt;</span><span class="ident">D</span> <span class="kw">as</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::bind</span>(
+            <span class="ident">data</span>,
             <span class="kw-2">&amp;</span><span class="ident">handle</span>,
             <span class="kw-2">&amp;</span><span class="ident">client</span>,
             <span class="ident">New::wrap</span>(<span class="ident">resource</span>),
@@ -322,18 +292,18 @@
 
 <span class="doccomment">/// A trait which provides an implementation for handling advertisement of a global to clients with some type</span>
 <span class="doccomment">/// of associated user data.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Resource</span>, <span class="ident">GU</span><span class="op">&gt;</span>: <span class="ident">Sized</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Resource</span>, <span class="ident">GlobalData</span>, <span class="ident">State</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>: <span class="ident">Sized</span> {
     <span class="doccomment">/// Called when a client has bound this global.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The return value of this function should contain user data to associate the object created by the</span>
     <span class="doccomment">/// client.</span>
     <span class="kw">fn</span> <span class="ident">bind</span>(
-        <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+        <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">State</span>,
         <span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
         <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>,
         <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
-        <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident">GU</span>,
-        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
+        <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalData</span>,
+        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">State</span><span class="op">&gt;</span>,
     );
 
     <span class="doccomment">/// Checks if the global should be advertised to some client.</span>
@@ -346,7 +316,7 @@
     <span class="doccomment">/// which must only be used by XWayland.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// The default implementation allows all clients to see the global.</span>
-    <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">_client</span>: <span class="ident">Client</span>, <span class="ident">_global_data</span>: <span class="kw-2">&amp;</span><span class="ident">GU</span>) -&gt; <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">_client</span>: <span class="ident">Client</span>, <span class="ident">_global_data</span>: <span class="kw-2">&amp;</span><span class="ident">GlobalData</span>) -&gt; <span class="ident">bool</span> {
         <span class="bool-val">true</span>
     }
 }
@@ -355,55 +325,23 @@
  * Dispatch delegation helpers
  */</span>
 
-<span class="doccomment">/// A trait which defines a delegate type to handle some type of global.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// This trait is useful for building modular handlers for globals.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Resource</span>, <span class="ident">U</span>, <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">U</span><span class="op">&gt;</span><span class="op">&gt;</span>: <span class="ident">Sized</span> {
-    <span class="doccomment">/// Called when a client has bound this global.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The return value of this function should contain user data to associate the object created by the</span>
-    <span class="doccomment">/// client.</span>
-    <span class="kw">fn</span> <span class="ident">bind</span>(
-        <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="ident">D</span>,
-        <span class="ident">handle</span>: <span class="kw-2">&amp;</span><span class="ident">DisplayHandle</span>,
-        <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>,
-        <span class="ident">resource</span>: <span class="ident">New</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span>,
-        <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="ident">U</span>,
-        <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="ident">DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">D</span><span class="op">&gt;</span>,
-    );
-
-    <span class="doccomment">/// Checks if the global should be advertised to some client.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The implementation of this function determines whether a client may see and bind some global. If this</span>
-    <span class="doccomment">/// function returns false, the client will not be told the global exists and attempts to bind the global</span>
-    <span class="doccomment">/// will raise a protocol error.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// One use of this function is implementing privileged protocols such as XWayland keyboard grabbing</span>
-    <span class="doccomment">/// which must only be used by XWayland.</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// The default implementation allows all clients to see the global.</span>
-    <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">_client</span>: <span class="ident">Client</span>, <span class="ident">_global_data</span>: <span class="kw-2">&amp;</span><span class="ident">U</span>) -&gt; <span class="ident">bool</span> {
-        <span class="bool-val">true</span>
-    }
-}
-
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">delegate_global_dispatch</span> {
     ($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">tt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span>:<span class="ident">tt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span>:<span class="ident">tt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span>:<span class="ident">ty</span> : [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ty</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>: <span class="ident">ty</span>] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span>: <span class="ident">ty</span>) =&gt; {
         <span class="kw">impl</span>$(<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::GlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span> {
             <span class="kw">fn</span> <span class="ident">bind</span>(
-                <span class="kw-2">&amp;mut</span> <span class="self">self</span>,
+                <span class="ident">state</span>: <span class="kw-2">&amp;mut</span> <span class="self">Self</span>,
                 <span class="ident">dhandle</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DisplayHandle</span>,
                 <span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Client</span>,
                 <span class="ident">resource</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::New</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span><span class="op">&gt;</span>,
                 <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>,
                 <span class="ident">data_init</span>: <span class="kw-2">&amp;mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DataInit</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="self">Self</span><span class="op">&gt;</span>,
             ) {
-                <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::bind</span>(<span class="self">self</span>, <span class="ident">dhandle</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">global_data</span>, <span class="ident">data_init</span>)
+                <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::GlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::bind</span>(<span class="ident">state</span>, <span class="ident">dhandle</span>, <span class="ident">client</span>, <span class="ident">resource</span>, <span class="ident">global_data</span>, <span class="ident">data_init</span>)
             }
 
             <span class="kw">fn</span> <span class="ident">can_view</span>(<span class="ident">client</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::Client</span>, <span class="ident">global_data</span>: <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>) -&gt; <span class="ident">bool</span> {
-                <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::can_view</span>(<span class="ident">client</span>, <span class="ident">global_data</span>)
+                <span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">crate::GlobalDispatch</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>, <span class="self">Self</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="ident">::can_view</span>(<span class="ident">client</span>, <span class="ident">global_data</span>)
             }
         }
     };
@@ -414,13 +352,13 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">smoke_test_dispatch_global_dispatch</span>() {
         <span class="kw">use</span> <span class="kw">crate</span>::{
-            <span class="ident">delegate_dispatch</span>, <span class="ident">protocol::wl_output</span>, <span class="ident">Client</span>, <span class="ident">DataInit</span>, <span class="ident">DelegateDispatch</span>,
-            <span class="ident">DelegateGlobalDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>, <span class="ident">New</span>,
+            <span class="ident">delegate_dispatch</span>, <span class="ident">protocol::wl_output</span>, <span class="ident">Client</span>, <span class="ident">DataInit</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>,
+            <span class="ident">GlobalDispatch</span>, <span class="ident">New</span>,
         };
 
         <span class="kw">struct</span> <span class="ident">DelegateToMe</span>;
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span>
         <span class="kw">where</span>
             <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, ()<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsMut</span><span class="op">&lt;</span><span class="ident">DelegateToMe</span><span class="op">&gt;</span>,
         {
@@ -435,7 +373,7 @@
             ) {
             }
         }
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span>
         <span class="kw">where</span>
             <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, ()<span class="op">&gt;</span>,
             <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, ()<span class="op">&gt;</span>,
@@ -469,13 +407,13 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">smoke_test_dispatch_global_dispatch_generics</span>() {
         <span class="kw">use</span> <span class="kw">crate</span>::{
-            <span class="ident">delegate_dispatch</span>, <span class="ident">protocol::wl_output</span>, <span class="ident">Client</span>, <span class="ident">DataInit</span>, <span class="ident">DelegateDispatch</span>,
-            <span class="ident">DelegateGlobalDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>, <span class="ident">GlobalDispatch</span>, <span class="ident">New</span>,
+            <span class="ident">delegate_dispatch</span>, <span class="ident">protocol::wl_output</span>, <span class="ident">Client</span>, <span class="ident">DataInit</span>, <span class="ident">Dispatch</span>, <span class="ident">DisplayHandle</span>,
+            <span class="ident">GlobalDispatch</span>, <span class="ident">New</span>,
         };
 
         <span class="kw">struct</span> <span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>(<span class="ident">A</span>);
 
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
         <span class="kw">where</span>
             <span class="ident">A</span>: <span class="lifetime">&#39;static</span>,
             <span class="ident">D</span>: <span class="ident">Dispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, ()<span class="op">&gt;</span> <span class="op">+</span> <span class="ident">AsMut</span><span class="op">&lt;</span><span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span><span class="op">&gt;</span>,
@@ -491,7 +429,7 @@
             ) {
             }
         }
-        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">DelegateGlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
+        <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">A</span>, <span class="ident">D</span><span class="op">&gt;</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, (), <span class="ident">D</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">DelegateToMe</span><span class="op">&lt;</span><span class="ident">A</span><span class="op">&gt;</span>
         <span class="kw">where</span>
             <span class="ident">A</span>: <span class="lifetime">&#39;static</span>,
             <span class="ident">D</span>: <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">wl_output::WlOutput</span>, ()<span class="op">&gt;</span>,

@@ -113,9 +113,9 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">socket</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">client::Client</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dispatch</span>::{<span class="ident">DataInit</span>, <span class="ident">DelegateDispatch</span>, <span class="ident">Dispatch</span>, <span class="ident">New</span>, <span class="ident">ResourceData</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">dispatch</span>::{<span class="ident">DataInit</span>, <span class="ident">Dispatch</span>, <span class="ident">New</span>, <span class="ident">ResourceData</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">display</span>::{<span class="ident">Display</span>, <span class="ident">DisplayHandle</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">global</span>::{<span class="ident">DelegateGlobalDispatch</span>, <span class="ident">GlobalDispatch</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">global::GlobalDispatch</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">backend</span> {
     <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wayland_backend::protocol</span>;
