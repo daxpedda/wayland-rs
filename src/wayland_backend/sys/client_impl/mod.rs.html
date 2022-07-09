@@ -1002,6 +1002,10 @@
 <span id="997">997</span>
 <span id="998">998</span>
 <span id="999">999</span>
+<span id="1000">1000</span>
+<span id="1001">1001</span>
+<span id="1002">1002</span>
+<span id="1003">1003</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Client-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -1284,6 +1288,10 @@
         } <span class="kw">else</span> {
             <span class="prelude-val">Ok</span>(())
         }
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dispatch_inner_queue</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">usize</span>, <span class="ident">WaylandError</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">dispatch_lock</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">dispatch_pending</span>(<span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">clone</span>())
     }
 }
 

@@ -1,6 +1,6 @@
 var sourcesIndex = {};
 sourcesIndex["wayland_backend"] = {"name":"","dirs":[{"name":"rs","dirs":[{"name":"client_impl","files":["mod.rs"]},{"name":"server_impl","files":["client.rs","common_poll.rs","handle.rs","mod.rs","registry.rs"]}],"files":["client_api.rs","debug.rs","map.rs","mod.rs","server_api.rs","socket.rs","wire.rs"]},{"name":"sys","dirs":[{"name":"client_impl","files":["mod.rs"]},{"name":"server_impl","files":["mod.rs"]}],"files":["client_api.rs","mod.rs","server_api.rs"]},{"name":"types","files":["client.rs","mod.rs","server.rs"]}],"files":["core_interfaces.rs","lib.rs","protocol.rs"]};
-sourcesIndex["wayland_client"] = {"name":"","files":["conn.rs","event_queue.rs","globals.rs","lib.rs"]};
+sourcesIndex["wayland_client"] = {"name":"","files":["conn.rs","event_queue.rs","lib.rs"]};
 sourcesIndex["wayland_cursor"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["wayland_egl"] = {"name":"","files":["lib.rs"]};
 sourcesIndex["wayland_protocols"] = {"name":"","files":["ext.rs","lib.rs","protocol_macro.rs","wp.rs","xdg.rs"]};

@@ -85,6 +85,12 @@
 <span id="80">80</span>
 <span id="81">81</span>
 <span id="82">82</span>
+<span id="83">83</span>
+<span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
+<span id="87">87</span>
+<span id="88">88</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Backend API for wayland crates</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate provide low-level APIs for interacting with the Wayland protocol,</span>
@@ -98,13 +104,19 @@
 <span class="doccomment">//! libraries are loaded dynamically at runtime, so that your executable does not link them and</span>
 <span class="doccomment">//! can gracefully handle their absence (for example by falling back to X11).</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Additionnaly the default backends are reexported as toplevel `client` and `server` modules</span>
+<span class="doccomment">//! Additionally the default backends are reexported as toplevel `client` and `server` modules</span>
 <span class="doccomment">//! in this crate. For both client and server, the default backend is the system one if the</span>
-<span class="doccomment">//! associated cargo feature is enabled, and the rust one otherwise. Using these reexports is the</span>
-<span class="doccomment">//! recommended way to use the crate.</span>
+<span class="doccomment">//! associated cargo feature is enabled, and the rust one otherwise.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! Both backends have the exact same API, except that the system backend additionnaly provides</span>
-<span class="doccomment">//! functions related to FFI.</span>
+<span class="doccomment">//! Using these reexports is the recommended way to use the crate:</span>
+<span class="doccomment">//! - If you don&#39;t need the `*_system` features, an other crate enabling them will not impact your code in</span>
+<span class="doccomment">//!   any way as both backends have the same API (the system backend only has more methods)</span>
+<span class="doccomment">//! - If your code needs to do FFI, you just need to directly depend on `wayland-backend` with the</span>
+<span class="doccomment">//!   appropriate `*_system` feature enabled, and all the other crates in your dependency tree will</span>
+<span class="doccomment">//!   automatically use the `sys` backend.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Both the `wayland-client` and `wayland-server` crates follow this principle, so everything will &quot;Just</span>
+<span class="doccomment">//! Work&quot; when using them.</span>
 
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
@@ -126,7 +138,7 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))]</span>
-<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">test</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))))]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">docsrs</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">any</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;client_system&quot;</span>, <span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;server_system&quot;</span>))))]</span>
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">sys</span>;
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">rs</span>;
