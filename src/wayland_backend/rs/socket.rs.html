@@ -933,7 +933,7 @@
             <span class="ident">args</span>: <span class="macro">smallvec!</span>[
                 <span class="ident">Argument::Uint</span>(<span class="number">3</span>),
                 <span class="ident">Argument::Fixed</span>(<span class="op">-</span><span class="number">89</span>),
-                <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains!&quot;</span>[..]).<span class="ident">unwrap</span>())),
+                <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains!&quot;</span>[..]).<span class="ident">unwrap</span>()))),
                 <span class="ident">Argument::Array</span>(<span class="macro">vec!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>].<span class="ident">into</span>()),
                 <span class="ident">Argument::Object</span>(<span class="number">88</span>),
                 <span class="ident">Argument::NewId</span>(<span class="number">56</span>),
@@ -1017,7 +1017,7 @@
                 <span class="ident">opcode</span>: <span class="number">0</span>,
                 <span class="ident">args</span>: <span class="macro">smallvec!</span>[
                     <span class="ident">Argument::Int</span>(<span class="number">42</span>),
-                    <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains&quot;</span>[..]).<span class="ident">unwrap</span>())),
+                    <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;I like trains&quot;</span>[..]).<span class="ident">unwrap</span>()))),
                 ],
             },
             <span class="ident">Message</span> {
@@ -1078,7 +1078,7 @@
             <span class="ident">opcode</span>: <span class="number">0</span>,
             <span class="ident">args</span>: <span class="macro">smallvec!</span>[
                 <span class="ident">Argument::Uint</span>(<span class="number">18</span>),
-                <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;wl_shell&quot;</span>[..]).<span class="ident">unwrap</span>())),
+                <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="kw-2">&amp;</span><span class="string">b&quot;wl_shell&quot;</span>[..]).<span class="ident">unwrap</span>()))),
                 <span class="ident">Argument::Uint</span>(<span class="number">1</span>),
             ],
         };

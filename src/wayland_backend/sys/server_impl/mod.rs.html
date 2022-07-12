@@ -1497,6 +1497,11 @@
 <span id="1492">1492</span>
 <span id="1493">1493</span>
 <span id="1494">1494</span>
+<span id="1495">1495</span>
+<span id="1496">1496</span>
+<span id="1497">1497</span>
+<span id="1498">1498</span>
+<span id="1499">1499</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
@@ -2376,7 +2381,8 @@
                     });
                     <span class="ident">argument_list</span>.<span class="ident">push</span>(<span class="ident">wl_argument</span> { <span class="ident">a</span>: <span class="ident">Box::into_raw</span>(<span class="ident">a</span>) })
                 }
-                <span class="ident">Argument::Str</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) =&gt; <span class="ident">argument_list</span>.<span class="ident">push</span>(<span class="ident">wl_argument</span> { <span class="ident">s</span>: <span class="ident">s</span>.<span class="ident">as_ptr</span>() }),
+                <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">s</span>)) =&gt; <span class="ident">argument_list</span>.<span class="ident">push</span>(<span class="ident">wl_argument</span> { <span class="ident">s</span>: <span class="ident">s</span>.<span class="ident">as_ptr</span>() }),
+                <span class="ident">Argument::Str</span>(<span class="prelude-val">None</span>) =&gt; <span class="ident">argument_list</span>.<span class="ident">push</span>(<span class="ident">wl_argument</span> { <span class="ident">s</span>: <span class="ident">std::ptr::null</span>() }),
                 <span class="ident">Argument::Object</span>(<span class="kw-2">ref</span> <span class="ident">o</span>) =&gt; {
                     <span class="kw">let</span> <span class="ident">next_interface</span> <span class="op">=</span> <span class="ident">arg_interfaces</span>.<span class="ident">next</span>().<span class="ident">unwrap</span>();
                     <span class="kw">if</span> <span class="op">!</span><span class="ident">o</span>.<span class="ident">id</span>.<span class="ident">ptr</span>.<span class="ident">is_null</span>() {
@@ -2786,8 +2792,12 @@
             <span class="ident">ArgumentType::Str</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">s</span> };
                 <span class="comment">// Safety: the c-string provided by libwayland is valid</span>
-                <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">ptr</span>) };
-                <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">cstr</span>.<span class="ident">into</span>())));
+                <span class="kw">if</span> <span class="op">!</span><span class="ident">ptr</span>.<span class="ident">is_null</span>() {
+                    <span class="kw">let</span> <span class="ident">cstr</span> <span class="op">=</span> <span class="kw">unsafe</span> { <span class="ident">std::ffi::CStr::from_ptr</span>(<span class="ident">ptr</span>) };
+                    <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">cstr</span>.<span class="ident">into</span>()))));
+                } <span class="kw">else</span> {
+                    <span class="ident">parsed_args</span>.<span class="ident">push</span>(<span class="ident">Argument::Str</span>(<span class="prelude-val">None</span>));
+                }
             }
             <span class="ident">ArgumentType::Object</span>(<span class="kw">_</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">obj</span> <span class="op">=</span> <span class="kw">unsafe</span> { (<span class="kw-2">*</span><span class="ident">args</span>.<span class="ident">add</span>(<span class="ident">i</span>)).<span class="ident">o</span> <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">wl_resource</span> };

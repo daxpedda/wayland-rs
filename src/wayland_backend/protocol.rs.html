@@ -360,7 +360,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// The value is boxed to reduce the stack size of Argument. The performance</span>
     <span class="doccomment">/// impact is negligible as `string` arguments are pretty rare in the protocol.</span>
-    <span class="ident">Str</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">CString</span><span class="op">&gt;</span>),
+    <span class="ident">Str</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">CString</span><span class="op">&gt;</span><span class="op">&gt;</span>),
     <span class="doccomment">/// Id of a wayland object</span>
     <span class="ident">Object</span>(<span class="ident">Id</span>),
     <span class="doccomment">/// Id of a newly created wayland object</span>

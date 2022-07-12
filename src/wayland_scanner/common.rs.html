@@ -547,13 +547,6 @@
 <span id="542">542</span>
 <span id="543">543</span>
 <span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::fmt::Write</span>;
 
 <span class="kw">use</span> <span class="ident">proc_macro2</span>::{<span class="ident">Ident</span>, <span class="ident">Literal</span>, <span class="ident">Span</span>, <span class="ident">TokenStream</span>};
@@ -885,20 +878,13 @@
                     <span class="ident">Type::Uint</span> <span class="op">|</span> <span class="ident">Type::Int</span> <span class="op">|</span> <span class="ident">Type::Fd</span> =&gt; <span class="macro">quote!</span>{ #<span class="ident">arg_name</span>: <span class="kw-2">*</span>#<span class="ident">arg_name</span> },
                     <span class="ident">Type::Fixed</span> =&gt; <span class="macro">quote!</span>{ #<span class="ident">arg_name</span>: (<span class="kw-2">*</span>#<span class="ident">arg_name</span> <span class="kw">as</span> <span class="ident">f64</span>) <span class="op">/</span> <span class="number">256.</span>},
                     <span class="ident">Type::String</span> =&gt; {
-                        <span class="kw">let</span> <span class="ident">string_conversion</span> <span class="op">=</span> <span class="macro">quote!</span> {
-                            <span class="ident">String::from_utf8_lossy</span>(#<span class="ident">arg_name</span>.<span class="ident">as_bytes</span>()).<span class="ident">into_owned</span>()
-                        };
-
                         <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">allow_null</span> {
                             <span class="macro">quote!</span> {
-                                #<span class="ident">arg_name</span>: {
-                                    <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> #<span class="ident">string_conversion</span>;
-                                    <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> { <span class="prelude-val">None</span> } <span class="kw">else</span> { <span class="prelude-val">Some</span>(<span class="ident">s</span>) }
-                                }
+                                #<span class="ident">arg_name</span>: #<span class="ident">arg_name</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">String::from_utf8_lossy</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>()).<span class="ident">into_owned</span>())
                             }
                         } <span class="kw">else</span> {
                             <span class="macro">quote!</span> {
-                                #<span class="ident">arg_name</span>: #<span class="ident">string_conversion</span>
+                                #<span class="ident">arg_name</span>: <span class="ident">String::from_utf8_lossy</span>(#<span class="ident">arg_name</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">as_bytes</span>()).<span class="ident">into_owned</span>()
                             }
                         }
                     },
@@ -1039,9 +1025,9 @@
                     <span class="macro">quote!</span> { <span class="ident">Argument::Array</span>(<span class="ident">Box::new</span>(#<span class="ident">arg_name</span>)) }
                 },
                 <span class="ident">Type::String</span> =&gt; <span class="kw">if</span> <span class="ident">arg</span>.<span class="ident">allow_null</span> {
-                    <span class="macro">quote!</span> { <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">string</span>) <span class="op">=</span> #<span class="ident">arg_name</span> { <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(<span class="ident">string</span>).<span class="ident">unwrap</span>())) } <span class="kw">else</span> { <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(<span class="ident">Vec::new</span>()).<span class="ident">unwrap</span>())) }}
+                    <span class="macro">quote!</span> { <span class="ident">Argument::Str</span>(#<span class="ident">arg_name</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>()))) }
                 } <span class="kw">else</span> {
-                    <span class="macro">quote!</span> { <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(#<span class="ident">arg_name</span>).<span class="ident">unwrap</span>())) }
+                    <span class="macro">quote!</span> { <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(#<span class="ident">arg_name</span>).<span class="ident">unwrap</span>()))) }
                 },
                 <span class="ident">Type::NewId</span> =&gt; <span class="kw">if</span> <span class="ident">side</span> <span class="op">==</span> <span class="ident">Side::Client</span> {
                     <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">created_interface</span>) <span class="op">=</span> <span class="ident">arg</span>.<span class="ident">interface</span> {
@@ -1054,7 +1040,7 @@
                         } }
                     } <span class="kw">else</span> {
                         <span class="macro">quote!</span> {
-                            <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(#<span class="ident">arg_name</span>.<span class="number">0</span>.<span class="ident">name</span>).<span class="ident">unwrap</span>())),
+                            <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">std::ffi::CString::new</span>(#<span class="ident">arg_name</span>.<span class="number">0</span>.<span class="ident">name</span>).<span class="ident">unwrap</span>()))),
                             <span class="ident">Argument::Uint</span>(#<span class="ident">arg_name</span>.<span class="number">1</span>),
                             {
                                 <span class="ident">child_spec</span> <span class="op">=</span> <span class="prelude-val">Some</span>((#<span class="ident">arg_name</span>.<span class="number">0</span>, #<span class="ident">arg_name</span>.<span class="number">1</span>));

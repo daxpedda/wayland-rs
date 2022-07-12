@@ -494,7 +494,7 @@
             <span class="number">0</span>, <span class="comment">// wl_registry.global</span>
             [
                 <span class="ident">Argument::Uint</span>(<span class="ident">global</span>.<span class="ident">id</span>.<span class="ident">id</span>),
-                <span class="ident">Argument::Str</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="ident">global</span>.<span class="ident">interface</span>.<span class="ident">name</span>).<span class="ident">unwrap</span>())),
+                <span class="ident">Argument::Str</span>(<span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">CString::new</span>(<span class="ident">global</span>.<span class="ident">interface</span>.<span class="ident">name</span>).<span class="ident">unwrap</span>()))),
                 <span class="ident">Argument::Uint</span>(<span class="ident">global</span>.<span class="ident">version</span>),
             ],
         ),
