@@ -1310,7 +1310,7 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Proxy</span>, <span class="ident">State</span><span class="op">&gt;</span> <span class="ident">ErasedQueueSender</span><span class="op">&lt;</span><span class="ident">I</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">QueueSender</span><span class="op">&lt;</span><span class="ident">State</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">Message</span><span class="op">&lt;</span><span class="ident">ObjectId</span><span class="op">&gt;</span>, <span class="ident">odata</span>: <span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">ObjectData</span><span class="op">&gt;</span>) {
         <span class="kw">if</span> <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">tx</span>.<span class="ident">unbounded_send</span>(<span class="ident">QueueEvent</span>(<span class="self">self</span>.<span class="ident">func</span>, <span class="ident">msg</span>, <span class="ident">odata</span>)).<span class="ident">is_err</span>() {
-            <span class="macro">log::error!</span>(<span class="string">&quot;Event received for EventQueue after it was dropped.&quot;</span>);
+            <span class="macro">crate::log_error!</span>(<span class="string">&quot;Event received for EventQueue after it was dropped.&quot;</span>);
         }
     }
 }

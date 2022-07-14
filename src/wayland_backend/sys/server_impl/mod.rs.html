@@ -1502,11 +1502,13 @@
 <span id="1497">1497</span>
 <span id="1498">1498</span>
 <span id="1499">1499</span>
+<span id="1500">1500</span>
+<span id="1501">1501</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Server-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">ffi</span>::{<span class="ident">CStr</span>, <span class="ident">CString</span>},
-    <span class="ident">os::raw</span>::{<span class="ident">c_char</span>, <span class="ident">c_void</span>},
+    <span class="ident">os::raw::c_void</span>,
     <span class="ident">os::unix</span>::{
         <span class="ident">io</span>::{<span class="ident">IntoRawFd</span>, <span class="ident">RawFd</span>},
         <span class="ident">net::UnixStream</span>,
@@ -1774,6 +1776,7 @@
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-backend-sys] libwayland reported an allocation failure.&quot;</span>);
         }
 
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
         <span class="kw">unsafe</span> {
             <span class="macro">ffi_dispatch!</span>(
                 <span class="ident">WAYLAND_SERVER_HANDLE</span>,
@@ -2766,7 +2769,7 @@
     <span class="kw">let</span> <span class="ident">message_desc</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">interface</span>.<span class="ident">requests</span>.<span class="ident">get</span>(<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">desc</span>) =&gt; <span class="ident">desc</span>,
         <span class="prelude-val">None</span> =&gt; {
-            <span class="macro">log::error!</span>(<span class="string">&quot;Unknown event opcode {} for interface {}.&quot;</span>, <span class="ident">opcode</span>, <span class="ident">interface</span>.<span class="ident">name</span>);
+            <span class="macro">crate::log_error!</span>(<span class="string">&quot;Unknown event opcode {} for interface {}.&quot;</span>, <span class="ident">opcode</span>, <span class="ident">interface</span>.<span class="ident">name</span>);
             <span class="kw">return</span> <span class="op">-</span><span class="number">1</span>;
         }
     };
@@ -2975,8 +2978,9 @@
     }
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> {
-    <span class="kw">fn</span> <span class="ident">wl_log_trampoline_to_rust_server</span>(<span class="ident">fmt</span>: <span class="kw-2">*const</span> <span class="ident">c_char</span>, <span class="ident">list</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>);
+    <span class="kw">fn</span> <span class="ident">wl_log_trampoline_to_rust_server</span>(<span class="ident">fmt</span>: <span class="kw-2">*const</span> <span class="ident">std::os::raw::c_char</span>, <span class="ident">list</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>);
 }
 
 <span class="kw">struct</span> <span class="ident">UninitObjectData</span>;

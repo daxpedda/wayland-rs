@@ -296,6 +296,22 @@
 <span id="291">291</span>
 <span id="292">292</span>
 <span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Interface for interacting with the Wayland protocol, client-side.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## General concepts</span>
@@ -456,6 +472,12 @@
 <span class="doccomment">//!   method (see `wayland-backend` docs), and then make it into a [`Connection`] using</span>
 <span class="doccomment">//!   [`Connection::from_backend()`]. Similarly, you can make [`ObjectId`]s from the `*mut wl_proxy` pointers</span>
 <span class="doccomment">//!   using `ObjectId::from_ptr()`, and then make the proxies using [`Proxy::from_id`].</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Logging</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate can generate some runtime error message (notably when a protocol error occurs). By default</span>
+<span class="doccomment">//! those messages are printed to stderr. If you activate the `log` cargo feature, they will instead be</span>
+<span class="doccomment">//! piped through the `log` crate.</span>
 
 <span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::needless_doctest_main</span>)]</span>
 <span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_docs</span>, <span class="ident">missing_debug_implementations</span>)]</span>
@@ -485,6 +507,16 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">conn</span>::{<span class="ident">ConnectError</span>, <span class="ident">Connection</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_queue</span>::{<span class="ident">Dispatch</span>, <span class="ident">EventQueue</span>, <span class="ident">QueueHandle</span>, <span class="ident">QueueProxyData</span>};
+
+<span class="comment">// internal imports for dispatching logging depending on the `log` feature</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
+<span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">debug</span> <span class="kw">as</span> <span class="ident">log_debug</span>, <span class="ident">error</span> <span class="kw">as</span> <span class="ident">log_error</span>, <span class="ident">info</span> <span class="kw">as</span> <span class="ident">log_info</span>, <span class="ident">warn</span> <span class="kw">as</span> <span class="ident">log_warn</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_error</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_warn</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_info</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_debug</span>,
+};
 
 <span class="doccomment">/// Generated protocol definitions</span>
 <span class="doccomment">///</span>

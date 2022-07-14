@@ -98,7 +98,31 @@
 <span id="93">93</span>
 <span id="94">94</span>
 <span id="95">95</span>
-</pre><pre class="rust"><code><span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_debug_implementations</span>)]</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+</pre><pre class="rust"><code><span class="doccomment">//!</span>
+<span class="doccomment">//! ## Logging</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate can generate some runtime error message (notably when a protocol error occurs). By default</span>
+<span class="doccomment">//! those messages are printed to stderr. If you activate the `log` cargo feature, they will instead be</span>
+<span class="doccomment">//! piped through the `log` crate.</span>
+
+<span class="attribute">#![<span class="ident">warn</span>(<span class="ident">missing_debug_implementations</span>)]</span>
 <span class="attribute">#![<span class="ident">forbid</span>(<span class="ident">improper_ctypes</span>, <span class="ident">unsafe_op_in_unsafe_fn</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">wayland_backend</span>::{
@@ -136,6 +160,16 @@
     }
     <span class="macro">wayland_scanner::generate_server_code!</span>(<span class="string">&quot;wayland.xml&quot;</span>);
 }
+
+<span class="comment">// internal imports for dispatching logging depending on the `log` feature</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
+<span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">debug</span> <span class="kw">as</span> <span class="ident">log_debug</span>, <span class="ident">error</span> <span class="kw">as</span> <span class="ident">log_error</span>, <span class="ident">info</span> <span class="kw">as</span> <span class="ident">log_info</span>, <span class="ident">warn</span> <span class="kw">as</span> <span class="ident">log_warn</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_error</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_warn</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_info</span>, <span class="ident">eprintln</span> <span class="kw">as</span> <span class="ident">log_debug</span>,
+};
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Resource</span>: <span class="ident">Sized</span> {
     <span class="kw">type</span> <span class="ident">Event</span>;

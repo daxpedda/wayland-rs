@@ -1011,12 +1011,14 @@
 <span id="1006">1006</span>
 <span id="1007">1007</span>
 <span id="1008">1008</span>
+<span id="1009">1009</span>
+<span id="1010">1010</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Client-side implementation of a Wayland protocol backend using `libwayland`</span>
 
 <span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">collections::HashSet</span>,
     <span class="ident">ffi::CStr</span>,
-    <span class="ident">os::raw</span>::{<span class="ident">c_char</span>, <span class="ident">c_int</span>, <span class="ident">c_void</span>},
+    <span class="ident">os::raw</span>::{<span class="ident">c_int</span>, <span class="ident">c_void</span>},
     <span class="ident">os::unix</span>::{<span class="ident">io::RawFd</span>, <span class="ident">net::UnixStream</span>, <span class="ident">prelude::IntoRawFd</span>},
     <span class="ident">sync</span>::{
         <span class="ident">atomic</span>::{<span class="ident">AtomicBool</span>, <span class="ident">Ordering</span>},
@@ -1236,6 +1238,7 @@
             <span class="macro">panic!</span>(<span class="string">&quot;[wayland-backend-sys] libwayland reported an allocation failure.&quot;</span>);
         }
         <span class="comment">// set the log trampoline</span>
+        <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
         <span class="kw">unsafe</span> {
             <span class="macro">ffi_dispatch!</span>(
                 <span class="ident">WAYLAND_CLIENT_HANDLE</span>,
@@ -1342,7 +1345,7 @@
         } <span class="kw">else</span> {
             <span class="ident">WaylandError::Io</span>(<span class="ident">err</span>)
         };
-        <span class="macro">log::error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>);
+        <span class="macro">crate::log_error!</span>(<span class="string">&quot;{}&quot;</span>, <span class="ident">err</span>);
         <span class="self">self</span>.<span class="ident">last_error</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">err</span>.<span class="ident">clone</span>());
         <span class="ident">err</span>
     }
@@ -1801,7 +1804,7 @@
     <span class="kw">let</span> <span class="ident">message_desc</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">interface</span>.<span class="ident">events</span>.<span class="ident">get</span>(<span class="ident">opcode</span> <span class="kw">as</span> <span class="ident">usize</span>) {
         <span class="prelude-val">Some</span>(<span class="ident">desc</span>) =&gt; <span class="ident">desc</span>,
         <span class="prelude-val">None</span> =&gt; {
-            <span class="macro">log::error!</span>(<span class="string">&quot;Unknown event opcode {} for interface {}.&quot;</span>, <span class="ident">opcode</span>, <span class="ident">interface</span>.<span class="ident">name</span>);
+            <span class="macro">crate::log_error!</span>(<span class="string">&quot;Unknown event opcode {} for interface {}.&quot;</span>, <span class="ident">opcode</span>, <span class="ident">interface</span>.<span class="ident">name</span>);
             <span class="kw">return</span> <span class="op">-</span><span class="number">1</span>;
         }
     };
@@ -1849,7 +1852,7 @@
                                 <span class="kw">as</span> <span class="kw-2">*mut</span> <span class="ident">ProxyUserData</span>)
                         };
                         <span class="kw">if</span> <span class="op">!</span><span class="ident">same_interface</span>(<span class="ident">next_interface</span>, <span class="ident">obj_udata</span>.<span class="ident">interface</span>) {
-                            <span class="macro">log::error!</span>(
+                            <span class="macro">crate::log_error!</span>(
                                 <span class="string">&quot;Received object {}@{} in {}.{} but expected interface {}.&quot;</span>,
                                 <span class="ident">obj_udata</span>.<span class="ident">interface</span>.<span class="ident">name</span>,
                                 <span class="ident">obj_id</span>,
@@ -1894,7 +1897,7 @@
                 <span class="comment">// this is a newid, it needs to be initialized</span>
                 <span class="kw">if</span> <span class="op">!</span><span class="ident">obj</span>.<span class="ident">is_null</span>() {
                     <span class="kw">let</span> <span class="ident">child_interface</span> <span class="op">=</span> <span class="ident">message_desc</span>.<span class="ident">child_interface</span>.<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> {
-                        <span class="macro">log::warn!</span>(
+                        <span class="macro">crate::log_warn!</span>(
                             <span class="string">&quot;Event {}.{} creates an anonymous object.&quot;</span>,
                             <span class="ident">interface</span>.<span class="ident">name</span>,
                             <span class="ident">opcode</span>
@@ -1990,8 +1993,9 @@
     <span class="number">0</span>
 }
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="string">&quot;C&quot;</span> {
-    <span class="kw">fn</span> <span class="ident">wl_log_trampoline_to_rust_client</span>(<span class="ident">fmt</span>: <span class="kw-2">*const</span> <span class="ident">c_char</span>, <span class="ident">list</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>);
+    <span class="kw">fn</span> <span class="ident">wl_log_trampoline_to_rust_client</span>(<span class="ident">fmt</span>: <span class="kw-2">*const</span> <span class="ident">std::os::raw::c_char</span>, <span class="ident">list</span>: <span class="kw-2">*const</span> <span class="ident">c_void</span>);
 }
 
 <span class="kw">impl</span> <span class="ident">Drop</span> <span class="kw">for</span> <span class="ident">ConnectionState</span> {
