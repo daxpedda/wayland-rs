@@ -232,6 +232,12 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
+<span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
+<span id="235">235</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
 
 <span class="kw">use</span> <span class="ident">wayland_backend::server</span>::{
@@ -292,6 +298,8 @@
 
 <span class="doccomment">/// A trait which provides an implementation for handling advertisement of a global to clients with some type</span>
 <span class="doccomment">/// of associated user data.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Its behavior is similar to the [`Dispatch`](crate::Dispatch) trait.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GlobalDispatch</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Resource</span>, <span class="ident">GlobalData</span>, <span class="ident">State</span> <span class="op">=</span> <span class="self">Self</span><span class="op">&gt;</span>: <span class="ident">Sized</span> {
     <span class="doccomment">/// Called when a client has bound this global.</span>
     <span class="doccomment">///</span>
@@ -325,6 +333,10 @@
  * Dispatch delegation helpers
  */</span>
 
+<span class="doccomment">/// A helper macro which delegates a set of [`GlobalDispatch`] implementations for a resource to some other type which</span>
+<span class="doccomment">/// provdes a generic [`GlobalDispatch`] implementation.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Its usage is similar to the [`delegate_dispatch!`](crate::delegate_dispatch) macro.</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
 <span class="macro">macro_rules!</span> <span class="ident">delegate_global_dispatch</span> {
     ($(@<span class="op">&lt;</span> $( <span class="macro-nonterminal">$</span><span class="macro-nonterminal">lt</span>:<span class="ident">tt</span> $( : <span class="macro-nonterminal">$</span><span class="macro-nonterminal">clt</span>:<span class="ident">tt</span> $(<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dlt</span>:<span class="ident">tt</span> )<span class="op">*</span> )<span class="question-mark">?</span> ),<span class="op">+</span> <span class="op">&gt;</span>)<span class="question-mark">?</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_from</span>:<span class="ident">ty</span> : [<span class="macro-nonterminal">$</span><span class="macro-nonterminal">interface</span>: <span class="ident">ty</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">udata</span>: <span class="ident">ty</span>] =&gt; <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dispatch_to</span>: <span class="ident">ty</span>) =&gt; {

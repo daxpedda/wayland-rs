@@ -356,10 +356,10 @@
 <span class="doccomment">//! managing the newly created object.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! However, implementing all those traits on your own is a lot of (often uninteresting) work. To make this</span>
-<span class="doccomment">//! easier a composition mechanism is provided using the [`DelegateDispatch`] trait and</span>
-<span class="doccomment">//! [`delegate_dispatch!`] macro. This way, an other library (such as Smithay&#39;s Client Toolkit) can provide</span>
-<span class="doccomment">//! generic `Dispatch&lt;_,_&gt;` immplementations that you can reuse on your own app by delegating thos objects to</span>
-<span class="doccomment">//! that provided implementation. See the documentation of those traits and macro for details.</span>
+<span class="doccomment">//! easier a composition mechanism is provided using the [`delegate_dispatch!`] macro. This way, another</span>
+<span class="doccomment">//! library (such as Smithay&#39;s Client Toolkit) can provide generic [`Dispatch`] implementations that you</span>
+<span class="doccomment">//! can reuse on your own app by delegating those objects to that provided implementation. See the</span>
+<span class="doccomment">//! documentation of those traits and macro for details.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ## Getting started example</span>
 <span class="doccomment">//!</span>
@@ -542,7 +542,7 @@
     <span class="doccomment">/// The interface description</span>
     <span class="kw">fn</span> <span class="ident">interface</span>() -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">Interface</span>;
 
-    <span class="doccomment">/// he ID of this object</span>
+    <span class="doccomment">/// The ID of this object</span>
     <span class="kw">fn</span> <span class="ident">id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">ObjectId</span>;
 
     <span class="doccomment">/// The version of this object</span>

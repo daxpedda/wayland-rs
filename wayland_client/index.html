@@ -38,10 +38,10 @@ process events for. This is ensured by the fact that, whenever creating an objec
 an other object, you need to pass a <a href="struct.QueueHandle.html" title="QueueHandle&lt;State&gt;"><code>QueueHandle&lt;State&gt;</code></a> from the <a href="struct.EventQueue.html" title="EventQueue"><code>EventQueue</code></a> that will be
 managing the newly created object.</p>
 <p>However, implementing all those traits on your own is a lot of (often uninteresting) work. To make this
-easier a composition mechanism is provided using the [<code>DelegateDispatch</code>] trait and
-<a href="macro.delegate_dispatch.html" title="delegate_dispatch!"><code>delegate_dispatch!</code></a> macro. This way, an other library (such as Smithay’s Client Toolkit) can provide
-generic <code>Dispatch&lt;_,_&gt;</code> immplementations that you can reuse on your own app by delegating thos objects to
-that provided implementation. See the documentation of those traits and macro for details.</p>
+easier a composition mechanism is provided using the <a href="macro.delegate_dispatch.html" title="delegate_dispatch!"><code>delegate_dispatch!</code></a> macro. This way, another
+library (such as Smithay’s Client Toolkit) can provide generic <a href="trait.Dispatch.html" title="Dispatch"><code>Dispatch</code></a> implementations that you
+can reuse on your own app by delegating those objects to that provided implementation. See the
+documentation of those traits and macro for details.</p>
 <h3 id="getting-started-example"><a href="#getting-started-example">Getting started example</a></h3>
 <p>As an overview of how this crate is used, here is a commented example of a program that connects to the
 Wayland server and lists the globals this server advertized throught the <code>wl_registry</code>:</p>
