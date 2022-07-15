@@ -576,6 +576,12 @@
 <span id="571">571</span>
 <span id="572">572</span>
 <span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">ffi::CString</span>,
     <span class="ident">fmt</span>,
@@ -1013,9 +1019,12 @@
     <span class="doccomment">/// Invoking this method on an already disabled or removed global does nothing. It is not possible to</span>
     <span class="doccomment">/// re-enable a disabled global, this method is meant to be invoked some time before actually removing</span>
     <span class="doccomment">/// the global, to avoid killing clients because of a race.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Panic:** This method will panic if the type parameter `D` is not same to the same type as the</span>
+    <span class="doccomment">/// one the backend was initialized with.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">GlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">disable_global</span>(<span class="ident">id</span>.<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disable_global</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">GlobalId</span>) {
+        <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">disable_global</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">id</span>.<span class="ident">id</span>)
     }
 
     <span class="doccomment">/// Removes a global object and free its ressources.</span>
@@ -1029,9 +1038,12 @@
     <span class="doccomment">/// (like `wl_output` or `wl_seat`).</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// This methods does nothing if the provided `GlobalId` corresponds to an already removed global.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Panic:** This method will panic if the type parameter `D` is not same to the same type as the</span>
+    <span class="doccomment">/// one the backend was initialized with.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">GlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">remove_global</span>(<span class="ident">id</span>.<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_global</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">GlobalId</span>) {
+        <span class="self">self</span>.<span class="ident">handle</span>.<span class="ident">remove_global</span>::<span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span>(<span class="ident">id</span>.<span class="ident">id</span>)
     }
 
     <span class="doccomment">/// Returns information about a global.</span>

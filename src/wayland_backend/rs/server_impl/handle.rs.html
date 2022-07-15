@@ -430,7 +430,6 @@
 <span id="425">425</span>
 <span id="426">426</span>
 <span id="427">427</span>
-<span id="428">428</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">ffi::CString</span>,
     <span class="ident">os::unix</span>::{
@@ -658,12 +657,22 @@
         <span class="ident">state</span>.<span class="ident">registry</span>.<span class="ident">create_global</span>(<span class="ident">interface</span>, <span class="ident">version</span>, <span class="ident">handler</span>, <span class="kw-2">&amp;mut</span> <span class="ident">state</span>.<span class="ident">clients</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">disable_global</span>(<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">disable_global</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">ErasedState</span>)
+            .<span class="ident">downcast_mut</span>::<span class="op">&lt;</span><span class="ident">State</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">expect</span>(<span class="string">&quot;Wrong type parameter passed to Handle::create_global().&quot;</span>);
+
+        <span class="ident">state</span>.<span class="ident">registry</span>.<span class="ident">disable_global</span>(<span class="ident">id</span>, <span class="kw-2">&amp;mut</span> <span class="ident">state</span>.<span class="ident">clients</span>)
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>().<span class="ident">remove_global</span>(<span class="ident">id</span>)
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_global</span><span class="op">&lt;</span><span class="ident">D</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">state</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">state</span>.<span class="ident">lock</span>().<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">state</span> <span class="op">=</span> (<span class="kw-2">&amp;mut</span> <span class="kw-2">*</span><span class="ident">state</span> <span class="kw">as</span> <span class="kw-2">&amp;mut</span> <span class="kw">dyn</span> <span class="ident">ErasedState</span>)
+            .<span class="ident">downcast_mut</span>::<span class="op">&lt;</span><span class="ident">State</span><span class="op">&lt;</span><span class="ident">D</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+            .<span class="ident">expect</span>(<span class="string">&quot;Wrong type parameter passed to Handle::create_global().&quot;</span>);
+
+        <span class="ident">state</span>.<span class="ident">registry</span>.<span class="ident">remove_global</span>(<span class="ident">id</span>, <span class="kw-2">&amp;mut</span> <span class="ident">state</span>.<span class="ident">clients</span>)
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">global_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
@@ -711,8 +720,6 @@
     <span class="kw">fn</span> <span class="ident">send_event</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">Message</span><span class="op">&lt;</span><span class="ident">ObjectId</span><span class="op">&gt;</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">InvalidId</span><span class="op">&gt;</span>;
     <span class="kw">fn</span> <span class="ident">post_error</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">object_id</span>: <span class="ident">InnerObjectId</span>, <span class="ident">error_code</span>: <span class="ident">u32</span>, <span class="ident">message</span>: <span class="ident">CString</span>);
     <span class="kw">fn</span> <span class="ident">kill_client</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">client_id</span>: <span class="ident">InnerClientId</span>, <span class="ident">reason</span>: <span class="ident">DisconnectReason</span>);
-    <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
-    <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>);
     <span class="kw">fn</span> <span class="ident">global_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span>;
 }
 
@@ -846,15 +853,6 @@
             <span class="ident">client</span>.<span class="ident">kill</span>(<span class="ident">reason</span>)
         }
     }
-
-    <span class="kw">fn</span> <span class="ident">disable_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">registry</span>.<span class="ident">disable_global</span>(<span class="ident">id</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">clients</span>)
-    }
-
-    <span class="kw">fn</span> <span class="ident">remove_global</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) {
-        <span class="self">self</span>.<span class="ident">registry</span>.<span class="ident">remove_global</span>(<span class="ident">id</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">clients</span>)
-    }
-
     <span class="kw">fn</span> <span class="ident">global_info</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">InnerGlobalId</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">GlobalInfo</span>, <span class="ident">InvalidId</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">registry</span>.<span class="ident">get_info</span>(<span class="ident">id</span>)
     }
