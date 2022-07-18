@@ -44,9 +44,6 @@ topmost one.</p>
 <p>When compositors choose to dismiss a popup, they may dismiss every
 nested grabbing popup as well. When a compositor dismisses popups, it
 will follow the same dismissing order as required from the client.</p>
-<p>The parent of a grabbing popup must either be another xdg_popup with an
-active explicit grab, or an xdg_popup or xdg_toplevel, if there are no
-explicit grabs already taken.</p>
 <p>If the topmost grabbing popup is destroyed, the grab will be returned to
 the parent of the popup, if that parent previously had an explicit grab.</p>
 <p>If the parent is a grabbing popup which has already been dismissed, this

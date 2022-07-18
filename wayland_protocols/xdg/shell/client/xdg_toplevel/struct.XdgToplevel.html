@@ -27,17 +27,17 @@ see “Unmapping” behavior in interface section for details.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_parent" class="method has-srclink"><span class="rightside"><a class="srclink" href="../../../../../src/wayland_protocols/xdg.rs.html#138-141">source</a></span><a href="#method.set_parent" class="anchor"></a><h4 class="code-header">pub fn <a href="#method.set_parent" class="fnname">set_parent</a>(&amp;self, parent: <a class="enum" href="https://doc.rust-lang.org/1.62.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="struct" href="struct.XdgToplevel.html" title="struct wayland_protocols::xdg::shell::client::xdg_toplevel::XdgToplevel">XdgToplevel</a>&gt;)</h4></section></summary><div class="docblock"><p>set the parent of this surface</p>
 <p>Set the “parent” of this surface. This surface should be stacked
 above the parent surface and all other ancestor surfaces.</p>
-<p>Parent windows should be set on dialogs, toolboxes, or other
+<p>Parent surfaces should be set on dialogs, toolboxes, or other
 “auxiliary” surfaces, so that the parent is raised when the dialog
 is raised.</p>
-<p>Setting a null parent for a child window removes any parent-child
-relationship for the child. Setting a null parent for a window which
-currently has no parent is a no-op.</p>
-<p>If the parent is unmapped then its children are managed as
-though the parent of the now-unmapped parent has become the
-parent of this surface. If no parent exists for the now-unmapped
-parent then the children are managed as though they have no
-parent surface.</p>
+<p>Setting a null parent for a child surface unsets its parent. Setting
+a null parent for a surface which currently has no parent is a no-op.</p>
+<p>Only mapped surfaces can have child surfaces. Setting a parent which
+is not mapped is equivalent to setting a null parent. If a surface
+becomes unmapped, its children’s parent is set to the parent of
+the now-unmapped surface. If the now-unmapped surface has no parent,
+its children’s parent is unset. If the now-unmapped surface becomes
+mapped again, its parent-child relationship is not restored.</p>
 </div></details><details class="rustdoc-toggle method-toggle" open><summary><section id="method.set_title" class="method has-srclink"><span class="rightside"><a class="srclink" href="../../../../../src/wayland_protocols/xdg.rs.html#138-141">source</a></span><a href="#method.set_title" class="anchor"></a><h4 class="code-header">pub fn <a href="#method.set_title" class="fnname">set_title</a>(&amp;self, title: <a class="struct" href="https://doc.rust-lang.org/1.62.0/alloc/string/struct.String.html" title="struct alloc::string::String">String</a>)</h4></section></summary><div class="docblock"><p>set surface title</p>
 <p>Set a short title for the surface.</p>
 <p>This string may be used to identify the surface in a task bar,

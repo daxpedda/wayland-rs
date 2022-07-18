@@ -393,6 +393,23 @@
 <span id="388">388</span>
 <span id="389">389</span>
 <span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Generic wayland protocols</span>
 
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">rustfmt</span>, <span class="ident">rustfmt_skip</span>)]</span>
@@ -611,6 +628,23 @@
     <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">zv1</span> {
         <span class="macro">wayland_protocol!</span>(
             <span class="string">&quot;./protocols/unstable/relative-pointer/relative-pointer-unstable-v1.xml&quot;</span>,
+            []
+        );
+    }
+}
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;staging&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">single_pixel_buffer</span> {
+    <span class="doccomment">//! This protocol extension allows clients to create single-pixel buffers.</span>
+    <span class="doccomment">//!</span>
+    <span class="doccomment">//! Compositors supporting this protocol extension should also support the</span>
+    <span class="doccomment">//! viewporter protocol extension. Clients may use viewporter to scale a</span>
+    <span class="doccomment">//! single-pixel buffer to a desired size.</span>
+
+    <span class="doccomment">/// Version 1</span>
+    <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">v1</span> {
+        <span class="macro">wayland_protocol!</span>(
+            <span class="string">&quot;./protocols/staging/single-pixel-buffer/single-pixel-buffer-v1.xml&quot;</span>,
             []
         );
     }

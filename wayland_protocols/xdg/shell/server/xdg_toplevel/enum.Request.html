@@ -53,17 +53,17 @@ see “Unmapping” behavior in interface section for details.</p>
 </div><h3 id="variant.SetParent" class="variant small-section-header"><a href="#variant.SetParent" class="anchor field"></a><code>SetParent</code></h3><div class="sub-variant" id="variant.SetParent.fields"><h4>Fields</h4><div class="sub-variant-field"><span id="variant.SetParent.field.parent" class="variant small-section-header"><a href="#variant.SetParent.field.parent" class="anchor field"></a><code>parent:&nbsp;<a class="enum" href="https://doc.rust-lang.org/1.62.0/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="struct.XdgToplevel.html" title="struct wayland_protocols::xdg::shell::server::xdg_toplevel::XdgToplevel">XdgToplevel</a>&gt;</code></span></div></div><div class="docblock"><p>set the parent of this surface</p>
 <p>Set the “parent” of this surface. This surface should be stacked
 above the parent surface and all other ancestor surfaces.</p>
-<p>Parent windows should be set on dialogs, toolboxes, or other
+<p>Parent surfaces should be set on dialogs, toolboxes, or other
 “auxiliary” surfaces, so that the parent is raised when the dialog
 is raised.</p>
-<p>Setting a null parent for a child window removes any parent-child
-relationship for the child. Setting a null parent for a window which
-currently has no parent is a no-op.</p>
-<p>If the parent is unmapped then its children are managed as
-though the parent of the now-unmapped parent has become the
-parent of this surface. If no parent exists for the now-unmapped
-parent then the children are managed as though they have no
-parent surface.</p>
+<p>Setting a null parent for a child surface unsets its parent. Setting
+a null parent for a surface which currently has no parent is a no-op.</p>
+<p>Only mapped surfaces can have child surfaces. Setting a parent which
+is not mapped is equivalent to setting a null parent. If a surface
+becomes unmapped, its children’s parent is set to the parent of
+the now-unmapped surface. If the now-unmapped surface has no parent,
+its children’s parent is unset. If the now-unmapped surface becomes
+mapped again, its parent-child relationship is not restored.</p>
 </div><h3 id="variant.SetTitle" class="variant small-section-header"><a href="#variant.SetTitle" class="anchor field"></a><code>SetTitle</code></h3><div class="sub-variant" id="variant.SetTitle.fields"><h4>Fields</h4><div class="sub-variant-field"><span id="variant.SetTitle.field.title" class="variant small-section-header"><a href="#variant.SetTitle.field.title" class="anchor field"></a><code>title:&nbsp;<a class="struct" href="https://doc.rust-lang.org/1.62.0/alloc/string/struct.String.html" title="struct alloc::string::String">String</a></code></span></div></div><div class="docblock"><p>set surface title</p>
 <p>Set a short title for the surface.</p>
 <p>This string may be used to identify the surface in a task bar,
