@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["__interfaces",""],["kde_output_device_mode_v2","output mode"],["kde_output_device_v2","output configuration representation"]]});
+window.SIDEBAR_ITEMS = {"mod":[["__interfaces",""],["kde_output_device_mode_v2","output mode"],["kde_output_device_v2","output configuration representation"]]};

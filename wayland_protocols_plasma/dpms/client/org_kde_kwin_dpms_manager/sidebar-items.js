@@ -1,1 +1,1 @@
-initSidebarItems({"constant":[["REQ_GET_OPCODE","The wire opcode for this request"],["REQ_GET_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["OrgKdeKwinDpmsManager","Output dpms manager"]]});
+window.SIDEBAR_ITEMS = {"constant":[["REQ_GET_OPCODE","The wire opcode for this request"],["REQ_GET_SINCE","The minimal object version supporting this request"]],"enum":[["Event",""],["Request",""]],"struct":[["OrgKdeKwinDpmsManager","Output dpms manager"]]};

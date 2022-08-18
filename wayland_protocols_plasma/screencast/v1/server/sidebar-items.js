@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["__interfaces",""],["zkde_screencast_stream_unstable_v1",""],["zkde_screencast_unstable_v1","Protocol for managing PipeWire feeds of the different displays and windows."]]});
+window.SIDEBAR_ITEMS = {"mod":[["__interfaces",""],["zkde_screencast_stream_unstable_v1",""],["zkde_screencast_unstable_v1","Protocol for managing PipeWire feeds of the different displays and windows."]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["Error","EGL surface creation error."]],"fn":[["is_available","Checks if the wayland-egl lib is available and can be used"]],"struct":[["WlEglSurface","EGL surface"]]});
+window.SIDEBAR_ITEMS = {"enum":[["Error","EGL surface creation error."]],"fn":[["is_available","Checks if the wayland-egl lib is available and can be used"]],"struct":[["WlEglSurface","EGL surface"]]};

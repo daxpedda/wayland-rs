@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["__interfaces",""],["zwlr_gamma_control_manager_v1","manager to create per-output gamma controls"],["zwlr_gamma_control_v1","adjust gamma tables for an output"]]});
+window.SIDEBAR_ITEMS = {"mod":[["__interfaces",""],["zwlr_gamma_control_manager_v1","manager to create per-output gamma controls"],["zwlr_gamma_control_v1","adjust gamma tables for an output"]]};

@@ -1,1 +1,1 @@
-initSidebarItems({"static":[["ORG_KDE_KWIN_CONTRAST_INTERFACE",""],["ORG_KDE_KWIN_CONTRAST_MANAGER_INTERFACE",""],["org_kde_kwin_contrast_interface",""],["org_kde_kwin_contrast_manager_interface",""],["org_kde_kwin_contrast_manager_requests",""],["org_kde_kwin_contrast_requests",""]]});
+window.SIDEBAR_ITEMS = {"static":[["ORG_KDE_KWIN_CONTRAST_INTERFACE",""],["ORG_KDE_KWIN_CONTRAST_MANAGER_INTERFACE",""],["org_kde_kwin_contrast_interface",""],["org_kde_kwin_contrast_manager_interface",""],["org_kde_kwin_contrast_manager_requests",""],["org_kde_kwin_contrast_requests",""]]};

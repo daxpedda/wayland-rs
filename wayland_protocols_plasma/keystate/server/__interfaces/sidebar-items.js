@@ -1,1 +1,1 @@
-initSidebarItems({"static":[["ORG_KDE_KWIN_KEYSTATE_INTERFACE",""],["org_kde_kwin_keystate_events",""],["org_kde_kwin_keystate_interface",""],["org_kde_kwin_keystate_requests",""]]});
+window.SIDEBAR_ITEMS = {"static":[["ORG_KDE_KWIN_KEYSTATE_INTERFACE",""],["org_kde_kwin_keystate_events",""],["org_kde_kwin_keystate_interface",""],["org_kde_kwin_keystate_requests",""]]};

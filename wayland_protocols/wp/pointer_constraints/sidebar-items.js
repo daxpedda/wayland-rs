@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["zv1","Unstable version 1"]]});
+window.SIDEBAR_ITEMS = {"mod":[["zv1","Unstable version 1"]]};

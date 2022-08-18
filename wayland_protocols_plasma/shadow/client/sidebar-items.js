@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["__interfaces",""],["org_kde_kwin_shadow",""],["org_kde_kwin_shadow_manager",""]]});
+window.SIDEBAR_ITEMS = {"mod":[["__interfaces",""],["org_kde_kwin_shadow",""],["org_kde_kwin_shadow_manager",""]]};
