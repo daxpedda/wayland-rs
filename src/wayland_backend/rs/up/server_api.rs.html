@@ -583,6 +583,8 @@
 <span id="577">577</span>
 <span id="578">578</span>
 <span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{
     <span class="ident">ffi::CString</span>,
     <span class="ident">fmt</span>,
@@ -685,9 +687,9 @@
 <span class="doccomment">/// A trait representing your data associated to a client</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">ClientData</span>: <span class="ident">downcast_rs::DowncastSync</span> {
     <span class="doccomment">/// Notification that the client was initialized</span>
-    <span class="kw">fn</span> <span class="ident">initialized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">client_id</span>: <span class="ident">ClientId</span>);
+    <span class="kw">fn</span> <span class="ident">initialized</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_client_id</span>: <span class="ident">ClientId</span>) {}
     <span class="doccomment">/// Notification that the client is disconnected</span>
-    <span class="kw">fn</span> <span class="ident">disconnected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">client_id</span>: <span class="ident">ClientId</span>, <span class="ident">reason</span>: <span class="ident">DisconnectReason</span>);
+    <span class="kw">fn</span> <span class="ident">disconnected</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">_client_id</span>: <span class="ident">ClientId</span>, <span class="ident">_reason</span>: <span class="ident">DisconnectReason</span>) {}
     <span class="doccomment">/// Helper for forwarding a Debug implementation of your `ClientData` type</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// By default will just print `GlobalHandler { ... }`</span>
@@ -703,6 +705,8 @@
         <span class="self">self</span>.<span class="ident">debug</span>(<span class="ident">f</span>)
     }
 }
+
+<span class="kw">impl</span> <span class="ident">ClientData</span> <span class="kw">for</span> () {}
 
 <span class="macro">downcast_rs::impl_downcast!</span>(<span class="ident">sync</span> <span class="ident">ClientData</span>);
 
