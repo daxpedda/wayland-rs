@@ -540,7 +540,7 @@
 }
 
 <span class="doccomment">/// Trait representing a Wayland interface</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Proxy</span>: <span class="ident">Sized</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Proxy</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">std::fmt::Debug</span> <span class="op">+</span> <span class="ident">Sized</span> {
     <span class="doccomment">/// The event enum for this interface</span>
     <span class="kw">type</span> <span class="ident">Event</span>;
     <span class="doccomment">/// The request enum for this interface</span>
