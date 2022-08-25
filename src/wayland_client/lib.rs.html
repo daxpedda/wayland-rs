@@ -513,7 +513,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">wayland_backend::protocol::WEnum</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">conn</span>::{<span class="ident">ConnectError</span>, <span class="ident">Connection</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_queue</span>::{<span class="ident">Dispatch</span>, <span class="ident">EventQueue</span>, <span class="ident">QueueHandle</span>, <span class="ident">QueueProxyData</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">event_queue</span>::{<span class="ident">Dispatch</span>, <span class="ident">EventQueue</span>, <span class="ident">QueueFreezeGuard</span>, <span class="ident">QueueHandle</span>, <span class="ident">QueueProxyData</span>};
 
 <span class="comment">// internal imports for dispatching logging depending on the `log` feature</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;log&quot;</span>)]</span>
